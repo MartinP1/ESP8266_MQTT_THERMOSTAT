@@ -29,6 +29,9 @@ based on below Work of Rui Santos
 #include <Ticker.h>
 #include <AsyncMqttClient.h>
 
+// set to 1 if deployed to real target
+
+#define IS_FOR_PROD 0
 //<<<<<<< HEAD
 // includes WLAN credential define
 
@@ -44,14 +47,20 @@ based on below Work of Rui Santos
 #define MQTT_PORT 1888
 
 // Temperature MQTT Topics
+#if IS_FOR_PROD 
 #define MQTT_PUB_DEV_PREFIX   "thermostat"
+#else
+#define MQTT_PUB_DEV_PREFIX   "test_thermostat"
+#endif
 #define MQTT_PUB_TEMP_PREFIX MQTT_PUB_DEV_PREFIX "/sensors/"
 #define MQTT_PUB_TEMP_SUFFIX "/temperature"
 
 #define MQTT_PUB_DES_PREFIX MQTT_PUB_DEV_PREFIX "/desired"
 
+#define MQTT_PUB_FANMAX_SUFFIX "/max_fansspeed"
 // GPIO where the DS18B20 is connected to (16 not working, 14 and 4 tested ok...)
-const int oneWireBus = 14;          
+const int oneWireBus = 14;
+const int pwmGpio = 4;          
 // Setup a oneWire instance to communicate with any OneWire devices
 OneWire oneWire(oneWireBus);
 // Pass our oneWire reference to Dallas Temperature sensor 
@@ -60,9 +69,13 @@ DallasTemperature sensors(&oneWire);
 
 #define MAX_NUMBER_OF_TEMP_DEVICES 3
 
+
+// global variable for MQTT comms
+
 float temp;
 float desired_temp = 20.5;
 DeviceAddress statDeviceAddress[8]; 
+uint8_t pwmSet=255; // maxed out
 
 int numberOfDevices;
 
@@ -106,15 +119,26 @@ void publishDesTemp(float partemp){
   mqttClient.publish(MQTT_PUB_DES_PREFIX MQTT_PUB_TEMP_SUFFIX, 0, true, buffer);
 }
 
+void publishDesSpeed(uint8_t speed){
+  pwmSet = speed; 
+  // todo for test pupose - to write here ist not necessarily correcht if standalone control loop of fan speed ...
+  analogWrite(pwmGpio, speed);
+  mqttClient.publish(MQTT_PUB_DES_PREFIX MQTT_PUB_FANMAX_SUFFIX, 0, true, String(speed, DEC).c_str());
+}
+
 void onMqttConnect(bool sessionPresent) {
   Serial.println("Connected to MQTT.");
   Serial.print("Session present: ");
   Serial.println(sessionPresent);
   // todo not necessarily QOS 2. 1 or 0 are also ok...
   uint16_t packetIdSub = mqttClient.subscribe(MQTT_PUB_DES_PREFIX MQTT_PUB_TEMP_SUFFIX, 2);
-  Serial.print("Subscribing at QoS 2, packetId: ");
+  Serial.print("Subscribing desired temp at QoS 2, packetId: ");
   Serial.println(packetIdSub);
   publishDesTemp(20.5);
+  packetIdSub = mqttClient.subscribe(MQTT_PUB_DES_PREFIX MQTT_PUB_FANMAX_SUFFIX, 2);
+  Serial.print("Subscribing max fan speed at QoS 2, packetId: ");
+  Serial.println(packetIdSub);
+  publishDesSpeed(255);
 }
 
 void onMqttDisconnect(AsyncMqttClientDisconnectReason reason) {
@@ -147,12 +171,38 @@ void onMqttPublish(uint16_t packetId) {
 
 void testDesiredTemperature(char* payload, char* topic)
 {
-  String strComp("thermostat/desired/temperature");
-  if (strComp.compareTo(payload)!=0)
+  String strComp(MQTT_PUB_DES_PREFIX MQTT_PUB_TEMP_SUFFIX);
+  if (strComp.compareTo(topic)!=0)
   {
+    Serial.print (topic);
+    Serial.print(" - testDesiredTemperature - not mine - ");
+    Serial.println(MQTT_PUB_DES_PREFIX MQTT_PUB_TEMP_SUFFIX);
     return;
   }
   desired_temp = atof(payload);
+
+// echo message  ?
+  Serial.print ("Desired temp echoed: ");  
+  Serial.println ( topic);
+
+
+  mqttClient.publish(topic, 1, true, payload);
+}
+
+void testDesiredFanspeed(char* payload, char* topic)
+{
+  String strComp(MQTT_PUB_DES_PREFIX MQTT_PUB_FANMAX_SUFFIX);
+  if (strComp.compareTo(topic)!=0)
+  {
+    Serial.print (topic);
+    Serial.print(" - testDesiredFanspeed - not mine expected:");
+    Serial.println(MQTT_PUB_DES_PREFIX MQTT_PUB_FANMAX_SUFFIX);
+    return;
+  }
+  unsigned long lRes = (unsigned)atol(payload);
+  publishDesSpeed(lRes & 0xFF);
+  pwmSet = lRes & 0xFF;
+  
 
 // echo message  ?
   Serial.print ("Desired temp echoed: ");  
@@ -194,13 +244,14 @@ void onMqttMessage(char* topic, char* payload, AsyncMqttClientMessageProperties 
   /// Distinguish path
   
   testDesiredTemperature(buffer, topic);
+  testDesiredFanspeed(buffer,topic);
 }
 
 void setup() {
   sensors.begin();
   Serial.begin(115200);
   Serial.println();
-  
+  pinMode(pwmGpio, OUTPUT);
   wifiConnectHandler = WiFi.onStationModeGotIP(onWifiConnect);
   wifiDisconnectHandler = WiFi.onStationModeDisconnected(onWifiDisconnect);
 
