@@ -24,6 +24,7 @@ Das Projekt ist in der Alphaphase. Bisher sind nur kleine Teile realisiert.
 - 3 DS 18B20 Thermosensoren von Shelly https://www.pollin.de/p/shelly-temperatursensor-ds18b20-591021
   - zur Messung von Zulauf- und Ablauftemperatur des Heizkörpers und der Raumtemperatur
 
+![Schaltplan](https://github.com/MartinP1/ESP8266_MQTT_THERMOSTAT/blob/main/Board_esp8266_d1mini_backup_Schaltplan.svg "Schaltplan")
 
 Der Prototyp wird einen "Vollausbau" bekommen. Ggfs. lasse ich später eine Leiterplatte machen, die dann optional auch nur teilweise bestückt funktioniert (mit angepasster Firmware?)
 Mindestausstattung wäre ein Thermosensor für die Raumtemperatur und ein Schaltrelais für die Ansteuerung des Ventil-Stellgliedes...
