@@ -5,6 +5,9 @@
 #include "desired_speed_MQTT_DS18B20.h"
 #include "received_temp_MQTT_DS18B20.h"
 #include "fan_pwm_MQTT_DS18B20.h"
+// #include "ventile_control_MQTT_DS18B20.h"
+// #include "window_contact_MQTT_DS18B20.h"
+// #include "do_calculations_MQTT_DS18B20.h"
 
 void onMqttConnect(bool sessionPresent) {
   Serial.println("Connected to MQTT.");
@@ -102,36 +105,8 @@ void setup() {
   mqttClient.setServer(MQTT_HOST, MQTT_PORT);
   // If your broker requires authentication (username and password), set them below
   //mqttClient.setCredentials("REPlACE_WITH_YOUR_USER", "REPLACE_WITH_YOUR_PASSWORD");
-  
   connectToWifi();
-
-  Serial.print("Locating devices...");
-  numberOfDevices = sensors.getDeviceCount();
-  
-  // locate devices on the bus
-  Serial.print("Found ");
-  Serial.print(numberOfDevices, DEC);
-  Serial.println(" devices.");
-
-  
-// Found device 0 with address: 28B8D281E3B53CF0
-
-  // 
-  // Loop through each device, print out address
-  for(int i=0;i<numberOfDevices; i++){
-    // Search the wire for address
-    if(sensors.getAddress(statDeviceAddress[i], i)){
-      Serial.print("Found device ");
-      Serial.print(i, DEC);
-      Serial.print(" with address: ");
-      printAddress(statDeviceAddress[i]);
-      Serial.println();
-    } else {
-      Serial.print("Found ghost device at ");
-      Serial.print(i, DEC);
-      Serial.print(" but could not detect address. Check power and cabling");
-    }
-  }
+  initTemperatureSensors();
 }
 
 
@@ -149,13 +124,3 @@ void loop() {
 }
 
 
-// function to print a device address
-// 0x28 family code is printed first!
-// https://cdn.sparkfun.com/datasheets/Sensors/Temp/DS18B20.pdf
-// Last byte of adress is transferred first ...
-void printAddress(DeviceAddress deviceAddress) {
-  for (uint8_t i = 0; i < 8; i++){
-    if (deviceAddress[i] < 16) Serial.print("0");
-      Serial.print(deviceAddress[i], HEX);
-  }
-}

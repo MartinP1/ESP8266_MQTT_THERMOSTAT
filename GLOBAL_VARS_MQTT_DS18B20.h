@@ -72,13 +72,6 @@ DallasTemperature sensors(&oneWire);
 
 // global variable for MQTT comms
 
-DeviceAddress statDeviceAddress[8]; 
-
-
-int numberOfDevices;
-
-const char* TempsensRole[3] {"vorlauf", "ruecklauf", "raum"};
-
 AsyncMqttClient mqttClient;
 Ticker mqttReconnectTimer;
 
