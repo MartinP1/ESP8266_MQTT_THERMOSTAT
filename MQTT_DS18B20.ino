@@ -1,130 +1,10 @@
-/* Martin Präkelt
-MQTT Thermostat with D1 Mini Board (ESP8266)
 
-based on below Work of Rui Santos 
-
-28-FEB-2023 published at gitlab
-
-
-
-*/
-
-
-
-
-/*
-  Rui Santos
-  Complete project details at https://RandomNerdTutorials.com/esp8266-nodemcu-mqtt-publish-ds18b20-arduino/
-  
-  Permission is hereby granted, free of charge, to any person obtaining a copy
-  of this software and associated documentation files.
-  
-  The above copyright notice and this permission notice shall be included in all
-  copies or substantial portions of the Software.
-*/
-
-#include <OneWire.h>
-#include <DallasTemperature.h>
-#include <ESP8266WiFi.h>
-#include <Ticker.h>
-#include <AsyncMqttClient.h>
-
-// set to 1 if deployed to real target
-
-#define IS_FOR_PROD 0
-//<<<<<<< HEAD
-// includes WLAN credential define
-
-//#define WIFI_SSID "blaba_ssid"
-//#define WIFI_PASSWORD "blabla_password"
-
-#include "secret.h"
-
-// Raspberri Pi Mosquitto MQTT Broker
-#define MQTT_HOST IPAddress(192, 168, 2, 201)
-// For a cloud MQTT broker, type the domain name
-//#define MQTT_HOST "example.com"
-#define MQTT_PORT 1888
-
-// Temperature MQTT Topics
-#if IS_FOR_PROD 
-#define MQTT_PUB_DEV_PREFIX   "thermostat"
-#else
-#define MQTT_PUB_DEV_PREFIX   "test_thermostat"
-#endif
-#define MQTT_PUB_TEMP_PREFIX MQTT_PUB_DEV_PREFIX "/sensors/"
-#define MQTT_PUB_TEMP_SUFFIX "/temperature"
-
-#define MQTT_PUB_DES_PREFIX MQTT_PUB_DEV_PREFIX "/desired"
-
-#define MQTT_PUB_FANMAX_SUFFIX "/max_fansspeed"
-// GPIO where the DS18B20 is connected to (16 not working, 14 and 4 tested ok...)
-const int oneWireBus = 14;
-const int pwmGpio = 4;          
-// Setup a oneWire instance to communicate with any OneWire devices
-OneWire oneWire(oneWireBus);
-// Pass our oneWire reference to Dallas Temperature sensor 
-DallasTemperature sensors(&oneWire);
-// Temperature value
-
-#define MAX_NUMBER_OF_TEMP_DEVICES 3
-
-
-// global variable for MQTT comms
-
-float temp;
-float desired_temp = 20.5;
-DeviceAddress statDeviceAddress[8]; 
-uint8_t pwmSet=255; // maxed out
-
-int numberOfDevices;
-
-const char* TempsensRole[3] {"vorlauf", "ruecklauf", "raum"};
-
-AsyncMqttClient mqttClient;
-Ticker mqttReconnectTimer;
-
-WiFiEventHandler wifiConnectHandler;
-WiFiEventHandler wifiDisconnectHandler;
-Ticker wifiReconnectTimer;
-
-unsigned long previousMillis = 0;   // Stores last time temperature was published
-const long interval = 10000;        // Interval at which to publish sensor readings
-
-void connectToWifi() {
-  Serial.println("Connecting to Wi-Fi...");
-  WiFi.begin(WIFI_SSID, WIFI_PASSWORD);
-}
-
-void onWifiConnect(const WiFiEventStationModeGotIP& event) {
-  Serial.println("Connected to Wi-Fi.");
-  connectToMqtt();
-}
-
-void onWifiDisconnect(const WiFiEventStationModeDisconnected& event) {
-  Serial.println("Disconnected from Wi-Fi.");
-  mqttReconnectTimer.detach(); // ensure we don't reconnect to MQTT while reconnecting to Wi-Fi
-  wifiReconnectTimer.once(2, connectToWifi);
-}
-
-void connectToMqtt() {
-  Serial.println("Connecting to MQTT...");
-  mqttClient.connect();
-}
-
-void publishDesTemp(float partemp){
-  desired_temp = partemp; 
-  char buffer[10];
-  sprintf(buffer,"%.2f", partemp); 
-  mqttClient.publish(MQTT_PUB_DES_PREFIX MQTT_PUB_TEMP_SUFFIX, 0, true, buffer);
-}
-
-void publishDesSpeed(uint8_t speed){
-  pwmSet = speed; 
-  // todo for test pupose - to write here ist not necessarily correcht if standalone control loop of fan speed ...
-  analogWrite(pwmGpio, speed);
-  mqttClient.publish(MQTT_PUB_DES_PREFIX MQTT_PUB_FANMAX_SUFFIX, 0, true, String(speed, DEC).c_str());
-}
+#include "GLOBAL_VARS_MQTT_DS18B20.h"
+#include "unspecialized_mqtt_doings.h"
+#include "desired_temp_MQTT_DS18B20.h"
+#include "desired_speed_MQTT_DS18B20.h"
+#include "received_temp_MQTT_DS18B20.h"
+#include "fan_pwm_MQTT_DS18B20.h"
 
 void onMqttConnect(bool sessionPresent) {
   Serial.println("Connected to MQTT.");
@@ -169,48 +49,6 @@ void onMqttPublish(uint16_t packetId) {
   Serial.println(packetId);
 }
 
-void testDesiredTemperature(char* payload, char* topic)
-{
-  String strComp(MQTT_PUB_DES_PREFIX MQTT_PUB_TEMP_SUFFIX);
-  if (strComp.compareTo(topic)!=0)
-  {
-    Serial.print (topic);
-    Serial.print(" - testDesiredTemperature - not mine - ");
-    Serial.println(MQTT_PUB_DES_PREFIX MQTT_PUB_TEMP_SUFFIX);
-    return;
-  }
-  desired_temp = atof(payload);
-
-// echo message  ?
-  Serial.print ("Desired temp echoed: ");  
-  Serial.println ( topic);
-
-
-  mqttClient.publish(topic, 1, true, payload);
-}
-
-void testDesiredFanspeed(char* payload, char* topic)
-{
-  String strComp(MQTT_PUB_DES_PREFIX MQTT_PUB_FANMAX_SUFFIX);
-  if (strComp.compareTo(topic)!=0)
-  {
-    Serial.print (topic);
-    Serial.print(" - testDesiredFanspeed - not mine expected:");
-    Serial.println(MQTT_PUB_DES_PREFIX MQTT_PUB_FANMAX_SUFFIX);
-    return;
-  }
-  unsigned long lRes = (unsigned)atol(payload);
-  publishDesSpeed(lRes & 0xFF);
-  pwmSet = lRes & 0xFF;
-  
-
-// echo message  ?
-  Serial.print ("Desired temp echoed: ");  
-  Serial.println ( topic);
-
-
-  mqttClient.publish(topic, 1, true, payload);
-}
 
 void onMqttMessage(char* topic, char* payload, AsyncMqttClientMessageProperties properties, size_t len, size_t index, size_t total) {
   Serial.println(" Publish received.");
@@ -278,9 +116,6 @@ void setup() {
   
 // Found device 0 with address: 28B8D281E3B53CF0
 
-
-
-
   // 
   // Loop through each device, print out address
   for(int i=0;i<numberOfDevices; i++){
@@ -309,22 +144,7 @@ void loop() {
     // Save the last time a new reading was published
     previousMillis = currentMillis;
     // New temperature readings
-    sensors.requestTemperatures(); 
-    // Temperature in Celsius degrees
-    for (int i=0; i<numberOfDevices && i<3; i++)
-    {
-      temp = sensors.getTempCByIndex(i);
-      // Temperature in Fahrenheit degrees
-      //temp = sensors.getTempFByIndex(0);
-    
-      // Publish an MQTT message on topic esp/ds18b20/temperature
-      String Topic(MQTT_PUB_TEMP_PREFIX);
-      Topic += TempsensRole[i];
-      Topic += String(MQTT_PUB_TEMP_SUFFIX);
-      uint16_t packetIdPub1 = mqttClient.publish(Topic.c_str(), 1, true, String(temp).c_str());                            
-      Serial.printf("Pubng on topic %s at QoS 1, packetId: %i ", Topic.c_str(), packetIdPub1);
-      Serial.printf("Msg: %.2f \n", temp);
-    }
+    getTemperatures();
   }
 }
 
