@@ -22,7 +22,7 @@ void getTemperatures() {
       Topic += TempsensRole[i];
       Topic += String(MQTT_PUB_TEMP_SUFFIX);
       uint16_t packetIdPub1 = mqttClient.publish(Topic.c_str(), 1, true, String(temp).c_str());                            
-      Serial.printf("Pubng on topic %s at QoS 1, packetId: %i ", Topic.c_str(), packetIdPub1);
+      Serial.printf("Publishing on topic %s at QoS 1, packetId: %i ", Topic.c_str(), packetIdPub1);
       Serial.printf("Msg: %.2f \n", temp);
     }
 }
@@ -31,12 +31,24 @@ void getTemperatures() {
 // 0x28 family code is printed first!
 // https://cdn.sparkfun.com/datasheets/Sensors/Temp/DS18B20.pdf
 // Last byte of adress is transferred first ...
+
+#if 0
 void printAddress(DeviceAddress deviceAddress) {
   for (uint8_t i = 0; i < 8; i++){
     if (deviceAddress[i] < 16) Serial.print("0");
       Serial.print(deviceAddress[i], HEX);
   }
 }
+#else
+// print only bytes of interest (omit family code and crc) and in correct order
+void printAddress(DeviceAddress deviceAddress) {
+  for (uint8_t i = 6; i > 0; i--) {
+    if (deviceAddress[i] < 16) Serial.print("0");
+      Serial.print(deviceAddress[i], HEX);
+  }
+}
+#endif
+
 
 void swapDevAdr(int left, int right)
 {
@@ -49,6 +61,10 @@ void swapDevAdr(int left, int right)
     statDeviceAddress[left][i] = statDeviceAddress[right][i];
     statDeviceAddress[right][i] = iSwap;
   }
+  Serial.print (left);
+  Serial.print (" <-> ");
+  Serial.print (right);
+  Serial.println ("swapped");
 }
 
 bool isDevAdrGreater(int left, int right){
@@ -57,11 +73,11 @@ bool isDevAdrGreater(int left, int right){
     return false;
   if (right>=numberOfDevices)
     return false;
-  for (int i=1; i<7; i++){
-    if (statDeviceAddress[left][i]>statDeviceAddress[right][i]){
-      return true;
-    } else if (statDeviceAddress[left][i]<statDeviceAddress[right][i]){
+  for (int i=6; i>0; i--){
+    if (statDeviceAddress[left][i]<statDeviceAddress[right][i]){
       return false;
+    } else if (statDeviceAddress[left][i]>statDeviceAddress[right][i]){
+      return true;
     }
   }
   return false; /// @todo manage duplicates (equality, when reaching this point)
@@ -82,24 +98,6 @@ void initTemperatureSensors(){
     Serial.println("too many temp devices, limit to 3");
     numberOfDevices = MAX_DS18B20_DEVICES;
   }
-
-  if ((numberOfDevices>1) && isDevAdrGreater(0, 1)){
-    swapDevAdr(0, 1);
-  }
-  if ((numberOfDevices>2) && isDevAdrGreater(1, 2)) {
-    swapDevAdr(1, 2);
-    if (isDevAdrGreater(0, 1)){
-      swapDevAdr(0, 1);
-    }
-      
-  }
-
-
-
-  
-// Found device 0 with address: 28B8D281E3B53CF0
-
-  // 
   // Loop through each device, print out address
   for(int i=0;i<numberOfDevices; i++){
     // Search the wire for address
@@ -114,6 +112,25 @@ void initTemperatureSensors(){
       Serial.print(i, DEC);
       Serial.print(" but could not detect address. Check power and cabling");
     }
+  }
+
+   
+
+  Serial.println(" swap devices ....");
+  if ((numberOfDevices>1) && isDevAdrGreater(0, 1)){
+    swapDevAdr(0, 1);
+  }
+  if ((numberOfDevices>2) && isDevAdrGreater(1, 2)) {
+    swapDevAdr(1, 2);
+    if (isDevAdrGreater(0, 1)){
+      swapDevAdr(0, 1);
+    }
+      
+  }
+  
+  for(int i=0;i<numberOfDevices; i++){
+      printAddress(statDeviceAddress[i]);
+      Serial.println();
   }
 
 }
