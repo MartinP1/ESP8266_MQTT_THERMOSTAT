@@ -120,6 +120,10 @@ void loop() {
     previousMillis = currentMillis;
     // New temperature readings
     getTemperatures();
+
+    
+
+    
   }
 }
 
