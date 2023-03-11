@@ -1,5 +1,4 @@
 
-float desired_temp = 20.5;
 
 
 

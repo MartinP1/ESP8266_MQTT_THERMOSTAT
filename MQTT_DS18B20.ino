@@ -7,7 +7,7 @@
 #include "fan_pwm_MQTT_DS18B20.h"
 // #include "ventile_control_MQTT_DS18B20.h"
 // #include "window_contact_MQTT_DS18B20.h"
-// #include "do_calculations_MQTT_DS18B20.h"
+#include "do_calculations_MQTT_DS18B20.h"
 
 void onMqttConnect(bool sessionPresent) {
   Serial.println("Connected to MQTT.");
@@ -39,7 +39,7 @@ void onMqttSubscribe(uint16_t packetId, uint8_t qos) {
   Serial.print("  qos: ");
   Serial.println(qos);
 }
-
+// 
 void onMqttUnsubscribe(uint16_t packetId) {
   Serial.println("Unsubscribe acknowledged.");
   Serial.print("  packetId: ");
@@ -54,7 +54,7 @@ void onMqttPublish(uint16_t packetId) {
 
 
 void onMqttMessage(char* topic, char* payload, AsyncMqttClientMessageProperties properties, size_t len, size_t index, size_t total) {
-  Serial.println(" Publish received.");
+  Serial.println(" Publish received.");// 
   Serial.print("  topic: ");
   Serial.println(topic);
   Serial.print("  qos: ");
@@ -70,7 +70,7 @@ void onMqttMessage(char* topic, char* payload, AsyncMqttClientMessageProperties 
   Serial.print("  total: ");
   Serial.println(total);
   Serial.print(" payload: ");
-  for (int i=0; i<len; i++) {
+  for (int i=0; i<len; i++) {// 
     Serial.print(payload[i]);
     
   }  
@@ -121,7 +121,7 @@ void loop() {
     // New temperature readings
     getTemperatures();
 
-    
+    runTempControl();
 
     
   }

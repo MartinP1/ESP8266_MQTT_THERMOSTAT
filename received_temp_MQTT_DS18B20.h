@@ -5,7 +5,7 @@ int numberOfDevices;
 // to provide functionality with only one sensor, make "raum" the first one!
 // later we will sort the sensors in ascending sequence
 const char* TempsensRole[3] {"raum",  "vorlauf", "ruecklauf"};
-
+float temp[3];
 
 
 void getTemperatures() {
@@ -13,7 +13,7 @@ void getTemperatures() {
     // Temperature in Celsius degrees
     for (int i=0; i<numberOfDevices; i++)
     {
-      float temp = sensors.getTempC(statDeviceAddress[i]);
+      temp[i] = sensors.getTempC(statDeviceAddress[i]);
       // Temperature in Fahrenheit degrees
       //temp = sensors.getTempFByIndex(0);
     
@@ -21,9 +21,9 @@ void getTemperatures() {
       String Topic(MQTT_PUB_TEMP_PREFIX);
       Topic += TempsensRole[i];
       Topic += String(MQTT_PUB_TEMP_SUFFIX);
-      uint16_t packetIdPub1 = mqttClient.publish(Topic.c_str(), 1, true, String(temp).c_str());                            
+      uint16_t packetIdPub1 = mqttClient.publish(Topic.c_str(), 1, true, String(temp[i]).c_str());                            
       Serial.printf("Publishing on topic %s at QoS 1, packetId: %i ", Topic.c_str(), packetIdPub1);
-      Serial.printf("Msg: %.2f \n", temp);
+      Serial.printf("Msg: %.2f \n", temp[i]);
     }
 }
 
@@ -90,6 +90,8 @@ bool isDevAdrGreater(int left, int right){
 void initTemperatureSensors(){
   Serial.print("Locating devices...");
   numberOfDevices = sensors.getDeviceCount();
+  // numberOfDevices = sensors.getDS18Count();
+  // numberOfDevices = MAX_DS18B20_DEVICES;
   // locate devices on the bus
   Serial.print("Found ");
   Serial.print(numberOfDevices, DEC);
