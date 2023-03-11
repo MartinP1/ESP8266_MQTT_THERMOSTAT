@@ -70,6 +70,10 @@ DallasTemperature sensors(&oneWire);
 #define MAX_NUMBER_OF_TEMP_DEVICES 3
 float desired_temp = 20.5;
 
+#define PWM_OFF 256
+#define PWM_FULL 0
+
+int8_t pwmActual;
 
 // global variable for MQTT comms
 

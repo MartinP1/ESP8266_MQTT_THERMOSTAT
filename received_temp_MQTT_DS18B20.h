@@ -118,7 +118,7 @@ void initTemperatureSensors(){
 
    
 
-  Serial.println(" swap devices ....");
+  Serial.println(" swap devices ...."); https://github.com/MARTINP1/ESP8266_MQTT_THERMOSTAT.git
   if ((numberOfDevices>1) && isDevAdrGreater(0, 1)){
     swapDevAdr(0, 1);
   }
