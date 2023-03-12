@@ -18,10 +18,10 @@ void onMqttConnect(bool sessionPresent) {
   Serial.print("Subscribing desired temp at QoS 2, packetId: ");
   Serial.println(packetIdSub);
   publishDesTemp(desired_temp);
-  packetIdSub = mqttClient.subscribe(MQTT_PUB_DES_PREFIX MQTT_PUB_FANMAX_SUFFIX, 2);
+  packetIdSub = mqttClient.subscribe(MQTT_PUB_DES_PREFIX MQTT_PUB_FANTHROTTLE_SUFFIX, 2);
   Serial.print("Subscribing max fan speed at QoS 2, packetId: ");
   Serial.println(packetIdSub);
-  publishDesSpeed(pwmSet);
+  publishDesSpeed(throttleFanspeed);
 }
 
 void onMqttDisconnect(AsyncMqttClientDisconnectReason reason) {

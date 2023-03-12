@@ -55,9 +55,10 @@ based on below Work of Rui Santos
 #define MQTT_PUB_TEMP_PREFIX MQTT_PUB_DEV_PREFIX "/sensors/"
 #define MQTT_PUB_TEMP_SUFFIX "/temperature"
 
+#define MQTT_PUB_ACTOR_PREFIX MQTT_PUB_DEV_PREFIX "/actors"
 #define MQTT_PUB_DES_PREFIX MQTT_PUB_DEV_PREFIX "/desired"
 
-#define MQTT_PUB_FANMAX_SUFFIX "/max_fanspeed"
+#define MQTT_PUB_FANTHROTTLE_SUFFIX "/throttle_fanspeed"
 #define MQTT_PUB_FANACT_SUFFIX "/actual_fanspeed"
 
 #define MQTT_PUB_VALVE_SUFFIX "/valve"
