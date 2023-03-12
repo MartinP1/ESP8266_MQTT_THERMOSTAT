@@ -9,6 +9,8 @@ void publishDesTemp(float partemp){
   char buffer[10];
   sprintf(buffer,"%.2f", partemp); 
   mqttClient.publish(MQTT_PUB_DES_PREFIX MQTT_PUB_TEMP_SUFFIX, 0, true, buffer);
+  Serial.print("desired temp published: ");
+  Serial.println(buffer);
 }
 
 
@@ -29,9 +31,7 @@ void testDesiredTemperature(char* payload, char* topic)
 
 // echo message  ?
   Serial.print ("Desired temp echoed: ");  
-  Serial.println ( topic);
-
-
+  Serial.println(payload);
   mqttClient.publish(topic, 1, true, payload);
 }
 

@@ -57,10 +57,19 @@ based on below Work of Rui Santos
 
 #define MQTT_PUB_DES_PREFIX MQTT_PUB_DEV_PREFIX "/desired"
 
-#define MQTT_PUB_FANMAX_SUFFIX "/max_fansspeed"
+#define MQTT_PUB_FANMAX_SUFFIX "/max_fanspeed"
+#define MQTT_PUB_FANACT_SUFFIX "/actual_fanspeed"
+
+#define MQTT_PUB_VALVE_SUFFIX "/valve"
 // GPIO where the DS18B20 is connected to (16 not working, 14 and 4 tested ok...)
 const int oneWireBus = 14;
-const int pwmGpio = 4;          
+// pwm output
+const int pwmGpio = 2;          
+// valve 
+const int valveGpio = 5;
+// window contact
+const int windowContact = 4;
+
 // Setup a oneWire instance to communicate with any OneWire devices
 OneWire oneWire(oneWireBus);
 // Pass our oneWire reference to Dallas Temperature sensor 
@@ -69,11 +78,12 @@ DallasTemperature sensors(&oneWire);
 
 #define MAX_NUMBER_OF_TEMP_DEVICES 3
 float desired_temp = 20.5;
-
-#define PWM_OFF 256
-#define PWM_FULL 0
+float temp_hyst = 0.5; // +/- 0.5 °C difference to desired_temp allowed
+#define PWM_OFF 0
+#define PWM_FULL 255
 
 int8_t pwmActual;
+bool ventState;
 
 // global variable for MQTT comms
 
@@ -85,6 +95,6 @@ WiFiEventHandler wifiDisconnectHandler;
 Ticker wifiReconnectTimer;
 
 unsigned long previousMillis = 0;   // Stores last time temperature was published
-const long interval = 10000;        // Interval at which to publish sensor readings
+const long interval = 10000;        // Interval at which to publish sensor readings and do thermostate calculations
 
 

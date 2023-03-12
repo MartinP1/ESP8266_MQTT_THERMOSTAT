@@ -1,5 +1,5 @@
 
-uint8_t pwmSet=255; // maxed out
+uint8_t pwmSet=50; // ca 20 % speed
 
 
 void publishDesSpeed(uint8_t speed){
@@ -8,6 +8,8 @@ void publishDesSpeed(uint8_t speed){
   // and MQTT server is only responsible for desired values, limits etc
   analogWrite(pwmGpio, speed);
   mqttClient.publish(MQTT_PUB_DES_PREFIX MQTT_PUB_FANMAX_SUFFIX, 0, true, String(speed, DEC).c_str());
+  Serial.print("desired speed published: ");
+  Serial.println(pwmSet, HEX);
 }
 
 
@@ -24,10 +26,8 @@ void testDesiredFanspeed(char* payload, char* topic)
   unsigned long lRes = (unsigned)atol(payload);
   publishDesSpeed(lRes & 0xFF);
 // echo message  ?
-  Serial.print ("Desired temp echoed: ");  
-  Serial.println ( topic);
-
-
+  Serial.print ("Desired speed echoed: ");  
+  Serial.println (payload);
  // already echoed in publishDesSpeed() - removed: mqttClient.publish(topic, 1, true, payload);
 }
 

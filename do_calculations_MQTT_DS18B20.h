@@ -23,18 +23,49 @@ void runTempControl()
     return; // no measurements, cant do anything
   float difftemp = temp[0] - desired_temp;
 
-  if (difftemp > temp_hyst)
-  {
+  if (difftemp > temp_hyst){
+    Serial.print ("temp high ");
     pwmActual = PWM_OFF; // fan off
     ventState = false;
   }
-  else if ((difftemp < (-temp_hyst)) && (difftemp > (-2*temp_hyst)))
-  {
-    pwmActual = pwmSet;
+  else if ((difftemp < (-temp_hyst)) && (difftemp > (-2*temp_hyst)))  { // temperature is not very low
+    Serial.print ("temp slightly low ");
+    pwmActual = pwmSet;// no full vent power in this case
     ventState = true;
   }
+  else if (difftemp < (-2* temp_hyst)) { // temperature is low
+    Serial.print ("temp significant low ");
+    ventState = true;
+    if ((numberOfDevices<2) || (temp[1]>30.0)) // possible to measure inlet temperature?
+       pwmActual = PWM_FULL;
+    else
+       pwmActual = pwmSet;
+  }
+  else {
+    Serial.print ("inside 2*hysteresis throttle fan ");
+    if (ventState) // do not change vent state
+    {
+      pwmActual = pwmSet;
+    }
+  }
 
-
+  Serial.print("Difftemp: ");
+  Serial.print(difftemp);
+  Serial.print(" Hyst:");
+  Serial.print(temp_hyst);
+  Serial.print(" ventState: ");
+  Serial.print(ventState);
+  Serial.print(" pwmActual: ");
+  Serial.print(String(pwmActual).c_str());
+  Serial.print(" Adresses: ");
+  for (int i=0; i<numberOfDevices; i++){
+    printAddress(statDeviceAddress[i]);
+  }
+  Serial.println(" ok");
+  setSpeed(pwmActual);
+  setValve(ventState);
+  uint16_t packetIdPub1 = mqttClient.publish(MQTT_PUB_DEV_PREFIX MQTT_PUB_FANACT_SUFFIX, 1, true, String(pwmActual).c_str());                            
+  packetIdPub1 = mqttClient.publish(MQTT_PUB_DEV_PREFIX MQTT_PUB_VALVE_SUFFIX, 1, true, String(pwmActual).c_str());                            
 
 
 }

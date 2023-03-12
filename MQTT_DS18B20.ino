@@ -17,11 +17,11 @@ void onMqttConnect(bool sessionPresent) {
   uint16_t packetIdSub = mqttClient.subscribe(MQTT_PUB_DES_PREFIX MQTT_PUB_TEMP_SUFFIX, 2);
   Serial.print("Subscribing desired temp at QoS 2, packetId: ");
   Serial.println(packetIdSub);
-  publishDesTemp(20.5);
+  publishDesTemp(desired_temp);
   packetIdSub = mqttClient.subscribe(MQTT_PUB_DES_PREFIX MQTT_PUB_FANMAX_SUFFIX, 2);
   Serial.print("Subscribing max fan speed at QoS 2, packetId: ");
   Serial.println(packetIdSub);
-  publishDesSpeed(255);
+  publishDesSpeed(pwmSet);
 }
 
 void onMqttDisconnect(AsyncMqttClientDisconnectReason reason) {
@@ -93,6 +93,10 @@ void setup() {
   Serial.begin(115200);
   Serial.println();
   pinMode(pwmGpio, OUTPUT);
+  analogWriteFreq(8000);
+  analogWrite(pwmGpio,255); // raw write off!
+  pinMode(valveGpio, OUTPUT);
+  pinMode(windowContact, INPUT);  
   wifiConnectHandler = WiFi.onStationModeGotIP(onWifiConnect);
   wifiDisconnectHandler = WiFi.onStationModeDisconnected(onWifiDisconnect);
 
