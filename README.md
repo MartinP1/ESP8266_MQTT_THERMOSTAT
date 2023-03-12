@@ -12,6 +12,7 @@ Das Projekt ist in der Alphaphase. Bisher sind nur kleine Teile realisiert.
      - Fenstersensor
      - Zeitplan für Änderung der Solltemperatur
      - Es steht die Entscheidung aus, ob der Thermostat Standalone-Fähig ist, oder ob die Verknüpfung der Eingangsgrößen in iobroker erfolgt.
+   - Version vom 12-MAR-2023 Alle Funktionen arbeiten nun zusammen
 
 
 ## Hardwareübersicht
