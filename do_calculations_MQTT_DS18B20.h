@@ -61,6 +61,10 @@ void runTempControl()
   for (int i=0; i<numberOfDevices; i++){
     printAddress(statDeviceAddress[i]);
   }
+  Serial.print("\nRaumtemperatur: "); 
+  Serial.print(temp[0]);
+  Serial.print(" Solltemperatur:");
+  Serial.print(desired_temp);
   Serial.println(" ok");
   setSpeed(pwmActual);
   setValve(ventState);
