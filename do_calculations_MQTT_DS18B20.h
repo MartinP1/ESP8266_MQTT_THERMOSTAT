@@ -22,37 +22,22 @@ void runTempControl()
   if (numberOfDevices < 1)
     return; // no measurements, cant do anything
   float difftemp = temp[0] - desired_temp;
-
+  
   if (difftemp > temp_hyst){
     Serial.print ("temp high ");
+    // upper fan off and vent off hysteresis point
     pwmActual = PWM_OFF; // fan off
-    ventState = false;
+    ventState = false;  
   }
-  else if ((difftemp < (-temp_hyst)) && (difftemp > (-2*temp_hyst)))  { // temperature is not very low
-    Serial.print ("temp slightly low ");
-    // hysteresis to avoid fast toggling between full and throttle
-    if (pwmActual != PWM_FULL){
-       pwmActual = throttleFanspeed; // no full fan power in case of sinking temp caused fan on
-                                     // on rising temperature preserve full fan speed 'til inside 2*hysteresis
-    }
-    ventState = true;
+  else if (difftemp < (-temp_hyst)){
+    Serial.print ("temp high ");
+    // upper fan off and vent off hysteresis point
+    pwmActual = PWM_FULL; // fan off
+    ventState = true;  
   }
-  else if (difftemp <= (-2* temp_hyst)) { // temperature is low
-    Serial.print ("temp significant low ");
-    ventState = true;
-    if ((numberOfDevices<2) || (temp[1]>30.0)) // possible to measure inlet temperature?
-     pwmActual = PWM_FULL;
-    else
-       pwmActual = throttleFanspeed;
+  else if (ventState) {// in - between range, regulate fan speed accordingly, if vent is on
+    pwmActual = (int8_t)(((float)(PWM_FULL - throttleFanspeed)) *(1.0 - difftemp/temp_hyst)/2.0);
   }
-  else {
-    Serial.print ("inside 2*hysteresis throttle fan ");
-    if (ventState) // do not change vent state
-    {
-      pwmActual = throttleFanspeed;
-    }
-  }
-
   Serial.print("Difftemp: ");
   Serial.print(difftemp);
   Serial.print(" Hyst:");
