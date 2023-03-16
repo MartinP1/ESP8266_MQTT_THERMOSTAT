@@ -18,6 +18,9 @@ void onMqttConnect(bool sessionPresent) {
   Serial.print("Subscribing desired temp at QoS 2, packetId: ");
   Serial.println(packetIdSub);
   publishDesTemp(desired_temp);
+  packetIdSub = mqttClient.subscribe(MQTT_PUB_DES_PREFIX MQTT_PUB_TEMPHYST_SUFFIX, 2);
+  Serial.print("Subscribing desired hyst at QoS 2, packetId: ");
+  publishTempHyst(temp_hyst);
   packetIdSub = mqttClient.subscribe(MQTT_PUB_DES_PREFIX MQTT_PUB_FANTHROTTLE_SUFFIX, 2);
   Serial.print("Subscribing max fan speed at QoS 2, packetId: ");
   Serial.println(packetIdSub);
@@ -85,6 +88,7 @@ void onMqttMessage(char* topic, char* payload, AsyncMqttClientMessageProperties 
   /// Distinguish path
   
   testDesiredTemperature(buffer, topic);
+  testDesiredTempHyst(buffer, topic);
   testDesiredFanspeed(buffer,topic);
 }
 

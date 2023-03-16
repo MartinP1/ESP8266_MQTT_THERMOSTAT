@@ -30,14 +30,18 @@ void runTempControl()
   }
   else if ((difftemp < (-temp_hyst)) && (difftemp > (-2*temp_hyst)))  { // temperature is not very low
     Serial.print ("temp slightly low ");
-    pwmActual = throttleFanspeed;// no full vent power in this case
+    // hysteresis to avoid fast toggling between full and throttle
+    if (pwmActual != PWM_FULL){
+       pwmActual = throttleFanspeed; // no full fan power in case of sinking temp caused fan on
+                                     // on rising temperature preserve full fan speed 'til inside 2*hysteresis
+    }
     ventState = true;
   }
-  else if (difftemp < (-2* temp_hyst)) { // temperature is low
+  else if (difftemp <= (-2* temp_hyst)) { // temperature is low
     Serial.print ("temp significant low ");
     ventState = true;
     if ((numberOfDevices<2) || (temp[1]>30.0)) // possible to measure inlet temperature?
-       pwmActual = PWM_FULL;
+     pwmActual = PWM_FULL;
     else
        pwmActual = throttleFanspeed;
   }

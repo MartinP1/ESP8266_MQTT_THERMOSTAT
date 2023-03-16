@@ -54,6 +54,7 @@ based on below Work of Rui Santos
 #endif
 #define MQTT_PUB_TEMP_PREFIX MQTT_PUB_DEV_PREFIX "/sensors/"
 #define MQTT_PUB_TEMP_SUFFIX "/temperature"
+#define MQTT_PUB_TEMPHYST_SUFFIX "/temp_hyst"
 
 #define MQTT_PUB_ACTOR_PREFIX MQTT_PUB_DEV_PREFIX "/actors"
 #define MQTT_PUB_DES_PREFIX MQTT_PUB_DEV_PREFIX "/desired"
@@ -78,9 +79,10 @@ DallasTemperature sensors(&oneWire);
 // Temperature value
 
 #define MAX_NUMBER_OF_TEMP_DEVICES 3
-float desired_temp = 20.5;
-float temp_hyst = 0.5; // +/- 0.5 °C difference to desired_temp allowed
+float desired_temp = 21.7;
+float temp_hyst = 0.15; // +/- 0.15 °C difference to desired_temp allowed
 #define PWM_OFF 0
+#define PWM_THROTTLE 70
 #define PWM_FULL 255
 
 int8_t pwmActual;

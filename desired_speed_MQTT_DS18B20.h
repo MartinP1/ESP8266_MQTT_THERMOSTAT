@@ -1,5 +1,5 @@
 
-uint8_t throttleFanspeed=50; // ca 20 % speed
+uint8_t throttleFanspeed=PWM_THROTTLE; // ca 20 % speed
 
 
 void publishDesSpeed(uint8_t speed){
