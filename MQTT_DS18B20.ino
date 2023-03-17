@@ -36,33 +36,34 @@ void onMqttDisconnect(AsyncMqttClientDisconnectReason reason) {
 }
 
 void onMqttSubscribe(uint16_t packetId, uint8_t qos) {
-  Serial.println("Subscribe acknowledged.");
-  Serial.print("  packetId: ");
-  Serial.println(packetId);
-  Serial.print("  qos: ");
-  Serial.println(qos);
+  // Serial.println("Subscribe acknowledged.");
+  // Serial.print("  packetId: ");
+  // Serial.println(packetId);
+  // Serial.print("  qos: ");
+  // Serial.println(qos);
 }
 // 
 void onMqttUnsubscribe(uint16_t packetId) {
-  Serial.println("Unsubscribe acknowledged.");
-  Serial.print("  packetId: ");
-  Serial.println(packetId);
+  // Serial.println("Unsubscribe acknowledged.");
+  // Serial.print("  packetId: ");
+  // Serial.println(packetId);
 }
 
 void onMqttPublish(uint16_t packetId) {
-  Serial.print("Publish acknowledged.");
-  Serial.print("  packetId: ");
-  Serial.println(packetId);
+  // Serial.print("Publish acknowledged.");
+  // Serial.print("  packetId: ");
+  // Serial.println(packetId);
 }
 
 
 void onMqttMessage(char* topic, char* payload, AsyncMqttClientMessageProperties properties, size_t len, size_t index, size_t total) {
+#if 0  
   Serial.println(" Publish received.");// 
   Serial.print("  topic: ");
   Serial.println(topic);
   Serial.print("  qos: ");
   Serial.println(properties.qos);
-  Serial.print("  dup: ");
+   Serial.print("  dup: ");
   Serial.println(properties.dup);
   Serial.print("  retain: ");
   Serial.println(properties.retain);
@@ -78,9 +79,10 @@ void onMqttMessage(char* topic, char* payload, AsyncMqttClientMessageProperties 
     
   }  
   Serial.println(" OK");
+#endif
 
-  char buffer[20];
-  buffer[19]=buffer[len]='\0';
+  char buffer[30];
+  buffer[29]=buffer[len]='\0';
   for (int i=0;i<len && i<29;i++){
     buffer [i] = payload[i];   
   }

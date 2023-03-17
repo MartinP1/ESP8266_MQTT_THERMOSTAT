@@ -19,6 +19,16 @@ bool ventState;
 */
 void runTempControl()
 {
+  static float fan_k0, fan_delta;
+  if (new_hyst || new_throttle)
+  {
+    new_hyst = false;
+    new_throttle = false;
+    fan_k0 = ((float)PWM_FULL + (2.0*(float)throttleFanspeed))/3.0;
+    fan_delta = ((float)throttleFanspeed - (float)PWM_FULL)/(3.0 * temp_hyst); // negative slope!
+  }
+
+
   if (numberOfDevices < 1)
     return; // no measurements, cant do anything
   float difftemp = temp[0] - desired_temp;
@@ -29,14 +39,27 @@ void runTempControl()
     pwmActual = PWM_OFF; // fan off
     ventState = false;  
   }
-  else if (difftemp < (-temp_hyst)){
-    Serial.print ("temp high ");
-    // upper fan off and vent off hysteresis point
-    pwmActual = PWM_FULL; // fan off
-    ventState = true;  
-  }
-  else if (ventState) {// in - between range, regulate fan speed accordingly, if vent is on
-    pwmActual = (int8_t)(((float)(PWM_FULL - throttleFanspeed)) *(1.0 - difftemp/temp_hyst)/2.0);
+  else {
+    // ventile, quite simple
+    if (difftemp < (-temp_hyst)){
+      Serial.print ("temp low ");
+      ventState = true;  
+    }
+    // regulation of fan speed
+    if ((numberOfDevices > 1) && (temp[1]< 30.0))
+    {
+      pwmActual = PWM_OFF; // no sense if water temperature is low
+    }
+    else if (difftemp < (-temp_hyst * 2.0)){
+      pwmActual = PWM_FULL;
+    }
+    else{
+      float pat = fan_k0 + (fan_delta * difftemp);
+      Serial.print("pwm_over (float): ");
+      Serial.print(pat);
+      pwmActual = (int8_t)(pat);
+    }
+       
   }
   Serial.print("Difftemp: ");
   Serial.print(difftemp);
