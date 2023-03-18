@@ -54,7 +54,7 @@ void testDesiredTempHyst(char* payload, char* topic)
     return;
   }
   temp_hyst = atof(payload);
-  new_hyst = true;
+ 
 // echo message  ?
   Serial.print ("Desired temphyst echoed: ");  
   Serial.println(payload);

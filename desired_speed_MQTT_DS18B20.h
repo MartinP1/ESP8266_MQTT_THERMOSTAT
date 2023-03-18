@@ -4,7 +4,7 @@ uint8_t throttleFanspeed=PWM_THROTTLE; // ca 20 % speed
 
 void publishDesSpeed(uint8_t speed){
   throttleFanspeed = speed; 
-  new_throttle = true;
+ 
   // todo for test pupose - to write here ist not necessarily correct if standalone ESP866 code control loop of fan speed, 
   // and MQTT server is only responsible for desired values, limits etc
   //analogWrite(pwmGpio, speed);

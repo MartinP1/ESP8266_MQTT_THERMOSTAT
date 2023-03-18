@@ -82,11 +82,11 @@ DallasTemperature sensors(&oneWire);
 float desired_temp = 21.7;
 float temp_hyst = 0.15; // +/- 0.15 °C difference to desired_temp allowed
 
-bool new_hyst = true;
-bool new_throttle = true;
 #define PWM_OFF 0
-#define PWM_THROTTLE 70
+
 #define PWM_FULL 255
+
+int8_t PWM_THROTTLE=70;
 
 int8_t pwmActual;
 bool ventState;
