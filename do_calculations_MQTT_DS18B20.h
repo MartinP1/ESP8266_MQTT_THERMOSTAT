@@ -18,6 +18,20 @@ void FanAutomat(float difftemp){
 }
 
 
+void VentAutomat(float difftemp){
+  if (difftemp > temp_hyst){
+    // Serial.print ("temp high - vent off");
+    // upper fan off and vent off hysteresis point
+    ventState = false;
+    return;  
+  }
+  if (difftemp < (-temp_hyst)){
+    // Serial.print ("temp low - vent on");
+    ventState = true;
+    return;  
+  }  
+}
+
 /**
 @brief use available input values to calculate new output values
 
@@ -45,15 +59,8 @@ void runTempControl()
     return; // no measurements, cant do anything
   float difftemp = temp[0] - desired_temp;
   
-  if (difftemp > temp_hyst){
-    Serial.print ("temp high ");
-    // upper fan off and vent off hysteresis point
-    ventState = false;  
-  }
-  else if (difftemp < (-temp_hyst)){
-      Serial.print ("temp low ");
-      ventState = true;  
-  }
+  VentAutomat(difftemp);
+  FanAutomat(difftemp);
   Serial.print("Difftemp: ");
   Serial.print(difftemp);
   Serial.print(" Hyst:");
