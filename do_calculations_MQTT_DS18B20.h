@@ -1,20 +1,23 @@
 void FanAutomat(float difftemp){
     // regulation of fan speed
   
-  if (( ventState == false) || ((numberOfDevices > 1) && (temp[1]< 30.0))) {
-    pwmActual = PWM_OFF; // no sense if heating water temperature is low, or vent is of
+  if (( ventState == false) 
+  || ((numberOfDevices > 1) && (temp[1]< 30.0))) {
+    pwmActual = PWM_OFF; // no heating support possible 
+                         //  if heating water temperature is low, or vent is off
     return;
   }
   if (difftemp < (-temp_hyst * 2.0)){
     pwmActual = PWM_FULL;
     return;
   }
-  if (((pwmActual == PWM_FULL)&&(difftemp>0.0)) ||
-     ((pwmActual == throttleFanspeed) && (difftemp>-temp_hyst))){
+  if (((pwmActual == PWM_FULL) && (difftemp>0.0)) 
+  || ((pwmActual != PWM_FULL) && (difftemp>-temp_hyst))){
     pwmActual = throttleFanspeed;
     return; 
   }
-    // no need to take care about difftemp > temp_hyst, since vent_state == false covers that
+    // no need to take care about difftemp > temp_hyst, 
+    // since vent_state == false covers that
 }
 
 
@@ -25,7 +28,7 @@ void VentAutomat(float difftemp){
     ventState = false;
     return;  
   }
-  if (difftemp < (-temp_hyst)){
+  if (difftemp < -temp_hyst){
     // Serial.print ("temp low - vent on");
     ventState = true;
     return;  
