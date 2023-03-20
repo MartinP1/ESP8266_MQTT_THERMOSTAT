@@ -61,14 +61,13 @@ void runTempControl()
   if (numberOfDevices < 1)
     return; // no measurements, cant do anything
   float difftemp = temp[0] - desired_temp;
-  
   VentAutomat(difftemp);
   FanAutomat(difftemp);
   Serial.print("Difftemp: ");
   Serial.print(difftemp);
   Serial.print(" Hyst:");
   Serial.print(temp_hyst);
-  Serial.print(" ventState: ");
+  Serial.print(" ventState: "); 
   Serial.print(ventState);
   Serial.print(" pwmActual: ");
   Serial.print(String(pwmActual).c_str());

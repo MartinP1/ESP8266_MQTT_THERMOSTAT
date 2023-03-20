@@ -7,24 +7,60 @@ int numberOfDevices;
 const char* TempsensRole[3] {"raum",  "vorlauf", "ruecklauf"};
 float temp[3];
 
+#define RT_AVG_PERIOD 6
+
+void avgRoomtemp() {
+  static bool bMeasRoundCompleted=false;
+  static float RoomtempArray[RT_AVG_PERIOD] = {0.0, 0.0, 0.0, 0.0, 0.0, 0.0};
+  static uint8_t dt_index = 0;
+  RoomtempArray[dt_index++] = temp[0];
+  if (dt_index==RT_AVG_PERIOD)
+  { 
+    bMeasRoundCompleted=true;
+    dt_index=0;
+  }
+  if (bMeasRoundCompleted) {
+    uint8_t lidx=dt_index;
+    float avgtemp = 0.0;
+    // avg filter over some measurements....
+    do{
+      avgtemp += RoomtempArray[lidx];
+      lidx++;
+      if (lidx==RT_AVG_PERIOD)
+        lidx=0;
+    }while(lidx!=dt_index);
+
+    Serial.print ("RoomTemp before avg: ");
+    Serial.print (temp[0]);
+    temp[0] = avgtemp / RT_AVG_PERIOD;
+    Serial.print (" RoomTemp after avg: ");
+    Serial.println (temp[0]);
+    
+  }
+
+}
+
 
 void getTemperatures() {
    sensors.requestTemperatures(); 
     // Temperature in Celsius degrees
-    for (int i=0; i<numberOfDevices; i++)
+  for (int i=0; i<numberOfDevices; i++)
+  {
+    temp[i] = sensors.getTempC(statDeviceAddress[i]);
+    // Temperature in Fahrenheit degrees
+    //temp = sensors.getTempFByIndex(0);
+    if (i==0)
     {
-      temp[i] = sensors.getTempC(statDeviceAddress[i]);
-      // Temperature in Fahrenheit degrees
-      //temp = sensors.getTempFByIndex(0);
-    
-      // Publish an MQTT message on topic esp/ds18b20/temperature
-      String Topic(MQTT_PUB_TEMP_PREFIX);
-      Topic += TempsensRole[i];
-      Topic += String(MQTT_PUB_TEMP_SUFFIX);
-      uint16_t packetIdPub1 = mqttClient.publish(Topic.c_str(), 1, true, String(temp[i]).c_str());                            
-      Serial.printf("Publishing on topic %s at QoS 1, packetId: %i ", Topic.c_str(), packetIdPub1);
-      Serial.printf("Msg: %.2f \n", temp[i]);
+      avgRoomtemp();
     }
+    // Publish an MQTT message on topic esp/ds18b20/temperature
+    String Topic(MQTT_PUB_TEMP_PREFIX);
+    Topic += TempsensRole[i];
+    Topic += String(MQTT_PUB_TEMP_SUFFIX);
+    uint16_t packetIdPub1 = mqttClient.publish(Topic.c_str(), 1, true, String(temp[i]).c_str());                            
+    Serial.printf("Publishing on topic %s at QoS 1, packetId: %i ", Topic.c_str(), packetIdPub1);
+    Serial.printf("Msg: %.2f \n", temp[i]);
+  }
 }
 
 // function to print a device address
