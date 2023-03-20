@@ -1,6 +1,7 @@
 
 #include "GLOBAL_VARS_MQTT_DS18B20.h"
 #include "unspecialized_mqtt_doings.h"
+#include "MqttLogging.h"
 #include "desired_temp_MQTT_DS18B20.h"
 #include "desired_speed_MQTT_DS18B20.h"
 #include "received_temp_MQTT_DS18B20.h"
@@ -25,6 +26,9 @@ void onMqttConnect(bool sessionPresent) {
   Serial.print("Subscribing max fan speed at QoS 2, packetId: ");
   Serial.println(packetIdSub);
   publishDesSpeed(throttleFanspeed);
+  String logmsg = "Thermostat started - Thermosensors found: ";
+  logmsg+= String(numberOfDevices);
+  MQTTLog(logmsg.c_str());
 }
 
 void onMqttDisconnect(AsyncMqttClientDisconnectReason reason) {

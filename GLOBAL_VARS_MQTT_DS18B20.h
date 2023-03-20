@@ -64,7 +64,9 @@ based on below Work of Rui Santos
 
 #define MQTT_PUB_VALVE_SUFFIX "/valve"
 // GPIO where the DS18B20 is connected to (16 not working, 14 and 4 tested ok...)
-const int oneWireBus = 14;
+const int oneWireBus = 14; 
+OneWire oneWire(oneWireBus);
+
 // pwm output
 const int pwmGpio = 2;          
 // valve 
@@ -72,9 +74,6 @@ const int valveGpio = 5;
 // window contact
 const int windowContact = 4;
 
-// Setup a oneWire instance to communicate with any OneWire devices
-OneWire oneWire(oneWireBus);
-// Pass our oneWire reference to Dallas Temperature sensor 
 DallasTemperature sensors(&oneWire);
 // Temperature value
 
@@ -86,9 +85,9 @@ float temp_hyst = 0.15; // +/- 0.15 °C difference to desired_temp allowed
 
 #define PWM_FULL 255
 
-int8_t PWM_THROTTLE=70;
+uint8_t PWM_THROTTLE=70;
 
-int8_t pwmActual;
+uint8_t pwmActual;
 bool ventState;
 
 // global variable for MQTT comms

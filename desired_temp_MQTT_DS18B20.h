@@ -30,16 +30,16 @@ void testDesiredTemperature(char* payload, char* topic)
   String strComp(MQTT_PUB_DES_PREFIX MQTT_PUB_TEMP_SUFFIX);
   if (strComp.compareTo(topic)!=0)
   {
-    Serial.print (topic);
-    Serial.print(" - testDesiredTemperature - not mine - ");
-    Serial.println(MQTT_PUB_DES_PREFIX MQTT_PUB_TEMP_SUFFIX);
+    // Serial.print (topic);
+    // Serial.print(" - testDesiredTemperature - not mine - ");
+    // Serial.println(MQTT_PUB_DES_PREFIX MQTT_PUB_TEMP_SUFFIX);
     return;
   }
   desired_temp = atof(payload);
 
 // echo message  ?
-  Serial.print ("Desired temp echoed: ");  
-  Serial.println(payload);
+  // Serial.print ("Desired temp echoed: ");  
+  // Serial.println(payload);
   mqttClient.publish(topic, 1, true, payload);
 }
 
@@ -48,16 +48,16 @@ void testDesiredTempHyst(char* payload, char* topic)
   String strComp(MQTT_PUB_DES_PREFIX MQTT_PUB_TEMPHYST_SUFFIX);
   if (strComp.compareTo(topic)!=0)
   {
-    Serial.print (topic);
-    Serial.print(" - testDesiredTempHyst - not mine - ");
-    Serial.println(MQTT_PUB_DES_PREFIX MQTT_PUB_TEMPHYST_SUFFIX);
+    // Serial.print (topic);
+    // Serial.print(" - testDesiredTempHyst - not mine - ");
+    // Serial.println(MQTT_PUB_DES_PREFIX MQTT_PUB_TEMPHYST_SUFFIX);
     return;
   }
   temp_hyst = atof(payload);
  
 // echo message  ?
-  Serial.print ("Desired temphyst echoed: ");  
-  Serial.println(payload);
+  // Serial.print ("Desired temphyst echoed: ");  
+  // Serial.println(payload);
   mqttClient.publish(topic, 1, true, payload);
 }
 

@@ -19,16 +19,16 @@ void testDesiredFanspeed(char* payload, char* topic)
   String strComp(MQTT_PUB_DES_PREFIX MQTT_PUB_FANTHROTTLE_SUFFIX);
   if (strComp.compareTo(topic)!=0)
   {
-    Serial.print (topic);
-    Serial.print(" - testDesiredFanspeed - not mine expected:");
-    Serial.println(MQTT_PUB_DES_PREFIX MQTT_PUB_FANTHROTTLE_SUFFIX);
+    // Serial.print (topic);
+    // Serial.print(" - testDesiredFanspeed - not mine expected:");
+    // Serial.println(MQTT_PUB_DES_PREFIX MQTT_PUB_FANTHROTTLE_SUFFIX);
     return;
   }
   unsigned long lRes = (unsigned)atol(payload);
   publishDesSpeed(lRes & 0xFF);
 // echo message  ?
-  Serial.print ("Desired speed echoed: ");  
-  Serial.println (payload);
+  // Serial.print ("Desired speed echoed: ");  
+  // Serial.println (payload);
  // already echoed in publishDesSpeed() - removed: mqttClient.publish(topic, 1, true, payload);
 }
 

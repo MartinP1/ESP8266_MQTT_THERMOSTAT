@@ -3,17 +3,27 @@ void FanAutomat(float difftemp){
   
   if (( ventState == false) 
   || ((numberOfDevices > 1) && (temp[1]< 30.0))) {
-    pwmActual = PWM_OFF; // no heating support possible 
-                         //  if heating water temperature is low, or vent is off
+
+    if (pwmActual!= PWM_OFF){
+      Serial.printf("pwmActual(%02X) to off\n",pwmActual);
+      pwmActual = PWM_OFF; // no heating support possible 
+    }                   //  if heating water temperature is low, or vent is off
     return;
   }
   if (difftemp < (-temp_hyst * 2.0)){
-    pwmActual = PWM_FULL;
+    if (pwmActual != PWM_FULL){
+      Serial.printf("pwmActual(%02X) to FULL - difftemp %f, th*2.0=%f\n",pwmActual, difftemp, (-temp_hyst * 2.0));
+      pwmActual = PWM_FULL;
+    }
     return;
   }
-  if (((pwmActual == PWM_FULL) && (difftemp>0.0)) 
-  || ((pwmActual != PWM_FULL) && (difftemp>-temp_hyst))){
-    pwmActual = throttleFanspeed;
+  if (((pwmActual == PWM_FULL) && (difftemp > 0.0)) 
+  || ((pwmActual != PWM_FULL) && (difftemp > -temp_hyst))){
+
+    if (pwmActual!= throttleFanspeed) {
+      Serial.printf("pwmActual(%02X) to throttle\n",pwmActual);
+      pwmActual = throttleFanspeed;
+    }
     return; 
   }
     // no need to take care about difftemp > temp_hyst, 
@@ -63,20 +73,30 @@ void runTempControl()
   float difftemp = temp[0] - desired_temp;
   VentAutomat(difftemp);
   FanAutomat(difftemp);
-  Serial.print("Difftemp: ");
+  Serial.print("Difftemp:");
   Serial.print(difftemp);
   Serial.print(" Hyst:");
   Serial.print(temp_hyst);
-  Serial.print(" ventState: "); 
+  Serial.print(" ventState:"); 
   Serial.print(ventState);
-  Serial.print(" pwmActual: ");
+  Serial.print(" pwmActual:");
   Serial.print(String(pwmActual).c_str());
-  Serial.print(" Adresses: ");
-  for (int i=0; i<numberOfDevices; i++){
-    printAddress(statDeviceAddress[i]);
-  }
-  Serial.print("\nRaumtemperatur: "); 
+  // Serial.print(" Adresses: ");
+  // for (int i=0; i<numberOfDevices; i++){
+  //  printAddress(statDeviceAddress[i]);
+  // }
+  Serial.print(" Temperaturen("); 
+  Serial.print(numberOfDevices);
+  Serial.print("):");
   Serial.print(temp[0]);
+  if (numberOfDevices>1){
+    Serial.print(" "); 
+    Serial.print(temp[1]);
+  }
+  if (numberOfDevices>2){
+    Serial.print(" "); 
+    Serial.print(temp[2]);
+  }
   Serial.print(" Solltemperatur:");
   Serial.print(desired_temp);
   Serial.println(" ok");

@@ -30,11 +30,11 @@ void avgRoomtemp() {
         lidx=0;
     }while(lidx!=dt_index);
 
-    Serial.print ("RoomTemp before avg: ");
-    Serial.print (temp[0]);
+    // Serial.print ("RoomTemp before avg: ");
+    // Serial.print (temp[0]);
     temp[0] = avgtemp / RT_AVG_PERIOD;
-    Serial.print (" RoomTemp after avg: ");
-    Serial.println (temp[0]);
+    // Serial.print (" RoomTemp after avg: ");
+    // Serial.println (temp[0]);
     
   }
 
@@ -58,8 +58,8 @@ void getTemperatures() {
     Topic += TempsensRole[i];
     Topic += String(MQTT_PUB_TEMP_SUFFIX);
     uint16_t packetIdPub1 = mqttClient.publish(Topic.c_str(), 1, true, String(temp[i]).c_str());                            
-    Serial.printf("Publishing on topic %s at QoS 1, packetId: %i ", Topic.c_str(), packetIdPub1);
-    Serial.printf("Msg: %.2f \n", temp[i]);
+    // Serial.printf("Publishing on topic %s at QoS 1, packetId: %i ", Topic.c_str(), packetIdPub1);
+    // Serial.printf("Msg: %.2f \n", temp[i]);
   }
 }
 
@@ -166,7 +166,6 @@ void initTemperatureSensors(){
     }
       
   }
-  
   for(int i=0;i<numberOfDevices; i++){
       printAddress(statDeviceAddress[i]);
       Serial.println();
