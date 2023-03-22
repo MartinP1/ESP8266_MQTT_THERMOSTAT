@@ -98,10 +98,12 @@ void swapDevAdr(int left, int right)
     statDeviceAddress[left][i] = statDeviceAddress[right][i];
     statDeviceAddress[right][i] = iSwap;
   }
+#if SERIAL_TRACE  
   Serial.print (left);
   Serial.print (" <-> ");
   Serial.print (right);
-  Serial.println ("swapped");
+  Serial.println ("swapped");    
+#endif
 }
 
 bool isDevAdrGreater(int left, int right){

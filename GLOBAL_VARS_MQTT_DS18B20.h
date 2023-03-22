@@ -32,6 +32,7 @@ based on below Work of Rui Santos
 // set to 1 if deployed to real target
 
 #define IS_FOR_PROD 1
+#define SERIAL_TRACE 0
 //<<<<<<< HEAD
 // includes WLAN credential define
 
