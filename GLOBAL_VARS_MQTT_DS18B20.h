@@ -28,7 +28,7 @@ based on below Work of Rui Santos
 #include <ESP8266WiFi.h>
 #include <Ticker.h>
 #include <AsyncMqttClient.h>
-
+#include <LibPrintf.h>
 // set to 1 if deployed to real target
 
 #define IS_FOR_PROD 1

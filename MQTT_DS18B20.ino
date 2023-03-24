@@ -26,9 +26,8 @@ void onMqttConnect(bool sessionPresent) {
   Serial.print("Subscribing max fan speed at QoS 2, packetId: ");
   Serial.println(packetIdSub);
   publishDesSpeed(throttleFanspeed);
-  String logmsg = "Thermostat started - Thermosensors found: ";
-  logmsg+= String(numberOfDevices);
-  MQTTLog(logmsg.c_str());
+  
+  MQTTLogPrintf("Thermostat started %d Thermosensors found", numberOfDevices);
 }
 
 void onMqttDisconnect(AsyncMqttClientDisconnectReason reason) {

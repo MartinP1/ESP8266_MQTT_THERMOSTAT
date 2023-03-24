@@ -84,6 +84,15 @@ void printAddress(DeviceAddress deviceAddress) {
   }
   Serial.print(" ");
 }
+#if 0
+void printAddress2Buffer(DeviceAddress deviceAddress, char* buffer) {
+  for (uint8_t i = 6; i > 0; i--) {
+    if (deviceAddress[i] < 16) strResult->;
+      Serial.print(deviceAddress[i], HEX);
+  }
+  Serial.print(" ");
+}
+#endif
 #endif
 
 
