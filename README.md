@@ -3,16 +3,14 @@ ESP8366_MQTT_THERMOSTAT
 # Ein Heizkörperthermostat auf Basis eines ESP8266 und MQTT
 
 ## Projektstand
-Das Projekt ist in der Alphaphase. Bisher sind nur kleine Teile realisiert.
-   - Testbar
+Das Projekt ist seit einigen Wochen im operativen Einsatz.
      - Temperaturmessung über 3 Sensoren, Weitergabe der Werte über MQTT
      - Zuspielen der Solltemperatur über MQTT auf den ESP
-   - In der Planung
      - Ansteuerung von Lüftern, die den Heizkörper von unten zur Erhöhung der Heizleistung anblasen (PWM)
+     - Zeitplan für Änderung der Solltemperatur (realisiert über ein ioBroker Blockly Skript)
+   - todo  
      - Fenstersensor
-     - Zeitplan für Änderung der Solltemperatur
-     - Es steht die Entscheidung aus, ob der Thermostat Standalone-Fähig ist, oder ob die Verknüpfung der Eingangsgrößen in iobroker erfolgt.
-   - Version vom 12-MAR-2023 Alle Funktionen arbeiten nun zusammen.
+     
 
 
 ## Hardwareübersicht
@@ -34,8 +32,6 @@ Mindestausstattung wäre ein Thermosensor für die Raumtemperatur und ein Schalt
 
 ### Was fehlt noch
 
-- Schaltplanentwurf ablegen usw...
-- Die DS18B20 Sensoren haben eine eindeutige "eingebrannte" 64Bit-ID. Ich spreche sie derzeit über den "Index" an (0...2). Ist sicher, dass die Sensoren nach jedem Neustart des ESP8266 in selber Reihenfolge gefunden werden? Ggfs zusätzlich die 64-Bit-ID publishen?
 
 ### Verbesserungen - was würde ich in der Serie anders machen
 
