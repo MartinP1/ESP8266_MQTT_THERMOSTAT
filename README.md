@@ -4,12 +4,12 @@ ESP8366_MQTT_THERMOSTAT
 
 ## Projektstand
 Das Projekt ist seit einigen Wochen im operativen Einsatz.
-     - Temperaturmessung über 3 Sensoren, Weitergabe der Werte über MQTT
-     - Zuspielen der Solltemperatur über MQTT auf den ESP
-     - Ansteuerung von Lüftern, die den Heizkörper von unten zur Erhöhung der Heizleistung anblasen (PWM)
-     - Zeitplan für Änderung der Solltemperatur (realisiert über ein ioBroker Blockly Skript)
-   - todo  
-     - Fenstersensor
+- Temperaturmessung über 3 Sensoren, Weitergabe der Werte über MQTT
+- Zuspielen der Solltemperatur über MQTT auf den ESP
+- Ansteuerung von Lüftern, die den Heizkörper von unten zur Erhöhung der Heizleistung anblasen (PWM)
+- Zeitplan für Änderung der Solltemperatur (realisiert über ein ioBroker Blockly Skript)
+- todo  
+  - Fenstersensor
      
 
 
