@@ -105,7 +105,7 @@ void setup() {
   analogWriteFreq(8000);
   analogWrite(pwmGpio,255); // raw write off!
   pinMode(valveGpio, OUTPUT);
-  pinMode(windowContact, INPUT);  
+  pinMode(windowContact, INPUT); 
   wifiConnectHandler = WiFi.onStationModeGotIP(onWifiConnect);
   wifiDisconnectHandler = WiFi.onStationModeDisconnected(onWifiDisconnect);
 

@@ -27,7 +27,8 @@ based on below Work of Rui Santos
 #include <DallasTemperature.h>
 #include <ESP8266WiFi.h>
 #include <Ticker.h>
-#include <AsyncMqttClient.h>
+// #include <AsyncMqttClient.h>
+#include <AsyncMqtt_Generic.h>
 #include <LibPrintf.h>
 // set to 1 if deployed to real target
 

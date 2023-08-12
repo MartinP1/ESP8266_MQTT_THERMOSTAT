@@ -11,7 +11,9 @@ void connectToMqtt() {
 }
 
 void onWifiConnect(const WiFiEventStationModeGotIP& event) {
-  Serial.println("Connected to Wi-Fi.");
+  Serial.print("Connected to Wi-Fi - ");
+  Serial.print(" Signal strength:");
+  Serial.println(WiFi.RSSI());
   connectToMqtt();
 }
 
