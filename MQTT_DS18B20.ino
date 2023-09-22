@@ -116,16 +116,21 @@ void setup() {
   mqttClient.onPublish(onMqttPublish);
    mqttClient.onMessage(onMqttMessage);
   mqttClient.setServer(MQTT_HOST, MQTT_PORT);
+  
+  // mqttClient.setKeepAlive(30);
   // If your broker requires authentication (username and password), set them below
   //mqttClient.setCredentials("REPlACE_WITH_YOUR_USER", "REPLACE_WITH_YOUR_PASSWORD");
   connectToWifi();
   initTemperatureSensors();
+  previousMillis = millis(); // avoid initial overrun?
 }
 
 
 
+// unsigned short usWifiDown=12;
 void loop() {
   unsigned long currentMillis = millis();
+  
   // Every X number of seconds (interval = 10 seconds) 
   // it publishes a new MQTT message
   if (currentMillis - previousMillis >= interval) {
@@ -135,9 +140,24 @@ void loop() {
     getTemperatures();
 
     runTempControl();
+    wifiStatus();
+#if 0
+// does not help ...
+    if (WiFi.isConnected() && mqttClient.connected())
+    {
+      usWifiDown=12;  // 2 Minuten
+    }
+    else
+    {
+      usWifiDown--;
+      Serial.print(" Wifi Error count down ");
+      Serial.println(usWifiDown);
 
-    
+      if (usWifiDown==0) // 2 Minuten expired
+        ESP.restart();
+    }
+#endif    
   }
+ 
 }
-
 

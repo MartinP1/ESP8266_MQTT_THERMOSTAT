@@ -57,7 +57,8 @@ void getTemperatures() {
     String Topic(MQTT_PUB_TEMP_PREFIX);
     Topic += TempsensRole[i];
     Topic += String(MQTT_PUB_TEMP_SUFFIX);
-    uint16_t packetIdPub1 = mqttClient.publish(Topic.c_str(), 1, true, String(temp[i]).c_str());                            
+    uint16_t packetIdPub1 = mqttClient.publish(Topic.c_str(), 1, true, String(temp[i]).c_str());
+    delay(10);                            
     // Serial.printf("Publishing on topic %s at QoS 1, packetId: %i ", Topic.c_str(), packetIdPub1);
     // Serial.printf("Msg: %.2f \n", temp[i]);
   }
@@ -166,7 +167,7 @@ void initTemperatureSensors(){
 
    
 
-  Serial.println(" swap devices ...."); https://github.com/MARTINP1/ESP8266_MQTT_THERMOSTAT.git
+  Serial.println(" swap devices ...."); 
   if ((numberOfDevices>1) && isDevAdrGreater(0, 1)){
     swapDevAdr(0, 1);
   }

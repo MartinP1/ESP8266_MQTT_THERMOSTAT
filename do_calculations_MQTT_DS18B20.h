@@ -91,7 +91,7 @@ void runTempControl()
   // for (int i=0; i<numberOfDevices; i++){
   //  printAddress(statDeviceAddress[i]);
   // }
-  Serial.print(" Temperatures("); 
+  Serial.print(" Tmprtrs("); 
   Serial.print(numberOfDevices);
   Serial.print("):");
   Serial.print(temp[0]);
@@ -103,14 +103,26 @@ void runTempControl()
     Serial.print(" "); 
     Serial.print(temp[2]);
   }
-  Serial.print(" Solltemperatur:");
+  Serial.print(" SollT ");
   Serial.print(desired_temp);
+  Serial.print(" WiFi ");
+  Serial.print(WiFi.isConnected());
+  Serial.print(" MQTT ");
+  Serial.print(mqttClient.connected());
+
   Serial.println(" ok");
   setSpeed(pwmActual);
   setValve(ventState);
   uint16_t help=pwmActual&0xFF;
   uint16_t packetIdPub1 = mqttClient.publish(MQTT_PUB_ACTOR_PREFIX MQTT_PUB_FANACT_SUFFIX, 1, true, String(help).c_str());                            
+  delay(10);
   packetIdPub1 = mqttClient.publish(MQTT_PUB_ACTOR_PREFIX MQTT_PUB_VALVE_SUFFIX, 1, true, ventState ? "1" : "0");                            
+  delay(10);
 
+}
 
+void wifiStatus()
+{
+  uint16_t packetIdPub1 = mqttClient.publish(MQTT_PUB_TEMP_PREFIX "WIFI/RSSI", 1, true, String(WiFi.RSSI()).c_str());
+  delay(10);
 }
