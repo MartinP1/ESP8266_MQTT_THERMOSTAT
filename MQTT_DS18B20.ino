@@ -18,10 +18,10 @@ void onMqttConnect(bool sessionPresent) {
   uint16_t packetIdSub = mqttClient.subscribe(MQTT_PUB_DES_PREFIX MQTT_PUB_TEMP_SUFFIX, 2);
   Serial.print("Subscribing desired temp at QoS 2, packetId: ");
   Serial.println(packetIdSub);
-  publishDesTemp(desired_temp);
+  // publishDesTemp(desired_temp); must be created by mqtt broker
   packetIdSub = mqttClient.subscribe(MQTT_PUB_DES_PREFIX MQTT_PUB_TEMPHYST_SUFFIX, 2);
   Serial.print("Subscribing desired hyst at QoS 2, packetId: ");
-  publishTempHyst(temp_hyst);
+  // publishTempHyst(temp_hyst); must be created by mqtt broker
   packetIdSub = mqttClient.subscribe(MQTT_PUB_DES_PREFIX MQTT_PUB_FANTHROTTLE_SUFFIX, 2);
   Serial.print("Subscribing max fan speed at QoS 2, packetId: ");
   Serial.println(packetIdSub);
