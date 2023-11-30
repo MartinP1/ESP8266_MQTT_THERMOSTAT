@@ -101,13 +101,24 @@ void setup() {
   sensors.begin();
   Serial.begin(115200);
   Serial.println();
+#ifdef ARDUINO_D1_MINI32
+  ledcSetup(0, 5000, 256);
+  ledcAttachPin(pwmGpio, 0);
+
+#else  
   pinMode(pwmGpio, OUTPUT);
   analogWriteFreq(8000);
   analogWrite(pwmGpio,255); // raw write off!
+#endif  
   pinMode(valveGpio, OUTPUT);
   pinMode(windowContact, INPUT); 
+#ifdef ARDUINO_D1_MINI32
+  WiFi.onEvent(onWifiConnect,WiFiEvent_t::ARDUINO_EVENT_WIFI_STA_GOT_IP);
+  WiFi.onEvent(onWifiDisconnect,WiFiEvent_t::ARDUINO_EVENT_WIFI_STA_DISCONNECTED);
+#else  
   wifiConnectHandler = WiFi.onStationModeGotIP(onWifiConnect);
   wifiDisconnectHandler = WiFi.onStationModeDisconnected(onWifiDisconnect);
+#endif
 
   mqttClient.onConnect(onMqttConnect);
   mqttClient.onDisconnect(onMqttDisconnect);
@@ -119,7 +130,7 @@ void setup() {
   
   // mqttClient.setKeepAlive(30);
   // If your broker requires authentication (username and password), set them below
-  //mqttClient.setCredentials("REPlACE_WITH_YOUR_USER", "REPLACE_WITH_YOUR_PASSWORD");
+  //mqttClient.setCredentials("REPlACE_WITH_YOUR_USE92:de:dc:42:f3:f8R", "REPLACE_WITH_YOUR_PASSWORD");
   connectToWifi();
   initTemperatureSensors();
   previousMillis = millis(); // avoid initial overrun?

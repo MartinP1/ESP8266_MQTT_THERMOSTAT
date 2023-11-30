@@ -25,14 +25,18 @@ based on below Work of Rui Santos
 
 #include <OneWire.h>
 #include <DallasTemperature.h>
+#ifdef ARDUINO_D1_MINI32
+#include <WiFi.h>
+#else
 #include <ESP8266WiFi.h>
+#include <LibPrintf.h>
+#endif
 #include <Ticker.h>
 // #include <AsyncMqttClient.h>
 #include <AsyncMqtt_Generic.h>
-#include <LibPrintf.h>
 // set to 1 if deployed to real target
 
-#define IS_FOR_PROD 1
+#define IS_FOR_PROD 0
 #define SERIAL_TRACE 0
 //<<<<<<< HEAD
 // includes WLAN credential define
@@ -92,13 +96,14 @@ uint8_t PWM_THROTTLE=70;
 uint8_t pwmActual;
 bool ventState;
 
-// global variable for MQTT comms
+// global variable for MQTT commsWiFiEventHandler
 
 AsyncMqttClient mqttClient;
 Ticker mqttReconnectTimer;
-
+#ifndef ARDUINO_D1_MINI32
 WiFiEventHandler wifiConnectHandler;
 WiFiEventHandler wifiDisconnectHandler;
+#endif
 Ticker wifiReconnectTimer;
 
 unsigned long previousMillis = 0;   // Stores last time temperature was published
