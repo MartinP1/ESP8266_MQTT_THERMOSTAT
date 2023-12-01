@@ -25,11 +25,11 @@ based on below Work of Rui Santos
 
 #include <OneWire.h>
 #include <DallasTemperature.h>
-#ifdef ARDUINO_D1_MINI32
-#include <WiFi.h>
-#else
+#ifdef ARDUINO_ESP8266_WEMOS_D1MINI
 #include <ESP8266WiFi.h>
 #include <LibPrintf.h>
+#else
+#include <WiFi.h>
 #endif
 #include <Ticker.h>
 // #include <AsyncMqttClient.h>
@@ -70,15 +70,37 @@ based on below Work of Rui Santos
 
 #define MQTT_PUB_VALVE_SUFFIX "/valve"
 // GPIO where the DS18B20 is connected to (16 not working, 14 and 4 tested ok...)
-const int oneWireBus = 14; 
-OneWire oneWire(oneWireBus);
 
+
+#ifdef ARDUINO_LOLIN_S2_MINI
+const int oneWireBus = 7; 
+// pwm output
+const int pwmGpio = 16;          
+// valve 
+const int valveGpio = 35;
+// window contact
+const int windowContact = 33;
+#endif
+#ifdef ARDUINO_D1_MINI32
+const int oneWireBus = 18; 
+// pwm output
+const int pwmGpio = 16;          
+// valve 
+const int valveGpio = 22;
+// window contact
+const int windowContact = 21;
+#endif
+#ifdef ARDUINO_ESP8266_WEMOS_D1MINI
+const int oneWireBus = 14; 
 // pwm output
 const int pwmGpio = 2;          
 // valve 
 const int valveGpio = 5;
 // window contact
 const int windowContact = 4;
+#endif
+
+OneWire oneWire(oneWireBus);
 
 DallasTemperature sensors(&oneWire);
 // Temperature value
@@ -100,7 +122,7 @@ bool ventState;
 
 AsyncMqttClient mqttClient;
 Ticker mqttReconnectTimer;
-#ifndef ARDUINO_D1_MINI32
+#ifdef ARDUINO_ESP8266_WEMOS_D1MINI
 WiFiEventHandler wifiConnectHandler;
 WiFiEventHandler wifiDisconnectHandler;
 #endif

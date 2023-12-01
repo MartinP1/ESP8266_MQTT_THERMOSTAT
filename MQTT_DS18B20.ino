@@ -101,18 +101,18 @@ void setup() {
   sensors.begin();
   Serial.begin(115200);
   Serial.println();
-#ifdef ARDUINO_D1_MINI32
+#if defined(ARDUINO_D1_MINI32) || defined(ARDUINO_LOLIN_S2_MINI)
   ledcSetup(0, 5000, 256);
   ledcAttachPin(pwmGpio, 0);
-
-#else  
+#endif
+#if defined (ARDUINO_WEMOS_D1MINI)  
   pinMode(pwmGpio, OUTPUT);
   analogWriteFreq(8000);
   analogWrite(pwmGpio,255); // raw write off!
 #endif  
   pinMode(valveGpio, OUTPUT);
   pinMode(windowContact, INPUT); 
-#ifdef ARDUINO_D1_MINI32
+#if defined(ARDUINO_D1_MINI32) || defined(ARDUINO_LOLIN_S2_MINI)
   WiFi.onEvent(onWifiConnect,WiFiEvent_t::ARDUINO_EVENT_WIFI_STA_GOT_IP);
   WiFi.onEvent(onWifiDisconnect,WiFiEvent_t::ARDUINO_EVENT_WIFI_STA_DISCONNECTED);
 #else  
