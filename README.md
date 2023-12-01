@@ -15,11 +15,11 @@ Das Projekt ist seit einigen Wochen im operativen Einsatz.
 
 ## Hardwareübersicht
 
-- ESP basierte Hardware 
+- ESP basierte Hardware - es werden drei Module unterstützt.
   - D1 Mini (ESP8266) Probleme mit stabiler Spannungsversorgung
   - D1 Mini (ESP32 - seit 1.12.2023)
   - S2 Mini (ESP32 - seit 1.12.2023) Neue Empfehlung!
-unterstützt
+
 - 12 V DC Spannungsversorgung - Ein Tisch-Netzteil von der Resterampe von [www.pollin.de](https://www.pollin.de/p/tischnetzteil-gp-1223c-12-v-2-3-a-5-5-2-1-mm-gebraucht-352200) 12V / 2,3A. 
 - Danfoss Stellantrieb Thermot 230 V AC, M30x1,5 NC stromlos geschlossen [088H3220](https://store.danfoss.com/de/de/Climate-Solutions-W%C3%A4rmetechnik/Warmwasser-Fu%C3%9Fbodenheizungen/Thermische-Stellantriebe/Thermischer-Stellantrieb%2C-Thermot%2C-M-30-x-1-5%2C-Versorgungsspannung-%5BV%5D-%5BAC%5D%3A-230%2C-NC-%28stromlos-geschlossen%29%2C-1-00-m/p/088H3220) ca 10 €
   - angesteuert über ein Kleinrelais
