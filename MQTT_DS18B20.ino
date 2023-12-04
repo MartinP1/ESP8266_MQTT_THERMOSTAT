@@ -10,9 +10,20 @@
 // #include "window_contact_MQTT_DS18B20.h"
 #include "do_calculations_MQTT_DS18B20.h"
 
+
+#if !defined(ARDUINO_D1_MINI32) && !defined(ARDUINO_LOLIN_S2_MINI) && !defined(ARDUINO_ESP8266_WEMOS_D1MINI)
+#error "unsupported board type"
+#error ARDUINO_BOARD
+#else
+#pragma message ARDUINO_BOARD
+#endif
+
 void onMqttConnect(bool sessionPresent) {
-  Serial.println("Connected to MQTT.");
-  Serial.print("Session present: ");
+  Serial.print("Connected to MQTT - IP=");
+  Serial.print(WiFi.localIP());
+  Serial.print("- RSSI: ");
+  Serial.print(WiFi.RSSI());
+  Serial.print(" dB - Session present: ");
   Serial.println(sessionPresent);
   // todo not necessarily QOS 2. 1 or 0 are also ok...
   uint16_t packetIdSub = mqttClient.subscribe(MQTT_PUB_DES_PREFIX MQTT_PUB_TEMP_SUFFIX, 2);
@@ -102,10 +113,10 @@ void setup() {
   Serial.begin(115200);
   Serial.println();
 #if defined(ARDUINO_D1_MINI32) || defined(ARDUINO_LOLIN_S2_MINI)
-  ledcSetup(0, 5000, 256);
+  ledcSetup(0, 8000, 256);
   ledcAttachPin(pwmGpio, 0);
 #endif
-#if defined (ARDUINO_WEMOS_D1MINI)  
+#if defined(ARDUINO_ESP8266_WEMOS_D1MINI)
   pinMode(pwmGpio, OUTPUT);
   analogWriteFreq(8000);
   analogWrite(pwmGpio,255); // raw write off!

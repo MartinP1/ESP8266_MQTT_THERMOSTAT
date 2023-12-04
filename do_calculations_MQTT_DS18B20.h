@@ -5,8 +5,11 @@ void FanAutomat(float difftemp){
   || ((numberOfDevices > 1) && (temp[1]< 30.0))) {
 
     if (pwmActual!= PWM_OFF){
-#if SERIAL_TRACE      
-      Serial.printf("pwmActual(%02X) to off\n",pwmActual);
+#if 1 // SERIAL_TRACE      
+      // Serial.printf("pwmActual(%02X) to off\n",pwmActual);
+      Serial.print("pwmActual ");
+      Serial.print( pwmActual);
+      Serial.println(" to off");
 #endif      
       pwmActual = PWM_OFF; // no heating support possible 
     }                   //  if heating water temperature is low, or vent is off
@@ -14,8 +17,11 @@ void FanAutomat(float difftemp){
   }
   if (difftemp < (-temp_hyst * 2.0)){
     if (pwmActual != PWM_FULL){
-#if SERIAL_TRACE      
-      Serial.printf("pwmActual(%02X) to FULL - difftemp %f, th*2.0=%f\n",pwmActual, difftemp, (-temp_hyst * 2.0));
+#if 1 // SERIAL_TRACE      
+      // Serial.printf("pwmActual(%02X) to FULL - difftemp %f, th*2.0=%f\n",pwmActual, difftemp, (-temp_hyst * 2.0));
+      Serial.print("pwmActual ");
+      Serial.print( pwmActual);
+      Serial.println(" to FULL");
 #endif      
       pwmActual = PWM_FULL;
     }
@@ -25,8 +31,11 @@ void FanAutomat(float difftemp){
   || ((pwmActual != PWM_FULL) && (difftemp > -temp_hyst))){
 
     if (pwmActual!= throttleFanspeed) {
-#if SERIAL_TRACE      
-      Serial.printf("pwmActual(%02X) to throttle\n",pwmActual);
+#if 1 // SERIAL_TRACE      
+      // Serial.printf("pwmActual(%02X) to throttle\n",pwmActual);
+      Serial.print("pwmActual ");
+      Serial.print( pwmActual);
+      Serial.println(" to THROTTLE");
 #endif
       pwmActual = throttleFanspeed;
     }

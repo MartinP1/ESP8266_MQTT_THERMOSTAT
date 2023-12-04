@@ -36,7 +36,7 @@ based on below Work of Rui Santos
 #include <AsyncMqtt_Generic.h>
 // set to 1 if deployed to real target
 
-#define IS_FOR_PROD 0
+#define IS_FOR_PROD 1
 #define SERIAL_TRACE 0
 //<<<<<<< HEAD
 // includes WLAN credential define
