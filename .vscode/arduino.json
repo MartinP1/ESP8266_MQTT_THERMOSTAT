@@ -1,7 +1,7 @@
 {
-    "port": "/dev/ttyUSB0",
-    "configuration": "xtal=80,vt=flash,exception=disabled,stacksmash=disabled,ssl=all,mmu=3232,non32xfer=fast,FlashMode=dout,FlashFreq=40,eesz=4M2M,ip=lm2f,dbg=Disabled,lvl=None____,wipe=none,baud=921600",
-    "board": "esp8266:esp8266:d1_mini_clone",
+    "port": "/dev/ttyACM1",
+    "configuration": "CDCOnBoot=default,MSCOnBoot=default,DFUOnBoot=default,PartitionScheme=default,DebugLevel=none,EraseFlash=none",
+    "board": "esp32:esp32:lolin_s2_mini",
     "sketch": "MQTT_DS18B20.ino",
     "output": "../MQTT_DS18B20_out"
 }
