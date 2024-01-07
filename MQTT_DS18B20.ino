@@ -1,5 +1,5 @@
 
-#include "GLOBAL_VARS_MQTT_DS18B20.h"
+#include "./GLOBAL_VARS_MQTT_DS18B20.h"
 #include "unspecialized_mqtt_doings.h"
 #include "MqttLogging.h"
 #include "desired_temp_MQTT_DS18B20.h"
@@ -42,7 +42,7 @@ void onMqttConnect(bool sessionPresent) {
 }
 
 void onMqttDisconnect(AsyncMqttClientDisconnectReason reason) {
-  Serial.println("Disconnected from MQTT.");
+  Serial.println("Disconne/home/martin/Arduino/MQTT/MQTT_DS18B20cted from MQTT.");
 
   if (WiFi.isConnected()) {
     mqttReconnectTimer.once(2, connectToMqtt);
@@ -90,7 +90,7 @@ void onMqttMessage(char* topic, char* payload, AsyncMqttClientMessageProperties 
   Serial.print(" payload: ");
   for (int i=0; i<len; i++) {// 
     Serial.print(payload[i]);
-    
+    /home/martin/Arduino/MQTT/MQTT_DS18B20
   }  
   Serial.println(" OK");
 #endif
@@ -113,7 +113,7 @@ void setup() {
   Serial.begin(115200);
   Serial.println();
 #if defined(ARDUINO_D1_MINI32) || defined(ARDUINO_LOLIN_S2_MINI)
-  ledcSetup(0, 8000, 256);
+  ledcSetup(0, 8000, 8); // pwm#, freq, resolution(bits)
   ledcAttachPin(pwmGpio, 0);
 #endif
 #if defined(ARDUINO_ESP8266_WEMOS_D1MINI)

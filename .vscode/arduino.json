@@ -1,7 +1,8 @@
 {
-    "port": "/dev/ttyACM1",
+    "port": "/dev/ttyACM0",
     "configuration": "CDCOnBoot=default,MSCOnBoot=default,DFUOnBoot=default,PartitionScheme=default,DebugLevel=none,EraseFlash=none",
     "board": "esp32:esp32:lolin_s2_mini",
     "sketch": "MQTT_DS18B20.ino",
-    "output": "../MQTT_DS18B20_out"
+    "output": "../MQTT_DS18B20_out",
+    "arduino.logLevel" : "verbose"
 }
