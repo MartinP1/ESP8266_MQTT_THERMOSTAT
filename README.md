@@ -30,16 +30,18 @@ Das Projekt ist seit einigen Wochen im operativen Einsatz.
 ![Schaltplan](https://github.com/MartinP1/ESP8266_MQTT_THERMOSTAT/blob/main/Board_esp8266_d1mini_backup_Schaltplan.svg "Schaltplan")
 
 Der Prototyp wird einen "Vollausbau" bekommen. Ggfs. lasse ich später eine Leiterplatte machen, die dann optional auch nur teilweise bestückt funktioniert (mit angepasster Firmware?)
-Mindestausstattung wäre ein Thermosensor für die Raumtemperatur und ein Schaltrelais für die Ansteuerung des Ventil-Stellgliedes...
+Mindestausstattung wäre ein Thfermacell platte brandschutzermosensor für die Raumtemperatur und ein Schaltrelais für die Ansteuerung des Ventil-Stellgliedes...
 
 ## Unsortiertes
 
 ### Was fehlt noch
 
+- Preferences library für Gerätekonfiguration über MQTT (kein hartverdrahteter Device Name im Quellcode mehr!)
+- OTA Library für den OTA-Update der Firmware
 
 ### Verbesserungen - was würde ich in der Serie anders machen
 
 - 4 Pin Lüfter?
 - 24 V Variante des Danfoss Stellantriebs über DCDC Wandler mit Enable-Eingang?
-
+- Full Fan speed konfigurierbar (255 scheint zu schnell zu sein ...)
 

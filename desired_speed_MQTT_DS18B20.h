@@ -8,7 +8,7 @@ void publishDesSpeed(uint8_t speed){
   // todo for test pupose - to write here ist not necessarily correct if standalone ESP866 code control loop of fan speed, 
   // and MQTT server is only responsible for desired values, limits etc
   //analogWrite(pwmGpio, speed);
-  mqttClient.publish(MQTT_PUB_DES_PREFIX MQTT_PUB_FANTHROTTLE_SUFFIX, 0, true, String(speed, DEC).c_str());
+  mqttClient.publish((MQTT_PUB_DES_PREFIX + MQTT_PUB_FANTHROTTLE_SUFFIX).c_str(), 0, true, String(speed, DEC).c_str());
   delay(10);
 #if SERIAL_TRACE
   Serial.print("desired speed published: ");
@@ -19,7 +19,7 @@ void publishDesSpeed(uint8_t speed){
 
 void testDesiredFanspeed(char* payload, char* topic)
 {
-  String strComp(MQTT_PUB_DES_PREFIX MQTT_PUB_FANTHROTTLE_SUFFIX);
+  String strComp((MQTT_PUB_DES_PREFIX + MQTT_PUB_FANTHROTTLE_SUFFIX).c_str());
   if (strComp.compareTo(topic)!=0)
   {
 #if SERIAL_TRACE

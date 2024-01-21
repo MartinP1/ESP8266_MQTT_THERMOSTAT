@@ -22,7 +22,7 @@ based on below Work of Rui Santos
   The above copyright notice and this permission notice shall be included in all
   copies or substantial portions of the Software.
 */
-
+#include <Preferences.h>
 #include <OneWire.h>
 #include <DallasTemperature.h>
 #ifdef ARDUINO_ESP8266_WEMOS_D1MINI
@@ -36,6 +36,7 @@ based on below Work of Rui Santos
 #include <AsyncMqtt_Generic.h>
 // set to 1 if deployed to real target
 
+
 #define SERIAL_TRACE 0
 //<<<<<<< HEAD
 // includes WLAN credential define
@@ -45,6 +46,8 @@ based on below Work of Rui Santos
 
 #include "secret.h"
 
+// add postfix ..._PSET ti defines that shall be moved to NV-Preset
+
 // Raspberri Pi Mosquitto MQTT Broker
 #define MQTT_HOST IPAddress(192, 168, 2, 201)
 // For a cloud MQTT broker, type the domain name
@@ -52,17 +55,16 @@ based on below Work of Rui Santos
 #define MQTT_PORT 1888
 
 // Temperature MQTT Topics
-#if IS_FOR_PROD 
-#define MQTT_PUB_DEV_PREFIX   "thermostat"
-#else
-#define MQTT_PUB_DEV_PREFIX   "test_thermostat"
-#endif
-#define MQTT_PUB_TEMP_PREFIX MQTT_PUB_DEV_PREFIX "/sensors/"
+// #define MQTT_PUB_DEV_PREFIX   "thermostat"
+#define MQTT_PUB_DEV_PREFIX_PSET   "test_thermostat"
+String MQTT_PUB_DEV_PREFIX(MQTT_PUB_DEV_PREFIX_PSET);
+
+#define MQTT_PUB_TEMP_PREFIX MQTT_PUB_DEV_PREFIX + "/sensors/"
 #define MQTT_PUB_TEMP_SUFFIX "/temperature"
 #define MQTT_PUB_TEMPHYST_SUFFIX "/temp_hyst"
 
-#define MQTT_PUB_ACTOR_PREFIX MQTT_PUB_DEV_PREFIX "/actors"
-#define MQTT_PUB_DES_PREFIX MQTT_PUB_DEV_PREFIX "/desired"
+#define MQTT_PUB_ACTOR_PREFIX MQTT_PUB_DEV_PREFIX + "/actors"
+#define MQTT_PUB_DES_PREFIX MQTT_PUB_DEV_PREFIX + "/desired"
 
 #define MQTT_PUB_FANTHROTTLE_SUFFIX "/throttle_fanspeed"
 #define MQTT_PUB_FANACT_SUFFIX "/actual_fanspeed"
