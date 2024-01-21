@@ -45,3 +45,7 @@ Mindestausstattung wäre ein Thfermacell platte brandschutzermosensor für die R
 - 24 V Variante des Danfoss Stellantriebs über DCDC Wandler mit Enable-Eingang?
 - Full Fan speed konfigurierbar (255 scheint zu schnell zu sein ...)
 
+
+### Worklog
+
+- JAN-2024 Start der Nutzung der Preferences Bibliothek
