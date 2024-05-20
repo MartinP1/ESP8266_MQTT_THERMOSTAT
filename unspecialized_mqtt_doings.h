@@ -1,6 +1,8 @@
 
 void connectToWifi() {
-  Serial.print("Connecting to Wi-Fi...");
+  Serial.print("Client ");
+  Serial.print(MQTT_PUB_DEV_PREFIX);
+  Serial.print(" Connecting to Wi-Fi...");
   Serial.println(WIFI_SSID);
   WiFi.begin(WIFI_SSID, WIFI_PASSWORD);
 }

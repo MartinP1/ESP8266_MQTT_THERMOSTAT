@@ -6,6 +6,9 @@ int numberOfDevices;
 // later we will sort the sensors in ascending sequence
 const char* TempsensRole[3] {"raum",  "vorlauf", "ruecklauf"};
 float temp[3];
+#define RAUM 0
+#define VORLAUF 1
+#define RUECKLAUF 2
 
 #define RT_AVG_PERIOD 6
 

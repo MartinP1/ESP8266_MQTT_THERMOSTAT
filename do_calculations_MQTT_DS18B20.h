@@ -2,7 +2,7 @@ void FanAutomat(float difftemp){
     // regulation of fan speed
   
   if (( ventState == false) 
-  || ((numberOfDevices > 1) && (temp[1]< 30.0))) {
+  || ((numberOfDevices > 1) && (temp[VORLAUF]< 30.0))) {
 
     if (pwmActual!= PWM_OFF){
 #if 1 // SERIAL_TRACE      
@@ -85,7 +85,7 @@ void runTempControl()
 
   if (numberOfDevices < 1)
     return; // no measurements, cant do anything
-  float difftemp = temp[0] - desired_temp;
+  float difftemp = temp[RAUM] - desired_temp;
   VentAutomat(difftemp);
   FanAutomat(difftemp);
   Serial.print("Difftemp:");
@@ -101,14 +101,14 @@ void runTempControl()
   //  printAddress(statDeviceAddress[i]);
   // }
   Serial.print(" Tmprtrs(");
-  Serial.print(temp[0]);
-  if (numberOfDevices>1){
+  Serial.print(temp[RAUM]);
+  if (numberOfDevices>RAUM){
     Serial.print(" "); 
-    Serial.print(temp[1]);
+    Serial.print(temp[VORLAUF]);
   }
-  if (numberOfDevices>2){
+  if (numberOfDevices>VORLAUF){
     Serial.print(" "); 
-    Serial.print(temp[2]);
+    Serial.print(temp[RUECKLAUF]);
   }
   Serial.print(" SollT ");
   Serial.print(desired_temp);
