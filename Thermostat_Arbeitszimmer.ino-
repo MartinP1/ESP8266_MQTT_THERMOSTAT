@@ -16,4 +16,4 @@ Martin Praekelt 09-DEC-2023
 #define MQTT_PUB_DEV_PREFIX   "test_thermostat"
 #endif
 
-#include "..//MQTT_DS18B20.ino"
+#include "MQTT_DS18B20.ino"

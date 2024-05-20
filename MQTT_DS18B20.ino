@@ -26,14 +26,14 @@ void onMqttConnect(bool sessionPresent) {
   Serial.print(" dB - Session present: ");
   Serial.println(sessionPresent);
   // todo not necessarily QOS 2. 1 or 0 are also ok...
-  uint16_t packetIdSub = mqttClient.subscribe(MQTT_PUB_DES_PREFIX MQTT_PUB_TEMP_SUFFIX, 2);
+  uint16_t packetIdSub = mqttClient.subscribe((MQTT_PUB_DES_PREFIX MQTT_PUB_TEMP_SUFFIX).c_str(), 2);
   Serial.print("Subscribing desired temp at QoS 2, packetId: ");
   Serial.println(packetIdSub);
   // publishDesTemp(desired_temp); must be created by mqtt broker
-  packetIdSub = mqttClient.subscribe(MQTT_PUB_DES_PREFIX MQTT_PUB_TEMPHYST_SUFFIX, 2);
+  packetIdSub = mqttClient.subscribe((MQTT_PUB_DES_PREFIX MQTT_PUB_TEMPHYST_SUFFIX).c_str(), 2);
   Serial.print("Subscribing desired hyst at QoS 2, packetId: ");
   // publishTempHyst(temp_hyst); must be created by mqtt broker
-  packetIdSub = mqttClient.subscribe(MQTT_PUB_DES_PREFIX MQTT_PUB_FANTHROTTLE_SUFFIX, 2);
+  packetIdSub = mqttClient.subscribe((MQTT_PUB_DES_PREFIX MQTT_PUB_FANTHROTTLE_SUFFIX).c_str(), 2);
   Serial.print("Subscribing max fan speed at QoS 2, packetId: ");
   Serial.println(packetIdSub);
   publishDesSpeed(throttleFanspeed);

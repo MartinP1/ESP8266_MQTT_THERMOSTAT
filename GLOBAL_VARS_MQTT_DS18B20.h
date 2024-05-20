@@ -23,7 +23,6 @@ based on below Work of Rui Santos
   copies or substantial portions of the Software.
 */
 #include <Preferences.h>
-#include <OneWire.h>
 #include <DallasTemperature.h>
 #ifdef ARDUINO_ESP8266_WEMOS_D1MINI
 #include <ESP8266WiFi.h>
@@ -33,10 +32,10 @@ based on below Work of Rui Santos
 #endif
 #include <Ticker.h>
 // #include <AsyncMqttClient.h>
-#include <AsyncMqtt_Generic.h>
+// #include <AsyncMqtt_Generic.h>
+#include <AsyncMQTT_ESP32.h>
+
 // set to 1 if deployed to real target
-
-
 #define SERIAL_TRACE 0
 //<<<<<<< HEAD
 // includes WLAN credential define
@@ -77,7 +76,7 @@ String MQTT_PUB_DEV_PREFIX(MQTT_PUB_DEV_PREFIX_PSET);
 const int oneWireBus = 7; 
 // pwm output
 const int pwmGpio = 16;          
-// valve 
+// valve MQTT_PUB_DES_PREFI
 const int valveGpio = 35;
 // window contact
 const int windowContact = 33;
