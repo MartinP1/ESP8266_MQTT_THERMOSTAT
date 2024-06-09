@@ -36,7 +36,7 @@ based on below Work of Rui Santos
 #include <AsyncMQTT_ESP32.h>
 
 // set to 1 if deployed to real target
-#define SERIAL_TRACE 0
+#define SERIAL_TRACE 1
 //<<<<<<< HEAD
 // includes WLAN credential define
 

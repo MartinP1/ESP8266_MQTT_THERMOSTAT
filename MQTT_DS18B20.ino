@@ -18,6 +18,60 @@
 #pragma message ARDUINO_BOARD
 #endif
 
+Preferences prefs;
+
+void getPreferences() {
+  prefs.begin("mqtt_thermostat");
+  if (prefs.isKey("MqttName")){
+    MQTT_PUB_DEV_PREFIX = prefs.getString("MqttName");
+    Serial.print("INFO: MqttName ");
+    Serial.println(MQTT_PUB_DEV_PREFIX);
+  }
+  else Serial.println("WARN: No MqttName found in preferences");
+}
+
+void testPreferences(char* payload, const char* topic)
+{
+  size_t siz;
+  String strComp((MQTT_PUB_DEV_PREFIX +"/Preferences/MqttName").c_str());
+  if (strComp.compareTo(topic)==0)
+  {
+  // echo message  ?
+#if SERIAL_TRACE
+    Serial.print ("Preferences MqttName: ");  
+    Serial.println(payload);
+#endif
+    if (MQTT_PUB_DEV_PREFIX.equals(topic)) {
+      Serial.print("Prefs.MqttName is not changed ");
+      Serial.println(payload);
+    } else {
+      siz = prefs.putString( "MqttName", payload);
+      Serial.print("Prefs.MqttName written ");
+      Serial.print(siz);
+      Serial.print(" bytes - ");
+      Serial.println(payload);
+    }
+  mqttClient.publish(topic, 1, true, payload);
+  // write to preferences 
+
+
+
+  delay(10);
+  return;
+  }
+  // todo: further preferences topics...
+
+  // no preferences topic for me
+  #if SERIAL_TRACE
+    Serial.print (topic);
+    Serial.println(" preferences - not mine - ");
+  #endif
+    return;
+  temp_hyst = atof(payload);
+ 
+}
+
+
 void onMqttConnect(bool sessionPresent) {
   Serial.print("Connected to MQTT - IP=");
   Serial.print(WiFi.localIP());
@@ -36,13 +90,17 @@ void onMqttConnect(bool sessionPresent) {
   packetIdSub = mqttClient.subscribe((MQTT_PUB_DES_PREFIX MQTT_PUB_FANTHROTTLE_SUFFIX).c_str(), 2);
   Serial.print("Subscribing max fan speed at QoS 2, packetId: ");
   Serial.println(packetIdSub);
+  packetIdSub = mqttClient.subscribe((MQTT_PUB_DEV_PREFIX +"/Preferences/MqttName").c_str(), 2);
+  Serial.print("Subscribing max fan speed at QoS 2, packetId: ");
+  Serial.println(packetIdSub);
+  
   publishDesSpeed(throttleFanspeed);
   
   MQTTLogPrintf("Thermostat started %d Thermosensors found", numberOfDevices);
 }
 
 void onMqttDisconnect(AsyncMqttClientDisconnectReason reason) {
-  Serial.println("Disconne/home/martin/Arduino/MQTT/MQTT_DS18B20cted from MQTT.");
+  Serial.println("Disconnected from MQTT.");
 
   if (WiFi.isConnected()) {
     mqttReconnectTimer.once(2, connectToMqtt);
@@ -59,7 +117,7 @@ void onMqttSubscribe(uint16_t packetId, uint8_t qos) {
 // 
 void onMqttUnsubscribe(uint16_t packetId) {
   // Serial.println("Unsubscribe acknowledged.");
-  // Serial.print("  packetId: ");
+  // Serial.print("  packetSerial Id: ");
   // Serial.println(packetId);
 }
 
@@ -68,7 +126,6 @@ void onMqttPublish(uint16_t packetId) {
   // Serial.print("  packetId: ");
   // Serial.println(packetId);
 }
-
 
 void onMqttMessage(char* topic, char* payload, AsyncMqttClientMessageProperties properties, size_t len, size_t index, size_t total) {
 #if 0  
@@ -106,12 +163,15 @@ void onMqttMessage(char* topic, char* payload, AsyncMqttClientMessageProperties 
   testDesiredTemperature(buffer, topic);
   testDesiredTempHyst(buffer, topic);
   testDesiredFanspeed(buffer,topic);
+  testPreferences(buffer, topic);
 }
 
 void setup() {
   sensors.begin();
   Serial.begin(115200);
-  Serial.println();
+  delay(4000);
+  Serial.println("*** SETUP ***");
+  getPreferences();
 #if defined(ARDUINO_D1_MINI32) || defined(ARDUINO_LOLIN_S2_MINI)
   ledcSetup(0, 8000, 8); // pwm#, freq, resolution(bits)
   ledcAttachPin(pwmGpio, 0);
