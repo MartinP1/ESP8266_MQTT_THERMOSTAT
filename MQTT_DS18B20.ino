@@ -21,17 +21,18 @@
 Preferences prefs;
 
 void getPreferences() {
-  prefs.begin("mqtt_thermostat");
+  prefs.begin("mqtt_thermostat", true);
   if (prefs.isKey("MqttName")){
     MQTT_PUB_DEV_PREFIX = prefs.getString("MqttName");
     Serial.print("INFO: MqttName ");
     Serial.println(MQTT_PUB_DEV_PREFIX);
   }
   else Serial.println("WARN: No MqttName found in preferences");
+  prefs.end();
+  
 }
 
-void testPreferences(char* payload, const char* topic)
-{
+void testPreferences(char* payload, const char* topic){
   size_t siz;
   String strComp((MQTT_PUB_DEV_PREFIX +"/Preferences/MqttName").c_str());
   if (strComp.compareTo(topic)==0)
@@ -45,32 +46,29 @@ void testPreferences(char* payload, const char* topic)
       Serial.print("Prefs.MqttName is not changed ");
       Serial.println(payload);
     } else {
+      prefs.begin("mqtt_thermostat");
       siz = prefs.putString( "MqttName", payload);
+      prefs.end();
       Serial.print("Prefs.MqttName written ");
       Serial.print(siz);
       Serial.print(" bytes - ");
       Serial.println(payload);
     }
-  mqttClient.publish(topic, 1, true, payload);
+    return;
+   // mqttClient.publish(topic, 1, true, payload);
   // write to preferences 
+    // todo: further preferences topics...
 
-
-
-  delay(10);
-  return;
   }
-  // todo: further preferences topics...
 
-  // no preferences topic for me
+
+// no preferences topic for me
   #if SERIAL_TRACE
     Serial.print (topic);
     Serial.println(" preferences - not mine - ");
   #endif
     return;
-  temp_hyst = atof(payload);
- 
-}
-
+  }
 
 void onMqttConnect(bool sessionPresent) {
   Serial.print("Connected to MQTT - IP=");
@@ -79,7 +77,7 @@ void onMqttConnect(bool sessionPresent) {
   Serial.print(WiFi.RSSI());
   Serial.print(" dB - Session present: ");
   Serial.println(sessionPresent);
-  // todo not necessarily QOS 2. 1 or 0 are also ok...
+  // todo not necessarily QOS 2, 1 or 0 are also ok... 
   uint16_t packetIdSub = mqttClient.subscribe((MQTT_PUB_DES_PREFIX MQTT_PUB_TEMP_SUFFIX).c_str(), 2);
   Serial.print("Subscribing desired temp at QoS 2, packetId: ");
   Serial.println(packetIdSub);
@@ -91,9 +89,8 @@ void onMqttConnect(bool sessionPresent) {
   Serial.print("Subscribing max fan speed at QoS 2, packetId: ");
   Serial.println(packetIdSub);
   packetIdSub = mqttClient.subscribe((MQTT_PUB_DEV_PREFIX +"/Preferences/MqttName").c_str(), 2);
-  Serial.print("Subscribing max fan speed at QoS 2, packetId: ");
+  Serial.print("Subscribing desired device name, packetId: ");
   Serial.println(packetIdSub);
-  
   publishDesSpeed(throttleFanspeed);
   
   MQTTLogPrintf("Thermostat started %d Thermosensors found", numberOfDevices);
@@ -101,11 +98,9 @@ void onMqttConnect(bool sessionPresent) {
 
 void onMqttDisconnect(AsyncMqttClientDisconnectReason reason) {
   Serial.println("Disconnected from MQTT.");
-
-  if (WiFi.isConnected()) {
-    mqttReconnectTimer.once(2, connectToMqtt);
+  delay(10);
+  return;
   }
-}
 
 void onMqttSubscribe(uint16_t packetId, uint8_t qos) {
   // Serial.println("Subscribe acknowledged.");
@@ -114,7 +109,7 @@ void onMqttSubscribe(uint16_t packetId, uint8_t qos) {
   // Serial.print("  qos: ");
   // Serial.println(qos);
 }
-// 
+
 void onMqttUnsubscribe(uint16_t packetId) {
   // Serial.println("Unsubscribe acknowledged.");
   // Serial.print("  packetSerial Id: ");
@@ -160,7 +155,7 @@ void onMqttMessage(char* topic, char* payload, AsyncMqttClientMessageProperties 
 
   /// Distinguish path
   
-  testDesiredTemperature(buffer, topic);
+  testDesiredTemperature(buffer, topic);  
   testDesiredTempHyst(buffer, topic);
   testDesiredFanspeed(buffer,topic);
   testPreferences(buffer, topic);
@@ -173,8 +168,9 @@ void setup() {
   Serial.println("*** SETUP ***");
   getPreferences();
 #if defined(ARDUINO_D1_MINI32) || defined(ARDUINO_LOLIN_S2_MINI)
-  ledcSetup(0, 8000, 8); // pwm#, freq, resolution(bits)
-  ledcAttachPin(pwmGpio, 0);
+  // ledcSetup(0, 8000, 8); // pwm#, freq, resolution(bits)
+  // ledcAttachPin(pwmGpio, 0);
+  ledcAttach(pwmGpio, 8000, 8);
 #endif
 #if defined(ARDUINO_ESP8266_WEMOS_D1MINI)
   pinMode(pwmGpio, OUTPUT);
