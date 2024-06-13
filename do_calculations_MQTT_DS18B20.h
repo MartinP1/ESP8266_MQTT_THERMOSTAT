@@ -30,14 +30,14 @@ void FanAutomat(float difftemp){
   if (((pwmActual == PWM_FULL) && (difftemp > 0.0)) 
   || ((pwmActual != PWM_FULL) && (difftemp > -temp_hyst))){
 
-    if (pwmActual!= throttleFanspeed) {
+    if (pwmActual!= PWM_THROTTLE) {
 #if 1 // SERIAL_TRACE      
       // Serial.printf("pwmActual(%02X) to throttle\n",pwmActual);
       Serial.print("pwmActual ");
       Serial.print( pwmActual);
       Serial.println(" to THROTTLE");
 #endif
-      pwmActual = throttleFanspeed;
+      pwmActual = PWM_THROTTLE;
     }
     return; 
   }

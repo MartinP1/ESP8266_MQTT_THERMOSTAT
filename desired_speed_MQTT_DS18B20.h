@@ -1,9 +1,9 @@
 
-uint8_t throttleFanspeed=PWM_THROTTLE; // ca 20 % speed
+// uint8_t throttleFanspeed=PWM_THROTTLE; // ca 20 % speed
 
 
 void publishDesSpeed(uint8_t speed){
-  throttleFanspeed = speed; 
+  PWM_THROTTLE = speed; 
  
   // todo for test pupose - to write here ist not necessarily correct if standalone ESP866 code control loop of fan speed, 
   // and MQTT server is only responsible for desired values, limits etc
@@ -12,7 +12,7 @@ void publishDesSpeed(uint8_t speed){
   delay(10);
 #if SERIAL_TRACE
   Serial.print("desired speed published: ");
-  Serial.println(throttleFanspeed, HEX);
+  Serial.println(PWM_THROTTLE, HEX);
 #endif
 }
 

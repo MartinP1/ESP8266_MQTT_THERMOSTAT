@@ -32,12 +32,14 @@ void getPreferences() {
       Serial.println(MQTT_PUB_DEV_PREFIX);
     } else {
       Serial.print("WARN: MqttName found in preferences is too short ");
-      Serial.print(strTmp.c_str());
+      Serial.println(strTmp.c_str());
     }
   }
   else Serial.println("WARN: No MqttName found in preferences");
   if (prefs.isKey("Debug")){
     uiDebug = prefs.getUChar("Debug");
+    Serial.print("INFO: Debug ");
+    Serial.println(uiDebug);
     }
   else Serial.println("WARN: No Debug setting found in preferences");
   
@@ -131,8 +133,7 @@ void onMqttConnect(bool sessionPresent) {
   packetIdSub = mqttClient.subscribe((MQTT_PUB_DEV_PREFIX +"/Preferences/Debug").c_str(), 2);
   Serial.print("Subscribing debug setting, packetId: ");
   Serial.println(packetIdSub);
-  publishDesSpeed(throttleFanspeed);
-  
+  publishDesSpeed(PWM_THROTTLE);
   MQTTLogPrintf("Thermostat started %d Thermosensors found", numberOfDevices);
 }
 
@@ -245,12 +246,14 @@ void setup() {
 }
 
 
+uint8_t lastPwm=0; 
 
 void SelftestPwm(){
-   static uint8_t lastPwm=0; 
-   if (lastPwm != PWM_TROTTLE) {
+   if (lastPwm != PWM_THROTTLE) {
     lastPwm = PWM_THROTTLE;
-    setSpeed(pwmThrottle);
+    setSpeed(PWM_THROTTLE);
+    Serial.print("set PWM to ");
+    Serial.println(PWM_THROTTLE);
    }
 
 }
