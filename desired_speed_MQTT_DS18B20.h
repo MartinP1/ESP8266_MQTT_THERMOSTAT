@@ -25,7 +25,7 @@ void testDesiredFanspeed(char* payload, char* topic)
 #if SERIAL_TRACE
     Serial.print (topic);
     Serial.print(" - testDesiredFanspeed - not mine expected:");
-    Serial.println(MQTT_PUB_DES_PREFIX MQTT_PUB_FANTHROTTLE_SUFFIX);
+    Serial.println(MQTT_PUB_DES_PREFIX + MQTT_PUB_FANTHROTTLE_SUFFIX);
 #endif    
     return;
   }
