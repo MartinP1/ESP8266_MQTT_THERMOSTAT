@@ -117,6 +117,7 @@ uint8_t PWM_THROTTLE=70;
 
 uint8_t pwmActual;
 bool ventState;
+uint8_t uiDebug=0;
 
 // global variable for MQTT commsWiFiEventHandler
 

@@ -8,9 +8,10 @@ Das Projekt ist seit einigen Wochen im operativen Einsatz.
 - Zuspielen der Solltemperatur über MQTT auf den ESP
 - Ansteuerung von Lüftern, die den Heizkörper von unten zur Erhöhung der Heizleistung anblasen (PWM)
 - Zeitplan für Änderung der Solltemperatur (realisiert über ein ioBroker Blockly Skript)
+- Preferences library für Gerätekonfiguration über MQTT (kein hartverdrahteter Device Name im Quellcode mehr!)
 - todo  
-  - Fenstersensor
-     
+  - Fenstersensor undone
+  - PWM library funktioniert derzeit nicht 13.JUN.2024     
 
 
 ## Hardwareübersicht
@@ -36,7 +37,6 @@ Mindestausstattung wäre ein Thfermacell platte brandschutzermosensor für die R
 
 ### Was fehlt noch
 
-- Preferences library für Gerätekonfiguration über MQTT (kein hartverdrahteter Device Name im Quellcode mehr!)
 - OTA Library für den OTA-Update der Firmware
 
 ### Verbesserungen - was würde ich in der Serie anders machen

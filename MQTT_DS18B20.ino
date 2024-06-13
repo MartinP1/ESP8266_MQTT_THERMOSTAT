@@ -36,38 +36,60 @@ void getPreferences() {
     }
   }
   else Serial.println("WARN: No MqttName found in preferences");
+  if (prefs.isKey("Debug")){
+    uiDebug = prefs.getUChar("Debug");
+    }
+  else Serial.println("WARN: No Debug setting found in preferences");
+  
   prefs.end();
   
 }
 
-void testPreferences(char* payload, const char* topic){
+void testPreferencesDebug(char* payload, const char* topic){
+  size_t siz;
+  String strComp((MQTT_PUB_DEV_PREFIX +"/Preferences/Debug").c_str());
+  if (strComp.compareTo(topic)==0) {
+    uint8_t uiDebuglocal = (uint8_t)atol(payload);
+  // echo message  ?
+  if (uiDebuglocal != uiDebug) uiDebug = uiDebuglocal;
+   else return;
+
+    Serial.print ("Preferences Debug: ");  
+    Serial.println(uiDebug);
+    prefs.begin("mqtt_thermostat");
+    siz = prefs.putUChar( "Debug", uiDebug);
+    prefs.end();
+    return;
+  }
+// no preferences topic for me
+  #if SERIAL_TRACE
+    Serial.print (topic);
+    Serial.println(" preferencesDebug - not mine - ");
+  #endif
+    return;
+  }
+
+void testPreferencesMqttName(char* payload, const char* topic){
   size_t siz;
   String strComp((MQTT_PUB_DEV_PREFIX +"/Preferences/MqttName").c_str());
   if (strComp.compareTo(topic)==0)
   {
   // echo message  ?
 #if SERIAL_TRACE
-    String strTmp(payload);
-    strTmp.trim();
-    if (strTmp.length() < 3) {
-      Serial.print("WARN: mqtt name too short");
-      Serial.println(payload);
-      return;
-    }
     Serial.print ("Preferences MqttName: ");  
-    Serial.println(strTmp.c_str());
+    Serial.println(payload);
 #endif
     if (MQTT_PUB_DEV_PREFIX.equals(topic)) {
       Serial.print("Prefs.MqttName is not changed ");
-      Serial.println(strTmp.c_str());
+      Serial.println(payload);
     } else {
       prefs.begin("mqtt_thermostat");
-      siz = prefs.putString( "MqttName", strTmp.c_str());
+      siz = prefs.putString( "MqttName", payload);
       prefs.end();
       Serial.print("Prefs.MqttName written ");
       Serial.print(siz);
       Serial.print(" bytes - ");
-      Serial.println(strTmp.c_str());
+      Serial.println(payload);
     }
     return;
    // mqttClient.publish(topic, 1, true, payload);
@@ -105,6 +127,9 @@ void onMqttConnect(bool sessionPresent) {
   Serial.println(packetIdSub);
   packetIdSub = mqttClient.subscribe((MQTT_PUB_DEV_PREFIX +"/Preferences/MqttName").c_str(), 2);
   Serial.print("Subscribing desired device name, packetId: ");
+  Serial.println(packetIdSub);
+  packetIdSub = mqttClient.subscribe((MQTT_PUB_DEV_PREFIX +"/Preferences/Debug").c_str(), 2);
+  Serial.print("Subscribing debug setting, packetId: ");
   Serial.println(packetIdSub);
   publishDesSpeed(throttleFanspeed);
   
@@ -173,7 +198,8 @@ void onMqttMessage(char* topic, char* payload, AsyncMqttClientMessageProperties 
   testDesiredTemperature(buffer, topic);  
   testDesiredTempHyst(buffer, topic);
   testDesiredFanspeed(buffer,topic);
-  testPreferences(buffer, topic);
+  testPreferencesMqttName(buffer, topic);
+  testPreferencesDebug(buffer, topic);
 }
 
 void setup() {
@@ -220,9 +246,24 @@ void setup() {
 
 
 
+void SelftestPwm(){
+   static uint8_t lastPwm=0; 
+   if (lastPwm != PWM_TROTTLE) {
+    lastPwm = PWM_THROTTLE;
+    setSpeed(pwmThrottle);
+   }
+
+}
+
+
 // unsigned short usWifiDown=12;
 void loop() {
   unsigned long currentMillis = millis();
+  if (uiDebug == 1) {
+    SelftestPwm();
+    return;
+  }
+
   
   // Every X number of seconds (interval = 10 seconds) 
   // it publishes a new MQTT message
@@ -245,7 +286,7 @@ void loop() {
       usWifiDown--;
       Serial.print(" Wifi Error count down ");
       Serial.println(usWifiDown);
-
+MqttName
       if (usWifiDown==0) // 2 Minuten expired
         ESP.restart();
     }
