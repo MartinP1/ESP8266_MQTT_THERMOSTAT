@@ -47,20 +47,27 @@ void testPreferences(char* payload, const char* topic){
   {
   // echo message  ?
 #if SERIAL_TRACE
+    String strTmp(payload);
+    strTmp.trim();
+    if (strTmp.length() < 3) {
+      Serial.print("WARN: mqtt name too short");
+      Serial.println(payload);
+      return;
+    }
     Serial.print ("Preferences MqttName: ");  
-    Serial.println(payload);
+    Serial.println(strTmp.c_str());
 #endif
     if (MQTT_PUB_DEV_PREFIX.equals(topic)) {
       Serial.print("Prefs.MqttName is not changed ");
-      Serial.println(payload);
+      Serial.println(strTmp.c_str());
     } else {
       prefs.begin("mqtt_thermostat");
-      siz = prefs.putString( "MqttName", payload);
+      siz = prefs.putString( "MqttName", strTmp.c_str());
       prefs.end();
       Serial.print("Prefs.MqttName written ");
       Serial.print(siz);
       Serial.print(" bytes - ");
-      Serial.println(payload);
+      Serial.println(strTmp.c_str());
     }
     return;
    // mqttClient.publish(topic, 1, true, payload);
@@ -161,7 +168,7 @@ void onMqttMessage(char* topic, char* payload, AsyncMqttClientMessageProperties 
     buffer [i] = payload[i];   
   }
 
-  /// Distinguish path
+  /// Distinguish pathpayload
   
   testDesiredTemperature(buffer, topic);  
   testDesiredTempHyst(buffer, topic);
@@ -178,7 +185,7 @@ void setup() {
 #if defined(ARDUINO_D1_MINI32) || defined(ARDUINO_LOLIN_S2_MINI)
   // ledcSetup(0, 8000, 8); // pwm#, freq, resolution(bits)
   // ledcAttachPin(pwmGpio, 0);
-  ledcAttach(pwmGpio, 8000, 8);
+  ledcAttachChannel(pwmGpio, 8000, 8, 0);
 #endif
 #if defined(ARDUINO_ESP8266_WEMOS_D1MINI)
   pinMode(pwmGpio, OUTPUT);
