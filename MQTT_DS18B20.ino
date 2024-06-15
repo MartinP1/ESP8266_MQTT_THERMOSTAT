@@ -18,6 +18,97 @@
 #pragma message ARDUINO_BOARD
 #endif
 
+Preferences prefs;
+
+void getPreferences() {
+  prefs.begin("mqtt_thermostat", true);
+  if (prefs.isKey("MqttName")){
+    String strTmp = prefs.getString("MqttName");
+    strTmp.trim();
+    if (strTmp.length()>2) {
+
+      MQTT_PUB_DEV_PREFIX = prefs.getString("MqttName");
+      Serial.print("INFO: MqttName ");
+      Serial.println(MQTT_PUB_DEV_PREFIX);
+    } else {
+      Serial.print("WARN: MqttName found in preferences is too short ");
+      Serial.println(strTmp.c_str());
+    }
+  }
+  else Serial.println("WARN: No MqttName found in preferences");
+  if (prefs.isKey("Debug")){
+    uiDebug = prefs.getUChar("Debug");
+    Serial.print("INFO: Debug ");
+    Serial.println(uiDebug);
+    }
+  else Serial.println("WARN: No Debug setting found in preferences");
+  
+  prefs.end();
+  
+}
+
+void testPreferencesDebug(char* payload, const char* topic){
+  size_t siz;
+  String strComp((MQTT_PUB_DEV_PREFIX +"/Preferences/Debug").c_str());
+  if (strComp.compareTo(topic)==0) {
+    uint8_t uiDebuglocal = (uint8_t)atol(payload);
+  // echo message  ?
+  if (uiDebuglocal != uiDebug) uiDebug = uiDebuglocal;
+   else return;
+
+    Serial.print ("Preferences Debug: ");  
+    Serial.println(uiDebug);
+    prefs.begin("mqtt_thermostat");
+    siz = prefs.putUChar( "Debug", uiDebug);
+    prefs.end();
+    return;
+  }
+// no preferences topic for me
+  #if SERIAL_TRACE
+    Serial.print (topic);
+    Serial.println(" preferencesDebug - not mine - ");
+  #endif
+    return;
+  }
+
+void testPreferencesMqttName(char* payload, const char* topic){
+  size_t siz;
+  String strComp((MQTT_PUB_DEV_PREFIX +"/Preferences/MqttName").c_str());
+  if (strComp.compareTo(topic)==0)
+  {
+  // echo message  ?
+#if SERIAL_TRACE
+    Serial.print ("Preferences MqttName: ");  
+    Serial.println(payload);
+#endif
+    if (MQTT_PUB_DEV_PREFIX.equals(topic)) {
+      Serial.print("Prefs.MqttName is not changed ");
+      Serial.println(payload);
+    } else {
+      prefs.begin("mqtt_thermostat");
+      siz = prefs.putString( "MqttName", payload);
+      prefs.end();
+      Serial.print("Prefs.MqttName written ");
+      Serial.print(siz);
+      Serial.print(" bytes - ");
+      Serial.println(payload);
+    }
+    return;
+   // mqttClient.publish(topic, 1, true, payload);
+  // write to preferences 
+    // todo: further preferences topics...
+
+  }
+
+
+// no preferences topic for me
+  #if SERIAL_TRACE
+    Serial.print (topic);
+    Serial.println(" preferences - not mine - ");
+  #endif
+    return;
+  }
+
 void onMqttConnect(bool sessionPresent) {
   Serial.print("Connected to MQTT - IP=");
   Serial.print(WiFi.localIP());
@@ -25,7 +116,7 @@ void onMqttConnect(bool sessionPresent) {
   Serial.print(WiFi.RSSI());
   Serial.print(" dB - Session present: ");
   Serial.println(sessionPresent);
-  // todo not necessarily QOS 2. 1 or 0 are also ok...
+  // todo not necessarily QOS 2, 1 or 0 are also ok... 
   uint16_t packetIdSub = mqttClient.subscribe((MQTT_PUB_DES_PREFIX MQTT_PUB_TEMP_SUFFIX).c_str(), 2);
   Serial.print("Subscribing desired temp at QoS 2, packetId: ");
   Serial.println(packetIdSub);
@@ -36,18 +127,21 @@ void onMqttConnect(bool sessionPresent) {
   packetIdSub = mqttClient.subscribe((MQTT_PUB_DES_PREFIX MQTT_PUB_FANTHROTTLE_SUFFIX).c_str(), 2);
   Serial.print("Subscribing max fan speed at QoS 2, packetId: ");
   Serial.println(packetIdSub);
-  publishDesSpeed(throttleFanspeed);
-  
+  packetIdSub = mqttClient.subscribe((MQTT_PUB_DEV_PREFIX +"/Preferences/MqttName").c_str(), 2);
+  Serial.print("Subscribing desired device name, packetId: ");
+  Serial.println(packetIdSub);
+  packetIdSub = mqttClient.subscribe((MQTT_PUB_DEV_PREFIX +"/Preferences/Debug").c_str(), 2);
+  Serial.print("Subscribing debug setting, packetId: ");
+  Serial.println(packetIdSub);
+  publishDesSpeed(PWM_THROTTLE);
   MQTTLogPrintf("Thermostat started %d Thermosensors found", numberOfDevices);
 }
 
 void onMqttDisconnect(AsyncMqttClientDisconnectReason reason) {
-  Serial.println("Disconne/home/martin/Arduino/MQTT/MQTT_DS18B20cted from MQTT.");
-
-  if (WiFi.isConnected()) {
-    mqttReconnectTimer.once(2, connectToMqtt);
+  Serial.println("Disconnected from MQTT.");
+  delay(10);
+  return;
   }
-}
 
 void onMqttSubscribe(uint16_t packetId, uint8_t qos) {
   // Serial.println("Subscribe acknowledged.");
@@ -56,10 +150,10 @@ void onMqttSubscribe(uint16_t packetId, uint8_t qos) {
   // Serial.print("  qos: ");
   // Serial.println(qos);
 }
-// 
+
 void onMqttUnsubscribe(uint16_t packetId) {
   // Serial.println("Unsubscribe acknowledged.");
-  // Serial.print("  packetId: ");
+  // Serial.print("  packetSerial Id: ");
   // Serial.println(packetId);
 }
 
@@ -68,7 +162,6 @@ void onMqttPublish(uint16_t packetId) {
   // Serial.print("  packetId: ");
   // Serial.println(packetId);
 }
-
 
 void onMqttMessage(char* topic, char* payload, AsyncMqttClientMessageProperties properties, size_t len, size_t index, size_t total) {
 #if 0  
@@ -101,20 +194,25 @@ void onMqttMessage(char* topic, char* payload, AsyncMqttClientMessageProperties 
     buffer [i] = payload[i];   
   }
 
-  /// Distinguish path
+  /// Distinguish pathpayload
   
-  testDesiredTemperature(buffer, topic);
+  testDesiredTemperature(buffer, topic);  
   testDesiredTempHyst(buffer, topic);
   testDesiredFanspeed(buffer,topic);
+  testPreferencesMqttName(buffer, topic);
+  testPreferencesDebug(buffer, topic);
 }
 
 void setup() {
   sensors.begin();
   Serial.begin(115200);
-  Serial.println();
+  delay(4000);
+  Serial.println("*** SETUP ***");
+  getPreferences();
 #if defined(ARDUINO_D1_MINI32) || defined(ARDUINO_LOLIN_S2_MINI)
-  ledcSetup(0, 8000, 8); // pwm#, freq, resolution(bits)
-  ledcAttachPin(pwmGpio, 0);
+  // ledcSetup(0, 8000, 8); // pwm#, freq, resolution(bits)
+  // ledcAttachPin(pwmGpio, 0);
+  ledcAttachChannel(pwmGpio, 8000, 8, 0);
 #endif
 #if defined(ARDUINO_ESP8266_WEMOS_D1MINI)
   pinMode(pwmGpio, OUTPUT);
@@ -148,10 +246,27 @@ void setup() {
 }
 
 
+uint8_t lastPwm=0; 
+
+void SelftestPwm(){
+   if (lastPwm != PWM_THROTTLE) {
+    lastPwm = PWM_THROTTLE;
+    setSpeed(PWM_THROTTLE);
+    Serial.print("set PWM to ");
+    Serial.println(PWM_THROTTLE);
+   }
+
+}
+
 
 // unsigned short usWifiDown=12;
 void loop() {
   unsigned long currentMillis = millis();
+  if (uiDebug == 1) {
+    SelftestPwm();
+    return;
+  }
+
   
   // Every X number of seconds (interval = 10 seconds) 
   // it publishes a new MQTT message
@@ -174,7 +289,7 @@ void loop() {
       usWifiDown--;
       Serial.print(" Wifi Error count down ");
       Serial.println(usWifiDown);
-
+MqttName
       if (usWifiDown==0) // 2 Minuten expired
         ESP.restart();
     }
@@ -182,4 +297,3 @@ void loop() {
   }
  
 }
-

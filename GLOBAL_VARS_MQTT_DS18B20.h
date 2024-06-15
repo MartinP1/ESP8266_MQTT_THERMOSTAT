@@ -36,7 +36,7 @@ based on below Work of Rui Santos
 #include <AsyncMQTT_ESP32.h>
 
 // set to 1 if deployed to real target
-#define SERIAL_TRACE 0
+#define SERIAL_TRACE 1
 //<<<<<<< HEAD
 // includes WLAN credential define
 
@@ -117,6 +117,7 @@ uint8_t PWM_THROTTLE=70;
 
 uint8_t pwmActual;
 bool ventState;
+uint8_t uiDebug=0;
 
 // global variable for MQTT commsWiFiEventHandler
 

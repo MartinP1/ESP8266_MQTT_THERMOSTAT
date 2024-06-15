@@ -32,14 +32,14 @@ void publishTempHyst(float partemp){
 
 void testDesiredTemperature(char* payload, char* topic)
 {
-  String strComp(MQTT_PUB_DES_PREFIX MQTT_PUB_TEMP_SUFFIX);
+  String strComp(MQTT_PUB_DES_PREFIX + MQTT_PUB_TEMP_SUFFIX);
   if (strComp.compareTo(topic)!=0)
   {
         
 #if SERIAL_TRACE
     Serial.print (topic);
     Serial.print(" - testDesiredTemperature - not mine - ");
-    Serial.println(MQTT_PUB_DES_PREFIX MQTT_PUB_TEMP_SUFFIX);
+    Serial.println(MQTT_PUB_DES_PREFIX + MQTT_PUB_TEMP_SUFFIX);
 #endif
     return;
   }
@@ -56,13 +56,13 @@ void testDesiredTemperature(char* payload, char* topic)
 
 void testDesiredTempHyst(char* payload, char* topic)
 {
-  String strComp(MQTT_PUB_DES_PREFIX MQTT_PUB_TEMPHYST_SUFFIX);
+  String strComp(MQTT_PUB_DES_PREFIX + MQTT_PUB_TEMPHYST_SUFFIX);
   if (strComp.compareTo(topic)!=0)
   {
   #if SERIAL_TRACE
     Serial.print (topic);
     Serial.print(" - testDesiredTempHyst - not mine - ");
-    Serial.println(MQTT_PUB_DES_PREFIX MQTT_PUB_TEMPHYST_SUFFIX);
+    Serial.println(MQTT_PUB_DES_PREFIX + MQTT_PUB_TEMPHYST_SUFFIX);
   #endif
     return;
   }
