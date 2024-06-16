@@ -11,13 +11,12 @@ Das Projekt ist seit einigen Wochen im operativen Einsatz.
 - Preferences library für Gerätekonfiguration über MQTT (kein hartverdrahteter Device Name im Quellcode mehr!)
 - todo  
   - Fenstersensor undone
-  - PWM library funktioniert derzeit nicht 13.JUN.2024     
-
+ 
 
 ## Hardwareübersicht
 
 - ESP basierte Hardware - es werden drei Module unterstützt.
-  - D1 Mini (ESP8266) Probleme mit stabiler Spannungsversorgung
+  - D1 Mini (ESP8266) Probleme mit instabiler Spannungsversorgung
   - D1 Mini (ESP32 - seit 1.12.2023)
   - S2 Mini (ESP32 - seit 1.12.2023) Neue Empfehlung!
 
@@ -30,8 +29,8 @@ Das Projekt ist seit einigen Wochen im operativen Einsatz.
 
 ![Schaltplan](https://github.com/MartinP1/ESP8266_MQTT_THERMOSTAT/blob/main/Board_esp8266_d1mini_backup_Schaltplan.svg "Schaltplan")
 
-Der Prototyp wird einen "Vollausbau" bekommen. Ggfs. lasse ich später eine Leiterplatte machen, die dann optional auch nur teilweise bestückt funktioniert (mit angepasster Firmware?)
-Mindestausstattung wäre ein Thfermacell platte brandschutzermosensor für die Raumtemperatur und ein Schaltrelais für die Ansteuerung des Ventil-Stellgliedes...
+Das Prototyp-System ist stillgelegt, aktuell läuft V1 einer Kicad-Leiterplatte.
+Mindestausstattung wäre ein Thermosensor für die Raumtemperatur und ein Schaltrelais für die Ansteuerung des Ventil-Stellgliedes...
 
 ## Unsortiertes
 
@@ -44,7 +43,8 @@ Mindestausstattung wäre ein Thfermacell platte brandschutzermosensor für die R
 - 4 Pin Lüfter?
 - 24 V Variante des Danfoss Stellantriebs über DCDC Wandler mit Enable-Eingang?
 - Full Fan speed konfigurierbar (255 scheint zu schnell zu sein ...)
-
+- Neues Leiterplattenlayout mit 230 V Spannungesversorgung und Schaltrelais für Danfoss-Stellglied
+- Migration des Projekts von Arduino-IDE auf PlatformIO
 
 ### Worklog
 
