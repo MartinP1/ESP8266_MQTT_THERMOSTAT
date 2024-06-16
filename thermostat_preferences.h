@@ -4,7 +4,11 @@
  * use preferences library to restore/store preferences
  * that shall not be hard coded
  * 
- * MP 15-JUN-2024
+ * namespace mqtt_thermostat
+ * defined preferences
+ * MqttName string
+ * debug unsigned char (bit 1 defined, pwm passthrough)
+ * MP 16-JUN-2024
  * 
  * 
 */
@@ -38,31 +42,8 @@ void getPreferences() {
   
 }
 
-void testPreferencesDebug(char* payload, const char* topic){
-  size_t siz;
-  String strComp((MQTT_PUB_DEV_PREFIX +"/Preferences/Debug").c_str());
-  if (strComp.compareTo(topic)==0) {
-    uint8_t uiDebuglocal = (uint8_t)atol(payload);
-  // echo message  ?
-  if (uiDebuglocal != uiDebug) uiDebug = uiDebuglocal;
-   else return;
 
-    Serial.print ("Preferences Debug: ");  
-    Serial.println(uiDebug);
-    prefs.begin("mqtt_thermostat");
-    siz = prefs.putUChar( "Debug", uiDebug);
-    prefs.end();
-    return;
-  }
-// no preferences topic for me
-  #if SERIAL_TRACE
-    Serial.print (topic);
-    Serial.println(" preferencesDebug - not mine - ");
-  #endif
-    return;
-  }
-
-void testPreferencesMqttName(char* payload, const char* topic){
+void testPreferences(char* payload, const char* topic){
   size_t siz;
   String strComp((MQTT_PUB_DEV_PREFIX +"/Preferences/MqttName").c_str());
   if (strComp.compareTo(topic)==0)
@@ -87,6 +68,21 @@ void testPreferencesMqttName(char* payload, const char* topic){
     mqttClient.publish(topic, 1, true, payload);
     return;
  
+  }
+  strComp=MQTT_PUB_DEV_PREFIX +"/Preferences/Debug";
+  if (strComp.compareTo(topic)==0) {
+    mqttClient.publish(topic, 1, true, payload);    // do it here due to several returns
+    uint8_t uiDebuglocal = (uint8_t)atol(payload);
+    // echo message  ?
+    if (uiDebuglocal != uiDebug) uiDebug = uiDebuglocal;
+    else return;
+
+    Serial.print ("Preferences Debug: ");  
+    Serial.println(uiDebug);
+    prefs.begin("mqtt_thermostat");
+    siz = prefs.putUChar( "Debug", uiDebug);
+    prefs.end();
+    return;
   }
 
 

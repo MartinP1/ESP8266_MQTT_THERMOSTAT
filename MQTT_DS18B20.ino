@@ -18,7 +18,7 @@
 #pragma message ARDUINO_BOARD
 #endif
 
-#include thermostat_preferences.h
+#include "thermostat_preferences.h"
 
 void onMqttConnect(bool sessionPresent) {
   Serial.print("Connected to MQTT - IP=");
@@ -110,8 +110,7 @@ void onMqttMessage(char* topic, char* payload, AsyncMqttClientMessageProperties 
   testDesiredTemperature(buffer, topic);  
   testDesiredTempHyst(buffer, topic);
   testDesiredFanspeed(buffer,topic);
-  testPreferencesMqttName(buffer, topic);
-  testPreferencesDebug(buffer, topic);
+  testPreferences(buffer, topic);
 }
 
 void setup() {
