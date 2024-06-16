@@ -50,7 +50,9 @@ void onMqttConnect(bool sessionPresent) {
 
 void onMqttDisconnect(AsyncMqttClientDisconnectReason reason) {
   Serial.println("Disconnected from MQTT.");
-  delay(10);
+  if (WiFi.isConnected()) {
+    mqttReconnectTimer.once(2, connectToMqtt);
+  }
   return;
   }
 
@@ -75,32 +77,9 @@ void onMqttPublish(uint16_t packetId) {
 }
 
 void onMqttMessage(char* topic, char* payload, AsyncMqttClientMessageProperties properties, size_t len, size_t index, size_t total) {
-#if 0  
-  Serial.println(" Publish received.");// 
-  Serial.print("  topic: ");
-  Serial.println(topic);
-  Serial.print("  qos: ");
-  Serial.println(properties.qos);
-   Serial.print("  dup: ");
-  Serial.println(properties.dup);
-  Serial.print("  retain: ");
-  Serial.println(properties.retain);
-  Serial.print("  len: ");
-  Serial.println(len);
-  Serial.print("  index: ");
-  Serial.println(index);
-  Serial.print("  total: ");
-  Serial.println(total);
-  Serial.print(" payload: ");
-  for (int i=0; i<len; i++) {// 
-    Serial.print(payload[i]);
-    /home/martin/Arduino/MQTT/MQTT_DS18B20
-  }  
-  Serial.println(" OK");
-#endif
 
-  char buffer[30];
-  buffer[29]=buffer[len]='\0';
+  char buffer[50];
+  buffer[49]=buffer[len]='\0';
   for (int i=0;i<len && i<29;i++){
     buffer [i] = payload[i];   
   }
