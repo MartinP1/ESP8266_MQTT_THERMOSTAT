@@ -130,6 +130,17 @@ void runTempControl()
 
 void wifiStatus()
 {
-  uint16_t packetIdPub1 = mqttClient.publish((MQTT_PUB_TEMP_PREFIX + "WIFI/RSSI").c_str(), 1, true, String(WiFi.RSSI()).c_str());
-  delay(10);
+  if (WiFi.isConnected()) {
+    if (mqttClient.connected()) {
+      uint16_t packetIdPub1 = mqttClient.publish((MQTT_PUB_TEMP_PREFIX + "WIFI/RSSI").c_str(), 1, true, String(WiFi.RSSI()).c_str());
+      return;
+    } else {
+      connectToMqtt();
+      return;
+    }
+
+  } else {
+    connectToWifi();
+    return;
+  }
 }
