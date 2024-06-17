@@ -163,10 +163,11 @@ void loop() {
     // Save the last time a new reading was published
     previousMillis = currentMillis;
     // New temperature readings
+    if (!wifiStatus()) return;
+
     getTemperatures();
 
     runTempControl();
-    wifiStatus();
 #if 0
 // does not help ...
     if (WiFi.isConnected() && mqttClient.connected())
