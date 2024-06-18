@@ -133,6 +133,10 @@ bool wifiStatus()
   if (WiFi.isConnected()) {
     if (mqttClient.connected()) {
       uint16_t packetIdPub1 = mqttClient.publish((MQTT_PUB_TEMP_PREFIX + "WIFI/RSSI").c_str(), 1, true, String(WiFi.RSSI()).c_str());
+      if (uiWifiDisconnects != uiWifiDisconnectsOld) {
+        packetIdPub1 = mqttClient.publish((MQTT_PUB_TEMP_PREFIX + "WIFI/Disconnects").c_str(), 1, true, String(uiWifiDisconnects).c_str());
+        uiWifiDisconnectsOld = uiWifiDisconnects;
+      }
       return true; // both up and running
     } else {
       connectToMqtt();

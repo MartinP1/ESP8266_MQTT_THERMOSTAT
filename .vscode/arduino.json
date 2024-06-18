@@ -5,4 +5,4 @@
     "sketch": "MQTT_DS18B20.ino",
     "output": "../MQTT_DS18B20_out",
     "arduino.logLevel" : "verbose"
-}
+}desired speed publishedls d

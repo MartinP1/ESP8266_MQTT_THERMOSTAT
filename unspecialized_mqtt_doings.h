@@ -29,6 +29,7 @@ void onWifiDisconnect(WiFiEvent_t event, WiFiEventInfo_t info) {
   Serial.println("Disconnected from Wi-Fi.");
   // mqttReconnectTimer.detach(); // ensure we don't reconnect to MQTT while reconnecting to Wi-Fi
   // wifiReconnectTimer.once(2, connectToWifi);
+  uiWifiDisconnects++;
 }
 #else
 void onWifiConnect(const WiFiEventStationModeGotIP& event) {
@@ -40,8 +41,8 @@ void onWifiConnect(const WiFiEventStationModeGotIP& event) {
 
 void onWifiDisconnect(const WiFiEventStationModeDisconnected& event) {
   Serial.println("Disconnected from Wi-Fi.");
-  mqttReconnectTimer.detach(); // ensure we don't reconnect to MQTT while reconnecting to Wi-Fi
-  wifiReconnectTimer.once(2, connectToWifi);
+  // mqttReconnectTimer.detach(); // ensure we don't reconnect to MQTT while reconnecting to Wi-Fi
+  // wifiReconnectTimer.once(2, connectToWifi);
 }
 #endif
 

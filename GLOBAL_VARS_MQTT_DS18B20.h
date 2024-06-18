@@ -30,7 +30,7 @@ based on below Work of Rui Santos
 #else
 #include <WiFi.h>
 #endif
-#include <Ticker.h>
+// #include <Ticker.h>
 // #include <AsyncMqttClient.h>
 // #include <AsyncMqtt_Generic.h>
 #include <AsyncMQTT_ESP32.h>
@@ -118,16 +118,17 @@ uint8_t PWM_THROTTLE=70;
 uint8_t pwmActual;
 bool ventState;
 uint8_t uiDebug=0;
-
+uint8_t uiWifiDisconnects=0;
+uint8_t uiWifiDisconnectsOld=0;
 // global variable for MQTT commsWiFiEventHandler
 
 AsyncMqttClient mqttClient;
-Ticker mqttReconnectTimer;
+// Ticker mqttReconnectTimer;
 #ifdef ARDUINO_ESP8266_WEMOS_D1MINI
 WiFiEventHandler wifiConnectHandler;
 WiFiEventHandler wifiDisconnectHandler;
 #endif
-Ticker wifiReconnectTimer;
+// Ticker wifiReconnectTimer;
 
 unsigned long previousMillis = 0;   // Stores last time temperature was published
 const long interval = 10000;        // Interval at which to publish sensor readings and do thermostate calculations
