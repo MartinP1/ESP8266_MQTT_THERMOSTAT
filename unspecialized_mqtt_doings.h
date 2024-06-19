@@ -4,6 +4,8 @@ void connectToWifi() {
   Serial.print(MQTT_PUB_DEV_PREFIX);
   Serial.print(" Connecting to Wi-Fi...");
   Serial.println(WIFI_SSID);
+  WiFi.setScanMethod(WIFI_ALL_CHANNEL_SCAN);
+  WiFi.setSortMethod(WIFI_CONNECT_AP_BY_SIGNAL);
   WiFi.begin(WIFI_SSID, WIFI_PASSWORD);
 }
 
