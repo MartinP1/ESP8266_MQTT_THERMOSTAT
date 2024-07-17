@@ -148,7 +148,7 @@ void SelftestPwm(){
 }
 
 
-// unsigned short usWifiDown=12;
+unsigned short usWifiDown=12;
 void loop() {
   unsigned long currentMillis = millis();
   if (uiDebug == 1) {
@@ -169,18 +169,17 @@ void loop() {
     getTemperatures();
 
     runTempControl();
-#if 0
-// does not help ...
+#if 1
+// try it again ... does not help ...
     if (WiFi.isConnected() && mqttClient.connected())
     {
-      usWifiDown=12;  // 2 Minuten
+      usWifiDown=12;  // 2 minutes @ 10 sec run interval
     }
     else
     {
       usWifiDown--;
       Serial.print(" Wifi Error count down ");
       Serial.println(usWifiDown);
-MqttName
       if (usWifiDown==0) // 2 Minuten expired
         ESP.restart();
     }

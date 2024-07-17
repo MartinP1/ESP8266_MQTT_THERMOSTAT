@@ -65,13 +65,16 @@ void testPreferences(char* payload, const char* topic){
       Serial.print(" bytes - ");
       Serial.println(payload);
     }
-    mqttClient.publish(topic, 1, true, payload);
+    if (mqttClient.connected()) {
+      mqttClient.publish(topic, 1, true, payload);
+    }
     return;
  
   }
   strComp=MQTT_PUB_DEV_PREFIX +"/Preferences/Debug";
   if (strComp.compareTo(topic)==0) {
-    mqttClient.publish(topic, 1, true, payload);    // do it here due to several returns
+    if (mqttClient.connected())
+      mqttClient.publish(topic, 1, true, payload);    // do it here due to several returns
     uint8_t uiDebuglocal = (uint8_t)atol(payload);
     // echo message  ?
     if (uiDebuglocal != uiDebug) uiDebug = uiDebuglocal;

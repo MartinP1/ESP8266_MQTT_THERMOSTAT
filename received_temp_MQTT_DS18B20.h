@@ -427,8 +427,10 @@ void getTemperatures() {
     String Topic(MQTT_PUB_TEMP_PREFIX);
     Topic += TempsensRole[i];
     Topic += String(MQTT_PUB_TEMP_SUFFIX);
-    uint16_t packetIdPub1 = mqttClient.publish(Topic.c_str(), 1, true, String(temp[i]).c_str());
-    delay(10);                            
+    if (mqttClient.connected()) {
+      uint16_t packetIdPub1 = mqttClient.publish(Topic.c_str(), 1, true, String(temp[i]).c_str());
+      delay(10);                            
+    }
     // Serial.printf("Publishing on topic %s at QoS 1, packetId: %i ", Topic.c_str(), packetIdPub1);
     // Serial.printf("Msg: %.2f \n", temp[i]);
   }
@@ -487,7 +489,7 @@ void swapDevAdr(int left, int right)
 }
 
 bool isDevAdrGreater(int left, int right){
-  // omit family and checksum byte
+  // omit family and checksum bytepublishDesSpeed
   if (left>=numberOfDevices)
     return false;
   if (right>=numberOfDevices)
