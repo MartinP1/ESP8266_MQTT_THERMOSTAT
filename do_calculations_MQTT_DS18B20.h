@@ -121,7 +121,7 @@ void runTempControl()
   setSpeed(pwmActual);
   setValve(ventState);
   uint16_t help=pwmActual&0xFF;
-  if (mqttClient.connected()) {publish
+  if (mqttClient.connected()) {
     uint16_t packetIdPub1 = mqttClient.publish((MQTT_PUB_ACTOR_PREFIX + MQTT_PUB_FANACT_SUFFIX).c_str(), 1, true, String(help).c_str());                            
     delay(10);
     packetIdPub1 = mqttClient.publish((MQTT_PUB_ACTOR_PREFIX + MQTT_PUB_VALVE_SUFFIX).c_str(), 1, true, ventState ? "1" : "0");                            
@@ -138,7 +138,10 @@ bool wifiStatus()
       if (uiWifiDisconnects != uiWifiDisconnectsOld) {
         packetIdPub1 = mqttClient.publish((MQTT_PUB_TEMP_PREFIX + "WIFI/Disconnects").c_str(), 1, true, String(uiWifiDisconnects).c_str());
         uiWifiDisconnectsOld = uiWifiDisconnects;
+        delay(10);
       }
+      packetIdPub1 = mqttClient.publish((MQTT_PUB_TEMP_PREFIX + "WIFI/RSSI").c_str(), 1, true, String(WiFi.RSSI()).c_str());
+
       return true; // both up and running
     } else {
       connectToMqtt();
