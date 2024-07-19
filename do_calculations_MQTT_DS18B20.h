@@ -121,7 +121,7 @@ void runTempControl()
   setSpeed(pwmActual);
   setValve(ventState);
   uint16_t help=pwmActual&0xFF;
-  if (mqttClient.connected()) {
+  if (mqttClient.connected()) {publish
     uint16_t packetIdPub1 = mqttClient.publish((MQTT_PUB_ACTOR_PREFIX + MQTT_PUB_FANACT_SUFFIX).c_str(), 1, true, String(help).c_str());                            
     delay(10);
     packetIdPub1 = mqttClient.publish((MQTT_PUB_ACTOR_PREFIX + MQTT_PUB_VALVE_SUFFIX).c_str(), 1, true, ventState ? "1" : "0");                            
