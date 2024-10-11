@@ -12,377 +12,13 @@ float temp[3];
 
 #define RT_AVG_PERIOD 6
 
+/**
+@todo, this function is a baustelle ;-)
+*/
 void avgRoomtemp() {
   static bool bMeasRoundCompleted=false;
   static float RoomtempArray[RT_AVG_PERIOD] = {0.0, 0.0, 0.0, 0.0, 0.0, 0.0};
   static uint8_t dt_index = 0;
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-  
   RoomtempArray[dt_index++] = temp[0];
   if (dt_index==RT_AVG_PERIOD)
   { 
@@ -412,22 +48,32 @@ void avgRoomtemp() {
 
 
 void getTemperatures() {
-   sensors.requestTemperatures(); 
+  sensors.requestTemperatures(); 
     // Temperature in Celsius degrees
+  bool is_valid[3];
   for (int i=0; i<numberOfDevices; i++)
   {
-    temp[i] = sensors.getTempC(statDeviceAddress[i]);
+    float fTemp = sensors.getTempC(statDeviceAddress[i]);
+    if (fTemp > DEVICE_DISCONNECTED_C) {
+      temp[i] = fTemp;
+      is_valid[i]=true;
+    }
+    else {
+      is_valid[i]=false;
+    }
+
+    
     // Temperature in Fahrenheit degrees
     //temp = sensors.getTempFByIndex(0);
     if (i==0)
     {
-      avgRoomtemp();
+      avgRoomtemp(); // no respect to valid not valid....
     }
     // Publish an MQTT message on topic esp/ds18b20/temperature
     String Topic(MQTT_PUB_TEMP_PREFIX);
     Topic += TempsensRole[i];
     Topic += String(MQTT_PUB_TEMP_SUFFIX);
-    if (mqttClient.connected()) {
+    if (is_valid[i] && (mqttClient.connected())) {
       uint16_t packetIdPub1 = mqttClient.publish(Topic.c_str(), 1, true, String(temp[i]).c_str());
       delay(10);                            
     }

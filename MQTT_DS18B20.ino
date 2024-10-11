@@ -15,7 +15,7 @@
 #error "unsupported board type"
 #error ARDUINO_BOARD
 #else
-#pragma message ARDUINO_BOARD
+#pragma message ARDUINO_BOARD is selected
 #endif
 
 #include "thermostat_preferences.h"
