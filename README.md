@@ -37,6 +37,7 @@ Mindestausstattung wäre ein Thermosensor für die Raumtemperatur und ein Schalt
 ### Was fehlt noch
 
 - OTA Library für den OTA-Update der Firmware
+- Schaltplanänderung in Kicad nachpflegen, zur Stabilitätsverbesserung werden die DS18B20 jetzt mit 5 V versorgt
 
 ### Verbesserungen - was würde ich in der Serie anders machen
 
