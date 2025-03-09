@@ -1,6 +1,8 @@
 #define MAX_DS18B20_DEVICES 3
-
+void printAddress(DeviceAddress deviceAddress);
 DeviceAddress statDeviceAddress[3]; 
+bool is_old_valid[MAX_DS18B20_DEVICES] = { true, true, true};
+bool is_valid[MAX_DS18B20_DEVICES] = { false, false, false};
 int numberOfDevices;
 // to provide functionality with only one sensor, make "raum" the first one!
 // later we will sort the sensors in ascending sequence
@@ -50,9 +52,8 @@ void avgRoomtemp() {
 void getTemperatures() {
   sensors.requestTemperatures(); 
     // Temperature in Celsius degrees
-  bool is_valid[3];
-  for (int i=0; i<numberOfDevices; i++)
-  {
+  Serial.print("DS18B20s:");
+  for (int i=0; i<numberOfDevices; i++) {
     float fTemp = sensors.getTempC(statDeviceAddress[i]);
     if (fTemp > DEVICE_DISCONNECTED_C) {
       temp[i] = fTemp;
@@ -61,8 +62,19 @@ void getTemperatures() {
     else {
       is_valid[i]=false;
     }
-
-    
+    Serial.print(" ");
+    printAddress(statDeviceAddress[i]);
+    if (is_valid[i])
+      Serial.print("(good");
+    else
+      Serial.print("(bad");
+      
+    if (is_valid[i] != is_old_valid[i]) {
+      Serial.print("*) ");
+      is_old_valid[i] = is_valid[i];
+    }
+    else
+      Serial.print(") ");
     // Temperature in Fahrenheit degrees
     //temp = sensors.getTempFByIndex(0);
     if (i==0)
@@ -80,6 +92,7 @@ void getTemperatures() {
     // Serial.printf("Publishing on topic %s at QoS 1, packetId: %i ", Topic.c_str(), packetIdPub1);
     // Serial.printf("Msg: %.2f \n", temp[i]);
   }
+  Serial.println(" ");
 }
 
 // function to print a device address

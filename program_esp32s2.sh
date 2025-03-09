@@ -1,8 +1,8 @@
 #!/bin/bash
 # installation on debiantest LXC
 #=============
-# copy from mounted data SMB share to local disc
-
+# activate venv
+source /home/martin/.local/pipx/venvs/esptool/bin/activate
 #=============
 # do programming
 python3 "/home/martin/.local/pipx/venvs/esptool/bin/esptool.py" \
@@ -11,7 +11,7 @@ python3 "/home/martin/.local/pipx/venvs/esptool/bin/esptool.py" \
  0x1000 "./ESP8266_MQTT_THERMOSTAT.ino.bootloader.bin" \
  0x8000 "./ESP8266_MQTT_THERMOSTAT.ino.partitions.bin" \
  0xe000 "./boot_app0.bin" \
- 0x10000 "./ESP8266_MQTT_THERMOSTAT.ino.bin" 
+ 0x10000 "./ESP8266_MQTT_THERMOSTAT.ino.bin"
 
 # ..bootloader.bin from /home/martin/.cache/arduino/sketches/<uuid>
 # ..partition.bin from /home/martin/.cache/arduino/sketches/<uuid>
