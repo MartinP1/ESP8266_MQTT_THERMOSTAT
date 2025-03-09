@@ -1,2 +1,2 @@
-"/home/martin/.arduino15/packages/esp32/tools/esptool_py/4.9.dev3/esptool" --chip esp32s2 --port "/dev/ttyACM0" --baud 921600  --before default_reset --after hard_reset write_flash  -z --flash_mode keep --flash_freq keep --flash_size keep 0x1000 "/home/martin/.cache/arduino/sketches/4E382C76DB4353F56EC37A4347C2B97E/MQTT_DS18B20.ino.bootloader.bin" 0x8000 "/home/martin/.cache/arduino/sketches/4E382C76DB4353F56EC37A4347C2B97E/MQTT_DS18B20.ino.partitions.bin" 0xe000 "/home/martin/.arduino15/packages/esp32/hardware/esp32/3.1.1/tools/partitions/boot_app0.bin" 0x10000 "/home/martin/.cache/arduino/sketches/4E382C76DB4353F56EC37A4347C2B97E/MQTT_DS18B20.ino.bin" 
-esptool.py v4.8.1
+#!/bin/bash
+copy 
