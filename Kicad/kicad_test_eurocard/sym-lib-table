@@ -1,0 +1,3 @@
+(sym_lib_table
+  (lib (name DCDC)(type Legacy)(uri /home/martin/kicad_test_eurocard/Bauteile/YAAJ_DCDC_LM2596/yaaj_dcdc_stepdown_lm2596.lib)(options "")(descr ""))
+)

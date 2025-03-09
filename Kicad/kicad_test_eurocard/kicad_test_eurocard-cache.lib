@@ -1,0 +1,277 @@
+EESchema-LIBRARY Version 2.4
+#encoding utf-8
+#
+# Connector_Conn_01x02_Male
+#
+DEF Connector_Conn_01x02_Male J 0 40 Y N 1 F N
+F0 "J" 0 100 50 H V C CNN
+F1 "Connector_Conn_01x02_Male" 0 -200 50 H V C CNN
+F2 "" 0 0 50 H I C CNN
+F3 "" 0 0 50 H I C CNN
+$FPLIST
+ Connector*:*_1x??_*
+$ENDFPLIST
+DRAW
+S 34 -95 0 -105 1 1 6 F
+S 34 5 0 -5 1 1 6 F
+P 2 1 1 6 50 -100 34 -100 N
+P 2 1 1 6 50 0 34 0 N
+X Pin_1 1 200 0 150 L 50 50 1 1 P
+X Pin_2 2 200 -100 150 L 50 50 1 1 P
+ENDDRAW
+ENDDEF
+#
+# Connector_Conn_01x03_Male
+#
+DEF Connector_Conn_01x03_Male J 0 40 Y N 1 F N
+F0 "J" 0 200 50 H V C CNN
+F1 "Connector_Conn_01x03_Male" 0 -200 50 H V C CNN
+F2 "" 0 0 50 H I C CNN
+F3 "" 0 0 50 H I C CNN
+$FPLIST
+ Connector*:*_1x??_*
+$ENDFPLIST
+DRAW
+S 34 -95 0 -105 1 1 6 F
+S 34 5 0 -5 1 1 6 F
+S 34 105 0 95 1 1 6 F
+P 2 1 1 6 50 -100 34 -100 N
+P 2 1 1 6 50 0 34 0 N
+P 2 1 1 6 50 100 34 100 N
+X Pin_1 1 200 100 150 L 50 50 1 1 P
+X Pin_2 2 200 0 150 L 50 50 1 1 P
+X Pin_3 3 200 -100 150 L 50 50 1 1 P
+ENDDRAW
+ENDDEF
+#
+# DCDC_YAAJ_DCDC_StepDown_LM2596
+#
+DEF DCDC_YAAJ_DCDC_StepDown_LM2596 U 0 40 Y Y 1 F N
+F0 "U" -200 250 50 H V C CNN
+F1 "DCDC_YAAJ_DCDC_StepDown_LM2596" 0 450 50 H V C CNN
+F2 "" -50 0 50 H I C CNN
+F3 "" -50 0 50 H I C CNN
+DRAW
+T 0 244 -168 20 0 1 1 Y@@V Normal 0 C C
+S -300 200 300 -200 0 1 0 f
+X Vin 1 -400 100 100 R 50 50 1 1 W
+X GND 2 -100 -300 100 U 50 50 1 1 W
+X GND 3 100 -300 100 U 50 50 1 1 W
+X Vout 4 400 100 100 L 50 50 1 1 w
+ENDDRAW
+ENDDEF
+#
+# Device_R
+#
+DEF Device_R R 0 0 N Y 1 F N
+F0 "R" 80 0 50 V V C CNN
+F1 "Device_R" 0 0 50 V V C CNN
+F2 "" -70 0 50 V I C CNN
+F3 "" 0 0 50 H I C CNN
+$FPLIST
+ R_*
+$ENDFPLIST
+DRAW
+S -40 -100 40 100 0 1 10 N
+X ~ 1 0 150 50 D 50 50 1 1 P
+X ~ 2 0 -150 50 U 50 50 1 1 P
+ENDDRAW
+ENDDEF
+#
+# Diode_1N4007
+#
+DEF Diode_1N4007 D 0 40 N N 1 F N
+F0 "D" 0 100 50 H V C CNN
+F1 "Diode_1N4007" 0 -100 50 H V C CNN
+F2 "Diode_THT:D_DO-41_SOD81_P10.16mm_Horizontal" 0 -175 50 H I C CNN
+F3 "" 0 0 50 H I C CNN
+ALIAS 1N4002 1N4003 1N4004 1N4005 1N4006 1N4007 BA157 BA158 BA159
+$FPLIST
+ D*DO?41*
+$ENDFPLIST
+DRAW
+P 2 0 1 8 -50 50 -50 -50 N
+P 2 0 1 0 50 0 -50 0 N
+P 4 0 1 8 50 50 50 -50 -50 0 50 50 N
+X K 1 -150 0 100 R 50 50 1 1 P
+X A 2 150 0 100 L 50 50 1 1 P
+ENDDRAW
+ENDDEF
+#
+# MCU_Module_WeMos_D1_mini
+#
+DEF MCU_Module_WeMos_D1_mini U 0 20 Y Y 1 F N
+F0 "U" 150 750 50 H V L CNN
+F1 "MCU_Module_WeMos_D1_mini" 50 -750 50 H V L CNN
+F2 "Module:WEMOS_D1_mini_light" 0 -1150 50 H I C CNN
+F3 "" -1850 -1150 50 H I C CNN
+$FPLIST
+ WEMOS*D1*mini*
+$ENDFPLIST
+DRAW
+S -300 700 300 -700 1 1 10 f
+X ~RST 1 -400 400 100 R 50 50 1 1 I
+X GND 10 0 -800 100 U 50 50 1 1 W
+X D4 11 400 0 100 L 50 50 1 1 B
+X D3 12 400 100 100 L 50 50 1 1 B
+X SDA/D2 13 400 200 100 L 50 50 1 1 B
+X SCL/D1 14 400 300 100 L 50 50 1 1 B
+X RX 15 -400 100 100 R 50 50 1 1 I
+X TX 16 -400 0 100 R 50 50 1 1 O
+X A0 2 400 500 100 L 50 50 1 1 I
+X D0 3 400 400 100 L 50 50 1 1 B
+X SCK/D5 4 400 -100 100 L 50 50 1 1 B
+X MISO/D6 5 400 -200 100 L 50 50 1 1 B
+X MOSI/D7 6 400 -300 100 L 50 50 1 1 B
+X CS/D8 7 400 -400 100 L 50 50 1 1 B
+X 3V3 8 100 800 100 D 50 50 1 1 w
+X 5V 9 -100 800 100 D 50 50 1 1 W
+ENDDRAW
+ENDDEF
+#
+# Transistor_BJT_BC549
+#
+DEF Transistor_BJT_BC549 Q 0 0 Y N 1 F N
+F0 "Q" 200 75 50 H V L CNN
+F1 "Transistor_BJT_BC549" 200 0 50 H V L CNN
+F2 "Package_TO_SOT_THT:TO-92_Inline" 200 -75 50 H I L CIN
+F3 "" 0 0 50 H I L CNN
+ALIAS BC546 BC548 BC549 BC550 BC337 BC338
+$FPLIST
+ TO?92*
+$ENDFPLIST
+DRAW
+C 50 0 111 0 1 10 N
+P 2 0 1 0 0 0 25 0 N
+P 2 0 1 0 25 25 100 100 N
+P 3 0 1 0 25 -25 100 -100 100 -100 N
+P 3 0 1 20 25 75 25 -75 25 -75 N
+P 5 0 1 0 50 -70 70 -50 90 -90 50 -70 50 -70 F
+X C 1 100 200 100 D 50 50 1 1 P
+X B 2 -200 0 200 R 50 50 1 1 I
+X E 3 100 -200 100 U 50 50 1 1 P
+ENDDRAW
+ENDDEF
+#
+# eec_IRFB3306PBF
+#
+DEF eec_IRFB3306PBF Q 0 40 Y Y 1 L N
+F0 "Q" 0 300 50 H V L CNN
+F1 "eec_IRFB3306PBF" 0 400 50 H V L CNN
+F2 "Infineon_Technologies-PG-TO220-3-02_2008-904-*" 0 500 50 H I L CNN
+F3 "https://www.infineon.com/dgdl/irfs3306pbf.pdf?fileId=5546d462533600a40153563682652165" 0 600 50 H I L CNN
+F4 "No" 0 700 50 H I L CNN "automotive"
+F5 "Trans" 0 800 50 H I L CNN "category"
+F6 "120A" 0 900 50 H I L CNN "continuous drain current"
+F7 "False" 0 1000 50 H I L CNN "depletion mode"
+F8 "Discrete Semiconductors" 0 1100 50 H I L CNN "device class L1"
+F9 "Transistors" 0 1200 50 H I L CNN "device class L2"
+F10 "MOSFETs" 0 1300 50 H I L CNN "device class L3"
+F11 "MOSFET N-CH 60V 120A TO-220AB" 0 1400 50 H I L CNN "digikey description"
+F12 "IRFB3306PBF-ND" 0 1500 50 H I L CNN "digikey part number"
+F13 "60V" 0 1600 50 H I L CNN "drain to source breakdown voltage"
+F14 "3.3mΩ" 0 1700 50 H I L CNN "drain to source resistance"
+F15 "60V" 0 1800 50 H I L CNN "drain to source voltage"
+F16 "https://www.infineon.com/dgdl/po-to220ab-fp.pdf?fileId=5546d462580663ef0158068cfbee01be" 0 1900 50 H I L CNN "footprint url"
+F17 "85nC @ 10V" 0 2000 50 H I L CNN "gate charge at vgs"
+F18 "20V" 0 2100 50 H I L CNN "gate to source voltage"
+F19 "19.8mm" 0 2200 50 H I L CNN "height"
+F20 "4520pF @ 50V" 0 2300 50 H I L CNN "input capacitace at vds"
+F21 "TO-220" 0 2400 50 H I L CNN "ipc land pattern name"
+F22 "Yes" 0 2500 50 H I L CNN "lead free"
+F23 "4f9c4ec106a930ef" 0 2600 50 H I L CNN "library id"
+F24 "Infineon Technologies" 0 2700 50 H I L CNN "manufacturer"
+F25 "1.3V" 0 2800 50 H I L CNN "max forward diode voltage"
+F26 "+175°C" 0 2900 50 H I L CNN "max junction temp"
+F27 "942-IRFB3306PBF" 0 3000 50 H I L CNN "mouser part number"
+F28 "1" 0 3100 50 H I L CNN "number of N channels"
+F29 "1" 0 3200 50 H I L CNN "number of channels"
+F30 "TO220AB" 0 3300 50 H I L CNN "package"
+F31 "230W" 0 3400 50 H I L CNN "power dissipation"
+F32 "620A" 0 3500 50 H I L CNN "pulse drain current"
+F33 "34nC" 0 3600 50 H I L CNN "reverse recovery charge"
+F34 "31ns" 0 3700 50 H I L CNN "reverse recovery time"
+F35 "Yes" 0 3800 50 H I L CNN "rohs"
+F36 "62°C/W" 0 3900 50 H I L CNN "rthja max"
+F37 "3.37mm" 0 4000 50 H I L CNN "standoff height"
+F38 "+175°C" 0 4100 50 H I L CNN "temperature range high"
+F39 "-55°C" 0 4200 50 H I L CNN "temperature range low"
+F40 "4V" 0 4300 50 H I L CNN "threshold vgs max"
+F41 "2V" 0 4400 50 H I L CNN "threshold vgs min"
+F42 "40ns" 0 4500 50 H I L CNN "turn off delay time"
+F43 "15ns" 0 4600 50 H I L CNN "turn on delay time"
+DRAW
+C 400 -80 10 1 1 0 N
+C 400 80 10 1 1 0 N
+P 2 1 1 0 240 -100 240 100 N
+P 2 1 1 0 270 -80 400 -80 N
+P 2 1 1 0 270 -60 270 -100 N
+P 2 1 1 0 270 20 270 -20 N
+P 2 1 1 0 270 60 270 100 N
+P 2 1 1 0 270 80 400 80 N
+P 2 1 1 0 290 0 340 -30 N
+P 2 1 1 0 290 0 340 30 N
+P 2 1 1 0 300 0 400 0 N
+P 2 1 1 0 330 10 330 -20 N
+P 2 1 1 0 340 30 340 -30 N
+P 2 1 1 0 400 -80 470 -80 N
+P 2 1 1 0 450 -20 490 -20 N
+P 2 1 1 0 450 20 440 10 N
+P 2 1 1 0 470 -80 470 80 N
+P 2 1 1 0 470 20 450 -20 N
+P 2 1 1 0 470 20 450 20 N
+P 2 1 1 0 470 20 490 20 N
+P 2 1 1 0 470 80 400 80 N
+P 2 1 1 0 490 -20 470 20 N
+P 2 1 1 0 490 20 500 30 N
+X G 1 100 0 140 R 40 0 1 1 P
+X D 2 400 200 120 D 40 0 1 1 P
+X S 3 400 -200 200 U 40 0 1 1 P
+ENDDRAW
+ENDDEF
+#
+# power_+12V
+#
+DEF power_+12V #PWR 0 0 Y Y 1 F P
+F0 "#PWR" 0 -150 50 H I C CNN
+F1 "power_+12V" 0 140 50 H V C CNN
+F2 "" 0 0 50 H I C CNN
+F3 "" 0 0 50 H I C CNN
+DRAW
+P 2 0 1 0 -30 50 0 100 N
+P 2 0 1 0 0 0 0 100 N
+P 2 0 1 0 0 100 30 50 N
+X +12V 1 0 0 0 U 50 50 1 1 W N
+ENDDRAW
+ENDDEF
+#
+# power_+3V3
+#
+DEF power_+3V3 #PWR 0 0 Y Y 1 F P
+F0 "#PWR" 0 -150 50 H I C CNN
+F1 "power_+3V3" 0 140 50 H V C CNN
+F2 "" 0 0 50 H I C CNN
+F3 "" 0 0 50 H I C CNN
+ALIAS +3.3V
+DRAW
+P 2 0 1 0 -30 50 0 100 N
+P 2 0 1 0 0 0 0 100 N
+P 2 0 1 0 0 100 30 50 N
+X +3V3 1 0 0 0 U 50 50 1 1 W N
+ENDDRAW
+ENDDEF
+#
+# power_GND
+#
+DEF power_GND #PWR 0 0 Y Y 1 F P
+F0 "#PWR" 0 -250 50 H I C CNN
+F1 "power_GND" 0 -150 50 H V C CNN
+F2 "" 0 0 50 H I C CNN
+F3 "" 0 0 50 H I C CNN
+DRAW
+P 6 0 1 0 0 0 0 -50 50 -50 0 -100 -50 -50 0 -50 N
+X GND 1 0 0 0 D 50 50 1 1 W N
+ENDDRAW
+ENDDEF
+#
+#End Library
