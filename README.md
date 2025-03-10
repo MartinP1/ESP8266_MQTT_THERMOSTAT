@@ -27,7 +27,7 @@ Das Projekt ist seit einigen Wochen im operativen Einsatz.
 - 3 DS 18B20 Thermosensoren von Shelly https://www.pollin.de/p/shelly-temperMQTT_PUB_DEV_PREFIXatursensor-ds18b20-591021
   - zur Messung von Zulauf- und Ablauftemperatur des Heizkörpers und der Raumtemperatur
 
-![Schaltplan](https://github.com/MartinP1/ESP8266_MQTT_THERMOSTAT/blob/main/Board_esp8266_d1mini_backup_Schaltplan.svg "Schaltplan")
+![Schaltplan]([https://github.com/MartinP1/ESP8266_MQTT_THERMOSTAT/blob/main/Board_esp8266_d1mini_backup_Schaltplan.svg](https://github.com/MartinP1/ESP8266_MQTT_THERMOSTAT/blob/main/Kicad/kicad_test_eurocard/kicad_test_eurocard.svg) "Schaltplan")
 
 Das Prototyp-System ist stillgelegt, aktuell läuft V1 einer Kicad-Leiterplatte.
 Mindestausstattung wäre ein Thermosensor für die Raumtemperatur und ein Schaltrelais für die Ansteuerung des Ventil-Stellgliedes...
