@@ -72,6 +72,10 @@ void getTemperatures() {
     if (is_valid[i] != is_old_valid[i]) {
       Serial.print("*) ");
       is_old_valid[i] = is_valid[i];
+      if (!is_valid[i]){
+        MQTTLogPrintf("Thermosensensor[%d] (%s) lost connection", i, statDeviceAddress[i]);
+      } 
+
     }
     else
       Serial.print(") ");
