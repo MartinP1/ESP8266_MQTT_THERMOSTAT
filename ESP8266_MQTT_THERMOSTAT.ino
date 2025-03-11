@@ -53,18 +53,19 @@ void onMqttConnect(bool sessionPresent) {
   while (DevIdx<numberOfDevices){ 
     if (written>0){
       pBuff+=written;    
-      written = snprintf (pBuff,19," ,%02X%02X%02X%02X%02X%02X%02X%02X", 
-        statDeviceAddress[DevIdx][7],
-        statDeviceAddress[DevIdx][6],
+      written = snprintf (pBuff,19," ,%02X%02X%02X%02X%02X%02X/%02X", 
+        // statDeviceAddress[DevIdx][7], <- skipped, CRP
+        statDeviceAddress[DevIdx][6], // <- MSByte of serial number
         statDeviceAddress[DevIdx][5],
         statDeviceAddress[DevIdx][4],
         statDeviceAddress[DevIdx][3],
-        statDeviceAddress[DevIdx][2],
-        statDeviceAddress[DevIdx][1],
-        statDeviceAddress[DevIdx][0]);
+        statDeviceAddress[DevIdx][2], 
+        statDeviceAddress[DevIdx][1], // <- LSByte of serial number
+        statDeviceAddress[DevIdx][0]); // <- family code set to 0x28
     } 
     else
       break;
+    DevIdx++;
   }  
   MQTTLog(log_buffer);
      
