@@ -102,4 +102,6 @@ echo "program_MINI_D1_ESP32.sh (from project dir)"
 sshpass -p $var rsync -a /home/martin/github/ESP8266_MQTT_THERMOSTAT/program_MINI_D1_ESP32.sh martin@192.168.2.164:/home/martin/thermostat
 echo "program_esp32s2.sh (from project dir)"
 sshpass -p $var rsync -a /home/martin/github/ESP8266_MQTT_THERMOSTAT/program_esp32s2.sh martin@192.168.2.164:/home/martin/thermostat
+echo "backup.sh (from project dir)"
+sshpass -p $var rsync -a /home/martin/github/ESP8266_MQTT_THERMOSTAT/backup.sh martin@192.168.2.164:/home/martin/thermostat
 

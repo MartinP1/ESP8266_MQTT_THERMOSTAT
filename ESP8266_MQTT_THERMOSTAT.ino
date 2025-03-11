@@ -45,7 +45,32 @@ void onMqttConnect(bool sessionPresent) {
   Serial.print("Subscribing debug setting, packetId: ");
   Serial.println(packetIdSub);
   publishDesSpeed(PWM_THROTTLE);
-  MQTTLogPrintf("Thermostat started %d Thermosensors found", numberOfDevices);
+  
+#if 1
+  char* pBuff=log_buffer;
+  int written = snprintf (pBuff,119,"Thermostat started, %d sensors", numberOfDevices);
+  int DevIdx=0;
+  while (DevIdx<numberOfDevices){ 
+    if (written>0){
+      pBuff+=written;    
+      written = snprintf (pBuff,19," ,%02X%02X%02X%02X%02X%02X%02X%02X", 
+        statDeviceAddress[DevIdx][7],
+        statDeviceAddress[DevIdx][6],
+        statDeviceAddress[DevIdx][5],
+        statDeviceAddress[DevIdx][4],
+        statDeviceAddress[DevIdx][3],
+        statDeviceAddress[DevIdx][2],
+        statDeviceAddress[DevIdx][1],
+        statDeviceAddress[DevIdx][0]);
+    } 
+    else
+      break;
+  }  
+  MQTTLog(log_buffer);
+     
+#else
+  MQTTLogPrintf("Thermostat started %d Thermosensors found ", numberOfDevices);
+#endif  
 }
 
 void onMqttDisconnect(AsyncMqttClientDisconnectReason reason) {

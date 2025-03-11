@@ -1,3 +1,5 @@
+ 
+
 #define MAX_DS18B20_DEVICES 3
 void printAddress(DeviceAddress deviceAddress);
 DeviceAddress statDeviceAddress[3]; 
@@ -73,7 +75,18 @@ void getTemperatures() {
       Serial.print("*) ");
       is_old_valid[i] = is_valid[i];
       if (!is_valid[i]){
-        MQTTLogPrintf("Thermosensensor[%d] (%s) lost connection", i, statDeviceAddress[i]);
+#if 0        
+        MQTTLogPrintf("Thermosensensor[%d] (%02X%02X%02X%02X%02X%02X%02X) lost connection", 
+          i, 
+          statDeviceAddress[i][7],
+          statDeviceAddress[i][6],
+          statDeviceAddress[i][5],
+          statDeviceAddress[i][4],
+          statDeviceAddress[i][3],
+          statDeviceAddress[i][2],
+          statDeviceAddress[i][1],
+          statDeviceAddress[i][0]);
+#endif     
       } 
 
     }
