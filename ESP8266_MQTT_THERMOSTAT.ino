@@ -1,4 +1,4 @@
-
+#define VERSION_NO "1.1.0 12-MAR-2025"
 #include "./GLOBAL_VARS_MQTT_DS18B20.h"
 #include "unspecialized_mqtt_doings.h"
 #include "MqttLogging.h"
@@ -48,12 +48,12 @@ void onMqttConnect(bool sessionPresent) {
   
 #if 1
   char* pBuff=log_buffer;
-  int written = snprintf (pBuff,119,"Thermostat started, %d sensors", numberOfDevices);
+  int written = snprintf (pBuff,119,"Thermostat %s started, %d sensors", VERSION_NO, numberOfDevices);
   int DevIdx=0;
   while (DevIdx<numberOfDevices){ 
     if (written>0){
       pBuff+=written;    
-      written = snprintf (pBuff,19," ,%02X%02X%02X%02X%02X%02X/%02X", 
+      written = snprintf (pBuff,19,", %02X%02X%02X%02X%02X%02X/%02X", 
         // statDeviceAddress[DevIdx][7], <- skipped, CRP
         statDeviceAddress[DevIdx][6], // <- MSByte of serial number
         statDeviceAddress[DevIdx][5],
