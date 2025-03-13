@@ -75,17 +75,17 @@ void getTemperatures() {
       Serial.print("*) ");
       is_old_valid[i] = is_valid[i];
 #if 1        
-      MQTTLogPrintf("Thermosensensor[%d] (%02X%02X%02X%02X%02X%02X/%02X) %s", 
+      MQTTLogPrintf("Thermosensor[%d] %s (%02X%02X%02X%02X%02X%02X)", 
         i, 
-        // statDeviceAddress[i][7], // crc
+        is_valid[i] ? "regained" : "lost",
+        // statDeviceAddress[i][7], // omit crc
         statDeviceAddress[i][6], // begin serial number
         statDeviceAddress[i][5],
         statDeviceAddress[i][4],
         statDeviceAddress[i][3],
         statDeviceAddress[i][2],
-        statDeviceAddress[i][1],
-        statDeviceAddress[i][0],  // family code 0x28
-        is_valid[i] ? "regained" : "lost");
+        statDeviceAddress[i][1]);
+        // statDeviceAddress[i][0]);  // omit family code 0x28
 #endif     
     }
     else

@@ -3,7 +3,7 @@ ESP8366_MQTT_THERMOSTAT
 # Ein Heizkörperthermostat auf Basis eines ESP8266 und MQTT
 
 ## Projektstand
-Das Projekt ist seit einigen Wochen im operativen Einsatz.
+Das Projekt ist seit mehreren Jahren im operativen Einsatz.
 - Temperaturmessung über 3 Sensoren, Weitergabe der Werte über MQTT
 - Zuspielen der Solltemperatur über MQTT auf den ESP
 - Ansteuerung von Lüftern, die den Heizkörper von unten zur Erhöhung der Heizleistung anblasen (PWM)
@@ -50,3 +50,4 @@ Mindestausstattung wäre ein Thermosensor für die Raumtemperatur und ein Schalt
 ### Worklog
 
 - JAN-2024 Start der Nutzung der Preferences Bibliothek
+- MAR-2025 Diverse Code-Korrekturen bzgl. der Temperatursensoren.
