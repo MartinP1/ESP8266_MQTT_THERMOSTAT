@@ -1,6 +1,7 @@
 ESP8366_MQTT_THERMOSTAT
 
 # Ein Heizkörperthermostat auf Basis eines ESP8266 und MQTT
+![English version](README_en.md)
 
 ## Projektstand
 Das Projekt ist seit mehreren Jahren im operativen Einsatz.
