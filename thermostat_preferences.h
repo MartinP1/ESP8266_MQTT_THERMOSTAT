@@ -66,7 +66,7 @@ void testPreferences(char* payload, const char* topic){
       Serial.println(payload);
     }
     if (mqttClient.connected()) {
-      mqttClient.publish(topic, 1, true, payload);
+      (topic, 1, true, payload);
     }
     return;
  

@@ -45,7 +45,10 @@ void onMqttConnect(bool sessionPresent) {
   Serial.print("Subscribing debug setting, packetId: ");
   Serial.println(packetIdSub);
   publishDesSpeed(PWM_THROTTLE);
-  
+  for (int i=0;i<numberOfDevices; i++){
+    publishSensorState(i);
+    is_old_valid[i]=is_valid[i]; // reporting of state fixed to one time
+  }
 #if 1
   char* pBuff=log_buffer;
   int written = snprintf (pBuff,119,"Thermostat %s started, %d sensors", VERSION_NO, numberOfDevices);

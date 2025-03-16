@@ -15,6 +15,25 @@ float temp[3];
 #define RUECKLAUF 2
 
 #define RT_AVG_PERIOD 6
+/// @brief publish sensor state, invoked on initialization and sensor state change
+/// @param iSensId the ID of Sensor
+void publishSensorState(int iSensId) {
+  if (iSensId>MAX_DS18B20_DEVICES) return; // range error!
+  String Topic(MQTT_PUB_TEMP_PREFIX);
+  Topic += TempsensRole[iSensId];
+  Topic += String(MQTT_PUB_TEMP_SENAV_SUFFIX);
+  if (mqttClient.connected()) {
+    uint16_t packetIdPub1 = mqttClient.publish(Topic.c_str(), 1, true, is_valid[iSensId] ? "1" : "0");
+    delay(10);                            
+  }
+  Serial.print("Published Sensor state: "); 
+  Serial.print("Topic.c_str");
+  Serial.print("State=");
+  Serial.println( is_valid[iSensId] );
+
+}
+
+
 
 /**
 @todo, this function is a baustelle ;-)
@@ -73,6 +92,7 @@ void getTemperatures() {
       
     if (is_valid[i] != is_old_valid[i]) {
       Serial.print("*) ");
+      publishSensorState(i);
       is_old_valid[i] = is_valid[i];
 #if 1        
       MQTTLogPrintf("Thermosensor[%d] %s (%02X%02X%02X%02X%02X%02X)", 
@@ -177,10 +197,6 @@ bool isDevAdrGreater(int left, int right){
   }
   return false; /// @todo manage duplicates (equality, when reaching this point)
 } 
-
-
-
-
 
 void initTemperatureSensors(){
   Serial.print("Locating devices...");

@@ -61,6 +61,7 @@ String MQTT_PUB_DEV_PREFIX(MQTT_PUB_DEV_PREFIX_PSET);
 #define MQTT_PUB_TEMP_PREFIX MQTT_PUB_DEV_PREFIX + "/sensors/"
 #define MQTT_PUB_TEMP_SUFFIX "/temperature"
 #define MQTT_PUB_TEMPHYST_SUFFIX "/temp_hyst"
+#define MQTT_PUB_TEMP_SENAV_SUFFIX "/available"
 
 #define MQTT_PUB_ACTOR_PREFIX MQTT_PUB_DEV_PREFIX + "/actors"
 #define MQTT_PUB_DES_PREFIX MQTT_PUB_DEV_PREFIX + "/desired"
@@ -134,3 +135,7 @@ unsigned long previousMillis = 0;   // Stores last time temperature was publishe
 const long interval = 10000;        // Interval at which to publish sensor readings and do thermostate calculations
 
 
+/// necessary function prototypes
+
+// module received_temp
+void publishSensorState(int iSensId);
