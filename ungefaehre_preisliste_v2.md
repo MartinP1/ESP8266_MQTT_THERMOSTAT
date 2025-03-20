@@ -6,8 +6,8 @@
 | Lolin S2 mini | 1 | 3,50 € |3,50 € 
 | DC-DC LM2696S | 1 | 3,50 €| 3,50 € 
 | Temperaturfühler DS18B20 | 3 | 3,33 € | 10 € |
-| Lüfter 80 mm 12 V | 4 | 2 € | 8 € | 
+| Lüfter 80 mm 12 V | 4 | 3 € | 12 € | 
 | Danfoss Thermostat/Stelltrieb 230 V NC 088H3220 | 1 | 12 € | 12 €
 
 
-Summe ca 46 €
+Summe ca 50 €
