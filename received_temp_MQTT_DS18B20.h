@@ -2,14 +2,16 @@
 
 #define MAX_DS18B20_DEVICES 3
 void printAddress(DeviceAddress deviceAddress);
-DeviceAddress statDeviceAddress[3]; 
+DeviceAddress statDeviceAddress[MAX_DS18B20_DEVICES]={ {0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF}, 
+                                                      {0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF}, 
+                                                      {0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF} }; 
 bool is_old_valid[MAX_DS18B20_DEVICES] = { true, true, true};
 bool is_valid[MAX_DS18B20_DEVICES] = { false, false, false};
 int numberOfDevices;
 // to provide functionality with only one sensor, make "raum" the first one!
 // later we will sort the sensors in ascending sequence
-const char* TempsensRole[3] {"raum",  "vorlauf", "ruecklauf"};
-float temp[3];
+const char* TempsensRole[MAX_DS18B20_DEVICES] {"raum",  "vorlauf", "ruecklauf"};
+float temp[MAX_DS18B20_DEVICES];
 #define RAUM 0
 #define VORLAUF 1
 #define RUECKLAUF 2
@@ -74,14 +76,14 @@ void getTemperatures() {
   sensors.requestTemperatures(); 
     // Temperature in Celsius degrees
   Serial.print("DS18B20s:");
-  for (int i=0; i<numberOfDevices; i++) {
-    float fTemp = sensors.getTempC(statDeviceAddress[i]);
-    if (fTemp > DEVICE_DISCONNECTED_C) {
-      temp[i] = fTemp;
-      is_valid[i]=true;
-    }
-    else {
-      is_valid[i]=false;
+  for (int i=0; i<MAX_DS18B20_DEVICES; i++) {
+    is_valid[i]=false;
+    if (statDeviceAddress[i][6]!=0xFF) {
+      float fTemp = sensors.getTempC(statDeviceAddress[i]);
+      if (fTemp > DEVICE_DISCONNECTED_C) {
+        temp[i] = fTemp;
+        is_valid[i]=true;
+      }
     }
     Serial.print(" ");
     printAddress(statDeviceAddress[i]);
