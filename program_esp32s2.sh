@@ -17,3 +17,5 @@ python3 "/home/martin/.local/pipx/venvs/esptool/bin/esptool.py" \
 # ..partition.bin from /home/martin/.cache/arduino/sketches/<uuid>
 # ..app0.bin from /home/martin/.arduino15/packages/esp32/hardware/esp32/3.0.7/tools/partitions/ (3.1.1 not working)
 # ..ino.bin from /home/martin/.cache/arduino/sketches/<uuid>
+
+# new use boot_app0.bin from /home/martin/.arduino15/packages/esp32/hardware/esp32/3.2.0/tools/partitions/
