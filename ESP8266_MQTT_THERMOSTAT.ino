@@ -138,7 +138,8 @@ void setup() {
   analogWrite(pwmGpio,255); // raw write off!
 #endif  
   pinMode(valveGpio, OUTPUT);
-  pinMode(windowContact, INPUT); 
+  pinMode(windowContact, INPUT_PULLUP); 
+  pinMode(oneWireBus, INPUT_PULLUP);
 #if defined(ARDUINO_D1_MINI32) || defined(ARDUINO_LOLIN_S2_MINI)
   WiFi.onEvent(onWifiConnect,WiFiEvent_t::ARDUINO_EVENT_WIFI_STA_GOT_IP);
   WiFi.onEvent(onWifiDisconnect,WiFiEvent_t::ARDUINO_EVENT_WIFI_STA_DISCONNECTED);
