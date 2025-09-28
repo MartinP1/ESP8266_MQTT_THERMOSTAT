@@ -22,6 +22,11 @@ based on below Work of Rui Santos
   The above copyright notice and this permission notice shall be included in all
   copies or substantial portions of the Software.
 */
+#ifdef ARDUINO_LOLIN_S2_MINI
+#define OTA_UPDATES 1
+#else
+#define OTA_UPDATES 0
+#endif
 #include <Preferences.h>
 #include <DallasTemperature.h>
 #ifdef ARDUINO_ESP8266_WEMOS_D1MINI
@@ -29,6 +34,11 @@ based on below Work of Rui Santos
 #include <LibPrintf.h>
 #else
 #include <WiFi.h>
+#if OTA_UPDATES
+#include <ESPmDNS.h>
+#include <WiFiUdp.h>
+#include <ArduinoOTA.h>
+#endif
 #endif
 // #include <Ticker.h>
 // #include <AsyncMqttClient.h>

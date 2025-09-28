@@ -162,6 +162,13 @@ void setup() {
   connectToWifi();
   initTemperatureSensors();
   previousMillis = millis(); // avoid initial overrun?
+#if OTA_UPDATES
+  // Same as MQTT device name
+  ArduinoOTA.setHostname(MQTT_PUB_DEV_PREFIX.c_str());
+  // from secret.h
+  ArduinoOTA.setPassword(OTA_PASSWORD); 
+  ArduinoOTA.begin(); 
+#endif
 }
 
 
@@ -185,6 +192,9 @@ void loop() {
     SelftestPwm();
     return;
   }
+#if OTA_UPDATES
+  ArduinoOTA.handle();
+#endif
 
   
   // Every X number of seconds (interval = 10 seconds) 
