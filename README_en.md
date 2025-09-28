@@ -50,4 +50,8 @@ Minimum equipment would be a thermosensor for the room temperature and a switchi
 
 - JAN-2024 Start using the Preferences library
 - MAR-2025 Various code corrections regarding the temperature sensors.
+- SEP-2025 
+  - ASYNC_TCP issues fixed - AsyncTCP replaced by ESP32Async 3.4.7 
+  - OTA Update librariy added 
+
 

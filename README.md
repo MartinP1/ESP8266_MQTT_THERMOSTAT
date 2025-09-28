@@ -45,11 +45,14 @@ Mindestausstattung wäre ein Thermosensor für die Raumtemperatur und ein Schalt
 - 4 Pin Lüfter?
 - 24 V Variante des Danfoss Stellantriebs über DCDC Wandler mit Enable-Eingang?
 - Full Fan speed konfigurierbar (255 scheint zu schnell zu sein ...)
-- Neues Leiterplattenlayout mit 230 V Spannungesversorgung und Schaltrelais für Danfoss-Stellglied
+- Neues Leiterplattenlayout mit 230 V Spannungsversorgung und Schaltrelais für Danfoss-Stellglied
 - Migration des Projekts von Arduino-IDE auf PlatformIO
 
 ### Worklog
 
 - JAN-2024 Start der Nutzung der Preferences Bibliothek
 - MAR-2025 Diverse Code-Korrekturen bzgl. der Temperatursensoren.
-- SEP-2025 ASYNC_TCP issues fixed use AsyncTCP by ESP32Async 3.4.7 
+- SEP-2025 
+  - ASYNC_TCP issues fixed use AsyncTCP by ESP32Async 3.4.7 
+  - OTA Update librariy added 
+            
