@@ -1,5 +1,5 @@
 bool bWindowOpen=false;
 
 void GetWindowState(){
-  bWindowOpen = ( DigitalRead(windowContact) == 0);
+  bWindowOpen = ( digitalRead(windowContact) == 0);
 }

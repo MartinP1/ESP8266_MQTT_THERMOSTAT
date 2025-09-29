@@ -116,7 +116,8 @@ void runTempControl()
   Serial.print(WiFi.isConnected());
   Serial.print(" MQTT ");
   Serial.print(mqttClient.connected());
-
+  Serial.print(" WindowOpen ");
+  Serial.print(bWindowOpen);
   Serial.println(" ok");
   setSpeed(pwmActual);
   setValve(ventState);

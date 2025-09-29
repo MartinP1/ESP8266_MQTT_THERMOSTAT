@@ -1,4 +1,4 @@
-#define VERSION_NO "1.1.0 12-MAR-2025"
+#define VERSION_NO "1.2.0 29-SEP-2025"
 #include "./GLOBAL_VARS_MQTT_DS18B20.h"
 #include "unspecialized_mqtt_doings.h"
 #include "MqttLogging.h"
@@ -197,7 +197,6 @@ void loop() {
   ArduinoOTA.handle();
 #endif
 
-  GetWindowState(); // stored in global variable 
   // Every X number of seconds (interval = 10 seconds) 
   // it publishes a new MQTT message
   if (currentMillis - previousMillis >= interval) {
@@ -205,6 +204,8 @@ void loop() {
     previousMillis = currentMillis;
     // New temperature readings
     // if (!wifiStatus()) return;
+    GetWindowState(); // stored in global variable 
+
     wifiStatus();
 
     getTemperatures();
