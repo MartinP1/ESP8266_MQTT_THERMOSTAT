@@ -35,8 +35,13 @@ void getPreferences() {
     uiDebug = prefs.getUChar("Debug");
     Serial.print("INFO: Debug ");
     Serial.println(uiDebug);
-    }
+  }
   else Serial.println("WARN: No Debug setting found in preferences");
+  if (prefs.isKey("OverrideWindosSensor")){
+    uiOverrideWindowSensor = prefs.getUChar("uiOverrideWindowSensor");
+    Serial.print("INFO: uiOverrideWindowSensor ");
+    Serial.println(uiOverrideWindowSensor);
+  }
   
   prefs.end();
   
@@ -84,6 +89,23 @@ void testPreferences(char* payload, const char* topic){
     Serial.println(uiDebug);
     prefs.begin("mqtt_thermostat");
     siz = prefs.putUChar( "Debug", uiDebug);
+    prefs.end();
+    return;
+  }
+  strComp=MQTT_PUB_DEV_PREFIX +"/Preferences/OverrideWindowsSensor";
+  if (strComp.compareTo(topic)==0) {
+    if (mqttClient.connected())
+      mqttClient.publish(topic, 1, true, payload);    // do it here due to several returns
+    uint8_t uiOverrideWindowSensorlocal = (uint8_t)atol(payload);
+    // echo message  ?
+    if (uiOverrideWindowSensorlocal != uiOverrideWindowSensor) 
+       uiOverrideWindowSensor = uiOverrideWindowSensorlocal;
+    else return;
+
+    Serial.print ("Preferences OverrideWindowSensor: ");  
+    Serial.println(uiOverrideWindowSensor);
+    prefs.begin("mqtt_thermostat");
+    siz = prefs.putUChar( "OverrideWindowSensor", uiOverrideWindowSensorlocal);
     prefs.end();
     return;
   }

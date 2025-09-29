@@ -47,7 +47,8 @@ void FanAutomat(float difftemp){
 
 
 void VentAutomat(float difftemp){
-  if (difftemp > temp_hyst){
+ 
+  if ((difftemp > temp_hyst)||(bWindowClosed==false)){
     // Serial.print ("temp high - vent off");
     // upper fan off and vent off hysteresis point
     ventState = false;
@@ -116,8 +117,8 @@ void runTempControl()
   Serial.print(WiFi.isConnected());
   Serial.print(" MQTT ");
   Serial.print(mqttClient.connected());
-  Serial.print(" WindowOpen ");
-  Serial.print(bWindowOpen);
+  Serial.print(" WindowClosed ");
+  Serial.print(bWindowClosed);
   Serial.println(" ok");
   setSpeed(pwmActual);
   setValve(ventState);

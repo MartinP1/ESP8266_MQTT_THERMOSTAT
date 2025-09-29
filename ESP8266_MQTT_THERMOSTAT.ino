@@ -45,6 +45,9 @@ void onMqttConnect(bool sessionPresent) {
   packetIdSub = mqttClient.subscribe((MQTT_PUB_DEV_PREFIX +"/Preferences/Debug").c_str(), 2);
   Serial.print("Subscribing debug setting, packetId: ");
   Serial.println(packetIdSub);
+  packetIdSub = mqttClient.subscribe((MQTT_PUB_DEV_PREFIX +"/Preferences/OverrideWindowsSensor").c_str(), 2);
+  Serial.print("Subscribing OverrideWindowsSensor, packetId: ");
+  Serial.println(packetIdSub);
   publishDesSpeed(PWM_THROTTLE);
   for (int i=0;i<numberOfDevices; i++){
     publishSensorState(i);
