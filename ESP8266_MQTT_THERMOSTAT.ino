@@ -8,6 +8,7 @@
 #include "fan_pwm_MQTT_DS18B20.h"
 // #include "ventile_control_MQTT_DS18B20.h"
 // #include "window_contact_MQTT_DS18B20.h"
+#include "window_contact_MQTT_DS18B20.h"
 #include "do_calculations_MQTT_DS18B20.h"
 
 
@@ -196,7 +197,7 @@ void loop() {
   ArduinoOTA.handle();
 #endif
 
-  
+  GetWindowState(); // stored in global variable 
   // Every X number of seconds (interval = 10 seconds) 
   // it publishes a new MQTT message
   if (currentMillis - previousMillis >= interval) {
