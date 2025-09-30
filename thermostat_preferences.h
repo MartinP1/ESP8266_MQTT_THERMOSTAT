@@ -13,6 +13,8 @@
  * 
 */
 
+#define WRITE_TO_NV 1
+
 Preferences prefs;
 
 void getPreferences() {
@@ -43,7 +45,6 @@ void getPreferences() {
     Serial.println(uiOverrideWindowSensor);
   }
   else Serial.println("WARN: No uiOverrideWindowSensor setting found in preferences");
-  
   prefs.end();
   
 }
@@ -63,9 +64,12 @@ void testPreferences(char* payload, const char* topic){
       Serial.print("Prefs.MqttName is not changed ");
       Serial.println(payload);
     } else {
+
+#if WRITE_TO_NV
       prefs.begin("mqtt_thermostat");
       siz = prefs.putString( "MqttName", payload);
       prefs.end();
+#endif      
       Serial.print("Prefs.MqttName written ");
       Serial.print(siz);
       Serial.print(" bytes - ");
@@ -88,9 +92,11 @@ void testPreferences(char* payload, const char* topic){
 
     Serial.print ("Preferences Debug: ");  
     Serial.println(uiDebug);
+#if WRITE_TO_NV
     prefs.begin("mqtt_thermostat");
     siz = prefs.putUChar( "Debug", uiDebug);
     prefs.end();
+#endif
     return;
   }
   strComp=MQTT_PUB_DEV_PREFIX +"/Preferences/OverrideWindowsSensor";
@@ -106,9 +112,11 @@ void testPreferences(char* payload, const char* topic){
 
     Serial.print ("Preferences OverrideWindowSensor: ");  
     Serial.println(uiOverrideWindowSensor);
+#if WRITE_TO_NV
     prefs.begin("mqtt_thermostat");
     siz = prefs.putUChar( "OverrideWindowSensor", uiOverrideWindowSensorlocal);
     prefs.end();
+#endif
 #endif
     return;
   }
