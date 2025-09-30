@@ -37,11 +37,12 @@ void getPreferences() {
     Serial.println(uiDebug);
   }
   else Serial.println("WARN: No Debug setting found in preferences");
-  if (prefs.isKey("OverrideWindosSensor")){
+  if (prefs.isKey("OverrideWindowSensor")){
     uiOverrideWindowSensor = prefs.getUChar("uiOverrideWindowSensor");
     Serial.print("INFO: uiOverrideWindowSensor ");
     Serial.println(uiOverrideWindowSensor);
   }
+  else Serial.println("WARN: No uiOverrideWindowSensor setting found in preferences");
   
   prefs.end();
   
@@ -71,7 +72,7 @@ void testPreferences(char* payload, const char* topic){
       Serial.println(payload);
     }
     if (mqttClient.connected()) {
-      (topic, 1, true, payload);
+      mqttClient.publish(topic, 1, true, payload);
     }
     return;
  
@@ -94,6 +95,7 @@ void testPreferences(char* payload, const char* topic){
   }
   strComp=MQTT_PUB_DEV_PREFIX +"/Preferences/OverrideWindowsSensor";
   if (strComp.compareTo(topic)==0) {
+  #if 1
     if (mqttClient.connected())
       mqttClient.publish(topic, 1, true, payload);    // do it here due to several returns
     uint8_t uiOverrideWindowSensorlocal = (uint8_t)atol(payload);
@@ -107,14 +109,15 @@ void testPreferences(char* payload, const char* topic){
     prefs.begin("mqtt_thermostat");
     siz = prefs.putUChar( "OverrideWindowSensor", uiOverrideWindowSensorlocal);
     prefs.end();
+#endif
     return;
   }
 
 
 // no preferences topic for me
-  #if SERIAL_TRACE
-    Serial.print (topic);
-    Serial.println(" preferences - not mine - ");
-  #endif
-    return;
-  }
+#if SERIAL_TRACE
+  Serial.print (topic);
+  Serial.println(" preferences - not mine - ");
+#endif
+  return;
+}

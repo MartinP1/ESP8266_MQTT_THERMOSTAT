@@ -56,3 +56,10 @@ Mindestausstattung wäre ein Thermosensor für die Raumtemperatur und ein Schalt
   - ASYNC_TCP issues fixed use AsyncTCP by ESP32Async 3.4.7 
   - OTA Update librariy added 
             
+## Bugs 
+
+Board kommt aus dem Reset nicht hoch... 
+Schreiben von MQTT-Werten führt zum Restart des Boards (Nur Preferences, Solltemperatur geht)
+Pull-Up-Widerstand an EN hat nicht geholfen
+
+

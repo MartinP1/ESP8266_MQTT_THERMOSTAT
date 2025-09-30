@@ -129,6 +129,10 @@ void getTemperatures() {
     // Serial.printf("Publishing on topic %s at QoS 1, packetId: %i ", Topic.c_str(), packetIdPub1);
     // Serial.printf("Msg: %.2f \n", temp[i]);
   }
+  Serial.print(" free Heap: ");
+  Serial.print(ESP.getFreeHeap());
+  Serial.print(" free Psram: ");
+  Serial.print(ESP.getFreePsram());
   Serial.println(" ");
 }
 
