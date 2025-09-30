@@ -22,12 +22,14 @@
 #include "thermostat_preferences.h"
 
 void onMqttConnect(bool sessionPresent) {
+  DumpFreeRAM();
   Serial.print("Connected to MQTT - IP=");
   Serial.print(WiFi.localIP());
   Serial.print("- RSSI: ");
   Serial.print(WiFi.RSSI());
   Serial.print(" dB - Session present: ");
   Serial.println(sessionPresent);
+  delay(200);
   // todo not necessarily QOS 2, 1 or 0 are also ok... 
   uint16_t packetIdSub = mqttClient.subscribe((MQTT_PUB_DES_PREFIX MQTT_PUB_TEMP_SUFFIX).c_str(), 2);
   Serial.print("Subscribing desired temp at QoS 2, packetId: ");
@@ -126,9 +128,9 @@ void onMqttMessage(char* topic, char* payload, AsyncMqttClientMessageProperties 
 }
 
 void setup() {
+  // not working stays on 9600 baud ...Serial.begin(115200);
   sensors.begin();
-  Serial.begin(115200);
-  delay(4000);
+  // delay(4000); // give some time to startup comms 
   Serial.println("*** SETUP ***");
   getPreferences();
 #if defined(ARDUINO_D1_MINI32) || defined(ARDUINO_LOLIN_S2_MINI)
@@ -225,7 +227,7 @@ void loop() {
       usWifiDown--;
       Serial.print(" Wifi Error count down ");
       Serial.println(usWifiDown);
-      if (usWifiDown==0) // 2 Minuten expired
+      if (usWifiDown==0) // 2 Minutes expired
         ESP.restart();
     }
 #endif    

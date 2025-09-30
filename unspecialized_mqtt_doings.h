@@ -1,3 +1,11 @@
+void DumpFreeRAM(){ 
+  Serial.print(" free Heap: ");
+  Serial.print(ESP.getFreeHeap());
+  Serial.print(" free PSRAM: ");
+  Serial.println(ESP.getFreePsram());
+} 
+
+
 
 void connectToWifi() {
   Serial.print("Client ");
@@ -24,6 +32,7 @@ void onWifiConnect(WiFiEvent_t event, WiFiEventInfo_t info) {
   Serial.print("Connected to Wi-Fi - ");
   Serial.print(" Signal strength:");
   Serial.println(WiFi.RSSI());
+  DumpFreeRAM();
   connectToMqtt();
 }
 

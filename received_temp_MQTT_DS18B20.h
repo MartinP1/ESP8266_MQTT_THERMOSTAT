@@ -17,6 +17,8 @@ float temp[MAX_DS18B20_DEVICES];
 #define RUECKLAUF 2
 
 #define RT_AVG_PERIOD 6
+
+
 /// @brief publish sensor state, invoked on initialization and sensor state change
 /// @param iSensId the ID of Sensor
 void publishSensorState(int iSensId) {
@@ -129,11 +131,8 @@ void getTemperatures() {
     // Serial.printf("Publishing on topic %s at QoS 1, packetId: %i ", Topic.c_str(), packetIdPub1);
     // Serial.printf("Msg: %.2f \n", temp[i]);
   }
-  Serial.print(" free Heap: ");
-  Serial.print(ESP.getFreeHeap());
-  Serial.print(" free Psram: ");
-  Serial.print(ESP.getFreePsram());
   Serial.println(" ");
+  DumpFreeRAM();
 }
 
 // function to print a device address
