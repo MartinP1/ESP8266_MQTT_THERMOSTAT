@@ -129,6 +129,7 @@ void onMqttMessage(char* topic, char* payload, AsyncMqttClientMessageProperties 
 
 void setup() {
   // not working stays on 9600 baud ...Serial.begin(115200);
+  Serial.begin(115200);
   sensors.begin();
   // delay(4000); // give some time to startup comms 
   Serial.println("*** SETUP ***");
