@@ -1,4 +1,4 @@
-#define VERSION_NO "1.2.0 29-SEP-2025"
+#define VERSION_NO "1.2.1 02-OCT-2025"
 #include "./GLOBAL_VARS_MQTT_DS18B20.h"
 #include "unspecialized_mqtt_doings.h"
 #include "MqttLogging.h"
@@ -20,6 +20,15 @@
 #endif
 
 #include "thermostat_preferences.h"
+
+#include <hal/wdt_hal.h>
+void doWatchdog(){
+  wdt_hal_context_t rtc_wdt_ctx = RWDT_HAL_CONTEXT_DEFAULT();
+  wdt_hal_write_protect_disable(&rtc_wdt_ctx);
+  wdt_hal_feed(&rtc_wdt_ctx);
+  wdt_hal_write_protect_enable(&rtc_wdt_ctx);
+}
+
 
 void onMqttConnect(bool sessionPresent) {
   DumpFreeRAM();
@@ -127,12 +136,46 @@ void onMqttMessage(char* topic, char* payload, AsyncMqttClientMessageProperties 
   testPreferences(buffer, topic);
 }
 
+
+
+
+
+
+#if 0 
+
+#include "soc/rtc_wdt.h"
+void doWatchdogSettings(){
+  rtc_wdt_protect_off();
+  rtc_wdt_disable();
+}
+
+
+#include "soc/timer_group_struct.h"
+#include "soc/timer_group_reg.h"
+
+void doWatchdogSettings(){
+  TIMERG1.wdtwprotect = TIMG_WDT_WKEY_VALUE; // Unlock timer config.
+  TIMERG1.wdtfeed = 1; // Reset feed count.
+  TIMERG1.wdtconfig0.en = 0; // Disable timer.
+  TIMERG1.wdtwprotect = 0; // Lock timer config.
+
+  TIMERG0.wdtwprotect = TIMG_WDT_WKEY_VALUE;
+  TIMERG0.wdtfeed = 1;
+  TIMERG0.wdtconfig0.en = 0;
+  TIMERG0.wdtwprotect = 0;
+}  
+#endif
+
 void setup() {
   // not working stays on 9600 baud ...Serial.begin(115200);
-  Serial.begin(115200);
+  Serial.begin();
+  yield();
+  Serial.println("*** setup **** ");
   sensors.begin();
+  doWatchdog();
   // delay(4000); // give some time to startup comms 
-  Serial.println("*** SETUP ***");
+  Serial.println("after sensors.begin()");
+  yield();
   getPreferences();
 #if defined(ARDUINO_D1_MINI32) || defined(ARDUINO_LOLIN_S2_MINI)
   // ledcSetup(0, 8000, 8); // pwm#, freq, resolution(bits)
@@ -150,6 +193,8 @@ void setup() {
 #if defined(ARDUINO_D1_MINI32) || defined(ARDUINO_LOLIN_S2_MINI)
   WiFi.onEvent(onWifiConnect,WiFiEvent_t::ARDUINO_EVENT_WIFI_STA_GOT_IP);
   WiFi.onEvent(onWifiDisconnect,WiFiEvent_t::ARDUINO_EVENT_WIFI_STA_DISCONNECTED);
+  yield();
+  doWatchdog();
 #else  
   wifiConnectHandler = WiFi.onStationModeGotIP(onWifiConnect);
   wifiDisconnectHandler = WiFi.onStationModeDisconnected(onWifiDisconnect);
@@ -162,19 +207,23 @@ void setup() {
   mqttClient.onPublish(onMqttPublish);
    mqttClient.onMessage(onMqttMessage);
   mqttClient.setServer(MQTT_HOST, MQTT_PORT);
+  yield();
   
   // mqttClient.setKeepAlive(30);
   // If your broker requires authentication (username and password), set them below
   //mqttClient.setCredentials("REPlACE_WITH_YOUR_USE92:de:dc:42:f3:f8R", "REPLACE_WITH_YOUR_PASSWORD");
+  doWatchdog();
   connectToWifi();
   initTemperatureSensors();
-  previousMillis = millis(); // avoid initial overrun?
+  previousMillis = millis(); // avoid initial overrun in loop
 #if OTA_UPDATES
   // Same as MQTT device name
   ArduinoOTA.setHostname(MQTT_PUB_DEV_PREFIX.c_str());
   // from secret.h
   ArduinoOTA.setPassword(OTA_PASSWORD); 
+  yield();
   ArduinoOTA.begin(); 
+  yield();
 #endif
 }
 
@@ -195,12 +244,15 @@ void SelftestPwm(){
 unsigned short usWifiDown=12;
 void loop() {
   unsigned long currentMillis = millis();
+  yield();
   if (uiDebug == 1) {
     SelftestPwm();
     return;
   }
 #if OTA_UPDATES
+  yield();
   ArduinoOTA.handle();
+  yield();
 #endif
 
   // Every X number of seconds (interval = 10 seconds) 
@@ -210,11 +262,13 @@ void loop() {
     previousMillis = currentMillis;
     // New temperature readings
     // if (!wifiStatus()) return;
+     wifiStatus();
     GetWindowState(); // stored in global variable 
+    yield();
 
-    wifiStatus();
 
     getTemperatures();
+    yield();
 
     runTempControl();
 #if 1

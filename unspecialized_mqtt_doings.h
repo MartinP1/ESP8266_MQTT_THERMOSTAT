@@ -12,6 +12,13 @@ void DumpFreeRAM(){
 } 
 
 
+void DumpSysInfo(){
+  Serial.print("Firmware-Version: "); 
+  Serial.print(VERSION_NO);
+  Serial.print(" IP-Address: ");
+  Serial.println(WiFi.localIP());
+}  
+
 
 void connectToWifi() {
   Serial.print("Client ");

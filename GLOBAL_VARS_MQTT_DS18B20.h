@@ -41,9 +41,9 @@ based on below Work of Rui Santos
 #endif
 #endif
 // #include <Ticker.h>
-// #include <AsyncMqttClient.h>
+#include <AsyncMqttClient.h>
 // #include <AsyncMqtt_Generic.h>
-#include <AsyncMQTT_ESP32.h>
+// #include <AsyncMQTT_ESP32.h>
 
 // set to 1 if deployed to real target
 #define SERIAL_TRACE 1

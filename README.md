@@ -58,7 +58,7 @@ Mindestausstattung wäre ein Thermosensor für die Raumtemperatur und ein Schalt
             
 ## Bugs 
 
-Board kommt aus dem Reset nicht hoch... 
+Board kommt aus dem Reset nicht hoch... fixed? (wifiStatus invocation is likely not good)
 Schreiben von MQTT-Werten führt zum Restart des Boards (Nur Preferences, Solltemperatur geht)
 Pull-Up-Widerstand an EN hat nicht geholfen
 

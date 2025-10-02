@@ -31,8 +31,8 @@ void publishSensorState(int iSensId) {
     delay(10);                            
   }
   Serial.print("Published Sensor state: "); 
-  Serial.print("Topic.c_str");
-  Serial.print("State=");
+  Serial.print(Topic.c_str());
+  Serial.print(", State=");
   Serial.println( is_valid[iSensId] );
 
 }
@@ -133,6 +133,7 @@ void getTemperatures() {
   }
   Serial.println(" ");
   DumpFreeRAM();
+  DumpSysInfo();
 }
 
 // function to print a device address
