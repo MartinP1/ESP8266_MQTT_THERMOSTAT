@@ -8,7 +8,12 @@ void DumpFreeRAM(){
   Serial.print(" min free heap: ");
   Serial.print(ESP.getMinFreeHeap());
   Serial.print(" free PSRAM: ");
-  Serial.println(ESP.getFreePsram());
+  Serial.print(ESP.getFreePsram());
+  Serial.print(" ResetReason: ");
+  Serial.print(rstReason[0]);
+  Serial.print("/");
+  Serial.println(rstReason[1]);
+
 } 
 
 
@@ -23,7 +28,7 @@ void DumpSysInfo(){
 void connectToWifi() {
   Serial.print("Client ");
   Serial.print(MQTT_PUB_DEV_PREFIX);
-  Serial.print(" Connecting to Wi-Fi...");
+  Serial.print(" Connecting to Wi-Fi ");
   Serial.println(WIFI_SSID);
   WiFi.setScanMethod(WIFI_ALL_CHANNEL_SCAN);
   WiFi.setSortMethod(WIFI_CONNECT_AP_BY_SIGNAL);
@@ -32,7 +37,11 @@ void connectToWifi() {
 
 
 void connectToMqtt() {
-  Serial.println("Connecting to MQTT...");
+  Serial.print("Connecting to MQTT Broker ");
+  Serial.print(MQTT_HOST);
+  Serial.print(":");
+  Serial.println(MQTT_PORT);
+
   mqttClient.connect();
 }
 
@@ -43,8 +52,13 @@ void connectToMqtt() {
 // ARDUINO_EVENT_WIFI_STA_DISCONNECTED
 void onWifiConnect(WiFiEvent_t event, WiFiEventInfo_t info) {
   Serial.print("Connected to Wi-Fi - ");
+  Serial.print(WIFI_SSID);
   Serial.print(" Signal strength:");
-  Serial.println(WiFi.RSSI());
+  Serial.print(WiFi.RSSI());
+  Serial.print(" ResetReason: ");
+  Serial.print(rstReason[0]);
+  Serial.print("/");
+  Serial.println(rstReason[1]);
   //DumpFreeRAM();
   connectToMqtt();
 }

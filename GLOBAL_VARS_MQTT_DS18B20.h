@@ -1,4 +1,4 @@
-/* Martin Präkelt
+/* Martin Praekelt
 MQTT Thermostat with D1 Mini Board (ESP8266)
 
 based on below Work of Rui Santos 
@@ -41,12 +41,17 @@ based on below Work of Rui Santos
 #endif
 #endif
 // #include <Ticker.h>
+#define ASYNC_MQTT_DEBUG_PORT               Serial
+#define _ASYNC_MQTT_LOGLEVEL_               1
 #include <AsyncMqttClient.h>
 // #include <AsyncMqtt_Generic.h>
 // #include <AsyncMQTT_ESP32.h>
 
 // set to 1 if deployed to real target
 #define SERIAL_TRACE 1
+#include <rom/rtc.h>
+RESET_REASON rstReason[2]={ NO_MEAN, NO_MEAN};
+
 //<<<<<<< HEAD
 // includes WLAN credential define
 
@@ -55,14 +60,20 @@ based on below Work of Rui Santos
 
 #include "secret.h"
 
-// add postfix ..._PSET ti defines that shall be moved to NV-Preset
 
+# define MQTT_RECEIVE_ECHO 0
+#define MQTT_IOB 0
+// add postfix ..._PSET ti defines that shall be moved to NV-Preset
+#if MQTT_IOB
 // Raspberri Pi Mosquitto MQTT Broker
 #define MQTT_HOST IPAddress(192, 168, 2, 201)
 // For a cloud MQTT broker, type the domain name
 //#define MQTT_HOST "example.com"
 #define MQTT_PORT 1888
-
+#else
+#define MQTT_HOST IPAddress(192, 168, 2, 196)
+#define MQTT_PORT 1883
+#endif
 // Temperature MQTT Topics
 // #define MQTT_PUB_DEV_PREFIX   "thermostat"
 #define MQTT_PUB_DEV_PREFIX_PSET   "test_thermostat"

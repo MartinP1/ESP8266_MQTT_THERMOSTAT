@@ -51,10 +51,12 @@ void testDesiredTemperature(char* payload, char* topic)
 #if SERIAL_TRACE
   Serial.print ("Desired temp echoed: ");  
   Serial.println(payload);
-#endif  desired_temp
+#endif 
+#if MQTT_RECEIVE_ECHO    
   if (mqttClient.connected())
     mqttClient.publish(topic, 1, true, payload);
   delay(10);
+#endif  
 }
 
 void testDesiredTempHyst(char* payload, char* topic)
@@ -76,9 +78,11 @@ void testDesiredTempHyst(char* payload, char* topic)
   Serial.print ("Desired temphyst echoed: ");  
   Serial.println(payload);
 #endif    
+#if MQTT_RECEIVE_ECHO    
   if (mqttClient.connected())
     mqttClient.publish(topic, 1, true, payload);
   delay(10);
+#endif  
 }
 
 

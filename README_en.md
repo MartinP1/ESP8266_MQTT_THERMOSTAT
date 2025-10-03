@@ -53,5 +53,6 @@ Minimum equipment would be a thermosensor for the room temperature and a switchi
 - SEP-2025 
   - ASYNC_TCP issues fixed - AsyncTCP replaced by ESP32Async 3.4.7 
   - OTA Update librariy added 
+  - Window Contact
 
 

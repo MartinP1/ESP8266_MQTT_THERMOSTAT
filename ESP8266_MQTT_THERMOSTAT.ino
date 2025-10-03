@@ -1,4 +1,4 @@
-#define VERSION_NO "1.2.1 02-OCT-2025"
+#define VERSION_NO "1.2.2 03-OCT-2025"
 #include "./GLOBAL_VARS_MQTT_DS18B20.h"
 #include "unspecialized_mqtt_doings.h"
 #include "MqttLogging.h"
@@ -20,7 +20,8 @@
 #endif
 
 #include "thermostat_preferences.h"
-
+#if 0
+/* experiment for watchdog manipulation */
 #include <hal/wdt_hal.h>
 void doWatchdog(){
   wdt_hal_context_t rtc_wdt_ctx = RWDT_HAL_CONTEXT_DEFAULT();
@@ -28,7 +29,8 @@ void doWatchdog(){
   wdt_hal_feed(&rtc_wdt_ctx);
   wdt_hal_write_protect_enable(&rtc_wdt_ctx);
 }
-
+/* END: experiment for watchdog manipulation */
+#endif 
 
 void onMqttConnect(bool sessionPresent) {
   DumpFreeRAM();
@@ -37,7 +39,8 @@ void onMqttConnect(bool sessionPresent) {
   Serial.print("- RSSI: ");
   Serial.print(WiFi.RSSI());
   Serial.print(" dB - Session present: ");
-  Serial.println(sessionPresent);
+  Serial.print(sessionPresent);
+  Serial.println("StackFree: ");
   delay(200);
   // todo not necessarily QOS 2, 1 or 0 are also ok... 
   uint16_t packetIdSub = mqttClient.subscribe((MQTT_PUB_DES_PREFIX MQTT_PUB_TEMP_SUFFIX).c_str(), 2);
@@ -122,18 +125,20 @@ void onMqttPublish(uint16_t packetId) {
 
 void onMqttMessage(char* topic, char* payload, AsyncMqttClientMessageProperties properties, size_t len, size_t index, size_t total) {
 
+   
   char buffer[50];
-  buffer[49]=buffer[len]='\0';
-  for (int i=0;i<len && i<29;i++){
+  if (len>=50)
+    len=49;
+  for (int i=0;i<len;i++){
     buffer [i] = payload[i];   
+  buffer[len]='\0';
   }
-
   /// Distinguish pathpayload
-  
+  testPreferences(buffer, topic);
   testDesiredTemperature(buffer, topic);  
   testDesiredTempHyst(buffer, topic);
   testDesiredFanspeed(buffer,topic);
-  testPreferences(buffer, topic);
+
 }
 
 
@@ -142,7 +147,7 @@ void onMqttMessage(char* topic, char* payload, AsyncMqttClientMessageProperties 
 
 
 #if 0 
-
+/* some watchdog settings */
 #include "soc/rtc_wdt.h"
 void doWatchdogSettings(){
   rtc_wdt_protect_off();
@@ -164,19 +169,25 @@ void doWatchdogSettings(){
   TIMERG0.wdtconfig0.en = 0;
   TIMERG0.wdtwprotect = 0;
 }  
+/* END: some hardware watchdog settings */
 #endif
+//SET_LOOP_TASK_STACK_SIZE(16 * 1024);  // 16KB (default 8 kB)
 
 void setup() {
+  rstReason[0]=rtc_get_reset_reason(0);
+  rstReason[1]=rtc_get_reset_reason(1);
   // not working stays on 9600 baud ...Serial.begin(115200);
   Serial.begin();
+  delay(2000);
   yield();
   Serial.println("*** setup **** ");
   sensors.begin();
-  doWatchdog();
+  // doWatchdog();
   // delay(4000); // give some time to startup comms 
   Serial.println("after sensors.begin()");
   yield();
   getPreferences();
+  delay(2000);
 #if defined(ARDUINO_D1_MINI32) || defined(ARDUINO_LOLIN_S2_MINI)
   // ledcSetup(0, 8000, 8); // pwm#, freq, resolution(bits)
   // ledcAttachPin(pwmGpio, 0);
@@ -194,7 +205,7 @@ void setup() {
   WiFi.onEvent(onWifiConnect,WiFiEvent_t::ARDUINO_EVENT_WIFI_STA_GOT_IP);
   WiFi.onEvent(onWifiDisconnect,WiFiEvent_t::ARDUINO_EVENT_WIFI_STA_DISCONNECTED);
   yield();
-  doWatchdog();
+  // doWatchdog();
 #else  
   wifiConnectHandler = WiFi.onStationModeGotIP(onWifiConnect);
   wifiDisconnectHandler = WiFi.onStationModeDisconnected(onWifiDisconnect);
@@ -212,7 +223,7 @@ void setup() {
   // mqttClient.setKeepAlive(30);
   // If your broker requires authentication (username and password), set them below
   //mqttClient.setCredentials("REPlACE_WITH_YOUR_USE92:de:dc:42:f3:f8R", "REPLACE_WITH_YOUR_PASSWORD");
-  doWatchdog();
+  // doWatchdog();
   connectToWifi();
   initTemperatureSensors();
   previousMillis = millis(); // avoid initial overrun in loop
@@ -225,6 +236,7 @@ void setup() {
   ArduinoOTA.begin(); 
   yield();
 #endif
+  Serial.println("setup() finished");
 }
 
 
@@ -254,15 +266,14 @@ void loop() {
   ArduinoOTA.handle();
   yield();
 #endif
-
   // Every X number of seconds (interval = 10 seconds) 
   // it publishes a new MQTT message
   if (currentMillis - previousMillis >= interval) {
     // Save the last time a new reading was published
     previousMillis = currentMillis;
     // New temperature readings
-    // if (!wifiStatus()) return;
-     wifiStatus();
+    if (!wifiStatus()) return; // checks MQTT and wifi up, if not, do not try do do anything ...
+    // wifiStatus();
     GetWindowState(); // stored in global variable 
     yield();
 

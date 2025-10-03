@@ -62,4 +62,7 @@ Board kommt aus dem Reset nicht hoch... fixed? (wifiStatus invocation is likely 
 Schreiben von MQTT-Werten führt zum Restart des Boards (Nur Preferences, Solltemperatur geht)
 Pull-Up-Widerstand an EN hat nicht geholfen
 
+## Unklarheiten
 
+Wenn man den Client an einen Mosquitto anschließt, und beim Schreiben des Mosquittos 
+immer den Wert "Echoed" passieren komische Sachen. Beim MQTT-Adapter des ioBroker nicht ...

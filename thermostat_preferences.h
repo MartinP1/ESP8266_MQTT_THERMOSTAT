@@ -13,14 +13,27 @@
  * 
 */
 
+
+
 #define WRITE_TO_NV 1
+
+/*********************************************************
+
+Here is our list of Preferences keys
+
+ Attention, take in Mind that preferences keys/names are
+ limited to 15 characters
+*********************************************************/
+const char *OverrideWindowSensor_key="OvrWinSens";
+const char *MqttName_key="MqttName";
+const char *Debug_key="Debug";
 
 Preferences prefs;
 
 void getPreferences() {
   prefs.begin("mqtt_thermostat", true);
-  if (prefs.isKey("MqttName")){
-    String strTmp = prefs.getString("MqttName");
+  if (prefs.isKey(MqttName_key)){
+    String strTmp = prefs.getString(MqttName_key);
     strTmp.trim();
     if (strTmp.length()>2) {
 
@@ -33,18 +46,18 @@ void getPreferences() {
     }
   }
   else Serial.println("WARN: No MqttName found in preferences");
-  if (prefs.isKey("Debug")){
-    uiDebug = prefs.getUChar("Debug");
+  if (prefs.isKey(Debug_key)){
+    uiDebug = prefs.getUChar(Debug_key);
     Serial.print("INFO: Debug ");
     Serial.println(uiDebug);
   }
   else Serial.println("WARN: No Debug setting found in preferences");
-  if (prefs.isKey("OverrideWindowSensor")){
-    uiOverrideWindowSensor = prefs.getUChar("uiOverrideWindowSensor");
+  if (prefs.isKey(OverrideWindowSensor_key)){
+     uiOverrideWindowSensor = prefs.getUChar(OverrideWindowSensor_key);
     Serial.print("INFO: uiOverrideWindowSensor ");
     Serial.println(uiOverrideWindowSensor);
   }
-  else Serial.println("WARN: No uiOverrideWindowSensor setting found in preferences");
+  else Serial.println("WARN: No OverrideWindowsSensor setting found in preferences");
   prefs.end();
   
 }
@@ -52,6 +65,7 @@ void getPreferences() {
 
 void testPreferences(char* payload, const char* topic){
   size_t siz;
+  // Serial.printf("\n testPreferences - Free Stack Space: %d", uxTaskGetStackHighWaterMark(NULL));
   String strComp((MQTT_PUB_DEV_PREFIX +"/Preferences/MqttName").c_str());
   if (strComp.compareTo(topic)==0)
   {
@@ -67,7 +81,7 @@ void testPreferences(char* payload, const char* topic){
 
 #if WRITE_TO_NV
       prefs.begin("mqtt_thermostat");
-      siz = prefs.putString( "MqttName", payload);
+      siz = prefs.putString( MqttName_key, payload);
       prefs.end();
 #endif      
       Serial.print("Prefs.MqttName written ");
@@ -75,16 +89,20 @@ void testPreferences(char* payload, const char* topic){
       Serial.print(" bytes - ");
       Serial.println(payload);
     }
+#if MQTT_RECEIVE_ECHO    
     if (mqttClient.connected()) {
       mqttClient.publish(topic, 1, true, payload);
     }
+#endif      
     return;
  
   }
   strComp=MQTT_PUB_DEV_PREFIX +"/Preferences/Debug";
   if (strComp.compareTo(topic)==0) {
+#if MQTT_RECEIVE_ECHO    
     if (mqttClient.connected())
       mqttClient.publish(topic, 1, true, payload);    // do it here due to several returns
+#endif    
     uint8_t uiDebuglocal = (uint8_t)atol(payload);
     // echo message  ?
     if (uiDebuglocal != uiDebug) uiDebug = uiDebuglocal;
@@ -94,7 +112,7 @@ void testPreferences(char* payload, const char* topic){
     Serial.println(uiDebug);
 #if WRITE_TO_NV
     prefs.begin("mqtt_thermostat");
-    siz = prefs.putUChar( "Debug", uiDebug);
+    siz = prefs.putUChar( Debug_key, uiDebug);
     prefs.end();
 #endif
     return;
@@ -102,20 +120,30 @@ void testPreferences(char* payload, const char* topic){
   strComp=MQTT_PUB_DEV_PREFIX +"/Preferences/OverrideWindowsSensor";
   if (strComp.compareTo(topic)==0) {
   #if 1
+  #if MQTT_RECEIVE_ECHO    
     if (mqttClient.connected())
       mqttClient.publish(topic, 1, true, payload);    // do it here due to several returns
+  #endif    
     uint8_t uiOverrideWindowSensorlocal = (uint8_t)atol(payload);
     // echo message  ?
     if (uiOverrideWindowSensorlocal != uiOverrideWindowSensor) 
        uiOverrideWindowSensor = uiOverrideWindowSensorlocal;
     else return;
 
-    Serial.print ("Preferences OverrideWindowSensor: ");  
+    Serial.print ("Preferences OverrideWindowSensor");  
     Serial.println(uiOverrideWindowSensor);
 #if WRITE_TO_NV
     prefs.begin("mqtt_thermostat");
-    siz = prefs.putUChar( "OverrideWindowSensor", uiOverrideWindowSensorlocal);
+    siz = prefs.putUChar( OverrideWindowSensor_key, uiOverrideWindowSensor);
     prefs.end();
+    Serial.print(", written ");
+    Serial.print(siz);
+    Serial.print(" bytes - value: ");
+    Serial.println(uiOverrideWindowSensor);
+#else    
+    Serial.print(", not written ");
+    Serial.print("-  value: ");
+    Serial.println(uiOverrideWindowSensor);
 #endif
 #endif
     return;

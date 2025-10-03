@@ -34,8 +34,10 @@ void testDesiredFanspeed(char* payload, char* topic)
 #endif    
     return;
   }
+#if MQTT_RECEIVE_ECHO  
   unsigned long lRes = (unsigned)atol(payload);
   publishDesSpeed(lRes & 0xFF);
   delay(10);
+#endif  
 }
 
