@@ -1,5 +1,5 @@
 
-
+#if 0
 void DumpFreeRAM(){ 
   Serial.print(" free Heap: ");
   Serial.print(ESP.getFreeHeap());
@@ -15,7 +15,7 @@ void DumpFreeRAM(){
   Serial.println(rstReason[1]);
 
 } 
-
+#endif
 
 void DumpSysInfo(){
   Serial.print("Firmware-Version: "); 
@@ -54,11 +54,11 @@ void onWifiConnect(WiFiEvent_t event, WiFiEventInfo_t info) {
   Serial.print("Connected to Wi-Fi - ");
   Serial.print(WIFI_SSID);
   Serial.print(" Signal strength:");
-  Serial.print(WiFi.RSSI());
-  Serial.print(" ResetReason: ");
-  Serial.print(rstReason[0]);
-  Serial.print("/");
-  Serial.println(rstReason[1]);
+  Serial.println(WiFi.RSSI());
+  // Serial.print(" ResetReason: ");
+  // Serial.print(rstReason[0]);
+  // Serial.print("/");
+  // Serial.println(rstReason[1]);
   //DumpFreeRAM();
   connectToMqtt();
 }

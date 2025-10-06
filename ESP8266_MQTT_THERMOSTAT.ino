@@ -1,4 +1,4 @@
-#define VERSION_NO "1.2.3 06-OCT-2025"
+#define VERSION_NO "1.2.4 06-OCT-2025"
 #include "./GLOBAL_VARS_MQTT_DS18B20.h"
 #include "unspecialized_mqtt_doings.h"
 #include "MqttLogging.h"
@@ -6,8 +6,6 @@
 #include "desired_speed_MQTT_DS18B20.h"
 #include "received_temp_MQTT_DS18B20.h"
 #include "fan_pwm_MQTT_DS18B20.h"
-// #include "ventile_control_MQTT_DS18B20.h"
-// #include "window_contact_MQTT_DS18B20.h"
 #include "window_contact_MQTT_DS18B20.h"
 #include "do_calculations_MQTT_DS18B20.h"
 #if USE_MQTT_BINDING_CLASS
@@ -21,20 +19,9 @@
 #endif
 
 #include "thermostat_preferences.h"
-#if 0
-/* experiment for watchdog manipulation */
-#include <hal/wdt_hal.h>
-void doWatchdog(){
-  wdt_hal_context_t rtc_wdt_ctx = RWDT_HAL_CONTEXT_DEFAULT();
-  wdt_hal_write_protect_disable(&rtc_wdt_ctx);
-  wdt_hal_feed(&rtc_wdt_ctx);
-  wdt_hal_write_protect_enable(&rtc_wdt_ctx);
-}
-/* END: experiment for watchdog manipulation */
-#endif 
 
 void onMqttConnect(bool sessionPresent) {
-  DumpFreeRAM();
+  //DumpFreeRAM();
   Serial.print("Connected to MQTT - IP=");
   Serial.print(WiFi.localIP());
   Serial.print("- RSSI: ");
@@ -44,6 +31,12 @@ void onMqttConnect(bool sessionPresent) {
   Serial.println("StackFree: ");
   delay(200);
   // todo not necessarily QOS 2, 1 or 0 are also ok... 
+#if 0
+  // try to subscribe a complete tree with all leafs does nont work with bertmelis/espMqttClient
+  uint16_t packetIdSub = mqttClient.subscribe((MQTT_PUB_DES_PREFIX).c_str(), 2);
+  Serial.print("Subscribing desired tree at QOS2, packetId: ");
+  Serial.println(packetIdSub);
+#else
   uint16_t packetIdSub = mqttClient.subscribe((MQTT_PUB_DES_PREFIX MQTT_PUB_TEMP_SUFFIX).c_str(), 2);
   Serial.print("Subscribing desired temp at QoS 2, packetId: ");
   Serial.println(packetIdSub);
@@ -52,6 +45,7 @@ void onMqttConnect(bool sessionPresent) {
   #endif
   packetIdSub = mqttClient.subscribe((MQTT_PUB_DES_PREFIX MQTT_PUB_TEMPHYST_SUFFIX).c_str(), 2);
   Serial.print("Subscribing desired hyst at QoS 2, packetId: ");
+  Serial.println(packetIdSub);
   #if MQTT_PUBLISH_SUBSCRIBED
   publishTempHyst(temp_hyst); // must be created by mqtt broker
   #endif
@@ -61,6 +55,7 @@ void onMqttConnect(bool sessionPresent) {
   #if MQTT_PUBLISH_SUBSCRIBED
   publishDesSpeed(PWM_THROTTLE); //must be created by broker (?)
   #endif
+#endif  
   packetIdSub = mqttClient.subscribe((MQTT_PUB_DEV_PREFIX +"/Preferences/MqttName").c_str(), 2);
   Serial.print("Subscribing desired device name, packetId: ");
   Serial.println(packetIdSub);
@@ -83,7 +78,7 @@ void onMqttConnect(bool sessionPresent) {
     if (written>0){
       pBuff+=written;    
       written = snprintf (pBuff,19,", %02X%02X%02X%02X%02X%02X/%02X", 
-        // statDeviceAddress[DevIdx][7], <- skipped, CRP
+        // statDeviceAddress[DevIdx][7], <- skipped, CRC
         statDeviceAddress[DevIdx][6], // <- MSByte of serial number
         statDeviceAddress[DevIdx][5],
         statDeviceAddress[DevIdx][4],
@@ -167,9 +162,7 @@ void onMqttMessage(char* topic, char* payload, AsyncMqttClientMessageProperties 
     buffer [i] = payload[i];   
   buffer[len]='\0';
   }
-  Serial.print("Message received, index=");
-  Serial.print(index);
-  Serial.print(" value");
+  Serial.print("Message received, len=");
   Serial.print(buffer);
   /// Distinguish pathpayload
   testPreferences(buffer, topic);
@@ -215,17 +208,11 @@ void doWatchdogSettings(){
 //SET_LOOP_TASK_STACK_SIZE(16 * 1024);  // 16KB (default 8 kB)
 
 void setup() {
-  rstReason[0]=rtc_get_reset_reason(0);
-  rstReason[1]=rtc_get_reset_reason(1);
   // not working stays on 9600 baud ...Serial.begin(115200);
   Serial.begin();
   delay(4000);
   yield();
-  Serial.print("*** setup due to reset reason(");
-  Serial.print(rstReason[0]);
-  Serial.print("/");
-  Serial.print(rstReason[1]);
-  Serial.println(") ***");
+  Serial.println("*** setup ***");
   sensors.begin();
   // doWatchdog();
   // delay(4000); // give some time to startup comms 

@@ -30,12 +30,35 @@ const char *Debug_key="Debug";
 
 Preferences prefs;
 
+bool checkValidMqttName_c(const char *strToVal){
+  const char* pStart=strToVal;
+  while(*pStart){ 
+    if (!isAlphaNumeric(*pStart)) return false;
+    pStart++;
+  } 
+  return true;
+} 
+
+
+bool checkValidMqttName(String *strToVal){
+  size_t len= strToVal->length();
+  if (len<2) return false;
+  const char* pStart=strToVal->c_str();
+  while(--len){ 
+    if (!isAlphaNumeric(*pStart)) return false;
+    pStart++;
+  } 
+  return true;
+} 
+
+
+
 void getPreferences() {
   prefs.begin("mqtt_thermostat", true);
   if (prefs.isKey(MqttName_key)){
     String strTmp = prefs.getString(MqttName_key);
     strTmp.trim();
-    if (strTmp.length()>2) {
+    if (checkValidMqttName(&strTmp)) {
 
       MQTT_PUB_DEV_PREFIX = prefs.getString("MqttName");
       Serial.print("INFO: MqttName ");
@@ -70,10 +93,14 @@ void testPreferences(char* payload, const char* topic){
   if (strComp.compareTo(topic)==0)
   {
   // echo message  ?
+
 #if SERIAL_TRACE
     Serial.print ("Preferences MqttName: ");  
     Serial.println(payload);
 #endif
+    if (!checkValidMqttName_c(payload)){
+      Serial.println("WARN: Received invalid MqttName");
+    }  
     if (MQTT_PUB_DEV_PREFIX.equals(topic)) {
       Serial.print("Prefs.MqttName is not changed ");
       Serial.println(payload);

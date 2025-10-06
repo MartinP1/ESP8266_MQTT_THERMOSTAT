@@ -55,7 +55,9 @@ Mindestausstattung wäre ein Thermosensor für die Raumtemperatur und ein Schalt
 - SEP-2025 
   - ASYNC_TCP issues fixed use AsyncTCP by ESP32Async 3.4.7 
   - OTA Update librariy added 
-            
+- OCT-2025             
+    Moved to espMqttClient https://github.com/bertmelis/espMqttClient/blob/main/src/espMqttClient.h
+
 ## Bugs 
 
 Board kommt aus dem Reset nicht hoch... fixed? (wifiStatus invocation is likely not good)
@@ -66,3 +68,7 @@ Pull-Up-Widerstand an EN hat nicht geholfen
 
 Wenn man den Client an einen Mosquitto anschließt, und beim Schreiben des Mosquittos 
 immer den Wert "Echoed" passieren komische Sachen. Beim MQTT-Adapter des ioBroker nicht ...
+
+
+Wenn nach der Verbindungsaufnahme mit dem Broker vom Broker eine Null für den Wert kommt, 
+ein Publish mit den "Werkseinstellungen" machen.

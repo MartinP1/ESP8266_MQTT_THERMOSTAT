@@ -132,7 +132,7 @@ void getTemperatures() {
     // Serial.printf("Msg: %.2f \n", temp[i]);
   }
   Serial.println(" ");
-  DumpFreeRAM();
+  // DumpFreeRAM();
   DumpSysInfo();
 }
 

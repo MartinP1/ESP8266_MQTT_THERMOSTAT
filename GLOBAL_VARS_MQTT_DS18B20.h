@@ -41,8 +41,8 @@ based on below Work of Rui Santos
 #endif
 #endif
 // #include <Ticker.h>
-#define ASYNC_MQTT_DEBUG_PORT               Serial
-#define _ASYNC_MQTT_LOGLEVEL_               4
+// #define ASYNC_MQTT_DEBUG_PORT               Serial
+// #define _ASYNC_MQTT_LOGLEVEL_               1
 #define USE_BERTMELIS 1
 #include <espMqttClient.h> // https://github.com/bertmelis/espMqttClient/blob/main/examples/simple-esp32/simple-esp32.ino
 // #include <AsyncMqttClient.h>
@@ -51,8 +51,6 @@ based on below Work of Rui Santos
 
 // set to 1 if deployed to real target
 #define SERIAL_TRACE 1
-#include <rom/rtc.h>
-RESET_REASON rstReason[2]={ NO_MEAN, NO_MEAN};
 
 //<<<<<<< HEAD
 // includes WLAN credential define
@@ -68,10 +66,7 @@ RESET_REASON rstReason[2]={ NO_MEAN, NO_MEAN};
 #define MQTT_PUBLISH_SUBSCRIBED 0
 // add postfix ..._PSET ti defines that shall be moved to NV-Preset
 #if MQTT_IOB
-// Raspberri Pi Mosquitto MQTT Broker
 #define MQTT_HOST IPAddress(192, 168, 2, 201)
-// For a cloud MQTT broker, type the domain name
-//#define MQTT_HOST "example.com"
 #define MQTT_PORT 1888
 #else
 #define MQTT_HOST IPAddress(192, 168, 2, 196)
