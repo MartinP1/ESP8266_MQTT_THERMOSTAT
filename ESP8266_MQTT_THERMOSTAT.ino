@@ -1,4 +1,4 @@
-#define VERSION_NO "1.2.2 03-OCT-2025"
+#define VERSION_NO "1.2.3 06-OCT-2025"
 #include "./GLOBAL_VARS_MQTT_DS18B20.h"
 #include "unspecialized_mqtt_doings.h"
 #include "MqttLogging.h"
@@ -10,8 +10,9 @@
 // #include "window_contact_MQTT_DS18B20.h"
 #include "window_contact_MQTT_DS18B20.h"
 #include "do_calculations_MQTT_DS18B20.h"
-
-
+#if USE_MQTT_BINDING_CLASS
+#include "MqttBindings.h"
+#endif
 #if !defined(ARDUINO_D1_MINI32) && !defined(ARDUINO_LOLIN_S2_MINI) && !defined(ARDUINO_ESP8266_WEMOS_D1MINI)
 #error "unsupported board type"
 #error ARDUINO_BOARD
@@ -46,13 +47,20 @@ void onMqttConnect(bool sessionPresent) {
   uint16_t packetIdSub = mqttClient.subscribe((MQTT_PUB_DES_PREFIX MQTT_PUB_TEMP_SUFFIX).c_str(), 2);
   Serial.print("Subscribing desired temp at QoS 2, packetId: ");
   Serial.println(packetIdSub);
-  // publishDesTemp(desired_temp); must be created by mqtt broker
+  #if MQTT_PUBLISH_SUBSCRIBED
+  publishDesTemp(desired_temp); // must be created by mqtt broker
+  #endif
   packetIdSub = mqttClient.subscribe((MQTT_PUB_DES_PREFIX MQTT_PUB_TEMPHYST_SUFFIX).c_str(), 2);
   Serial.print("Subscribing desired hyst at QoS 2, packetId: ");
-  // publishTempHyst(temp_hyst); must be created by mqtt broker
+  #if MQTT_PUBLISH_SUBSCRIBED
+  publishTempHyst(temp_hyst); // must be created by mqtt broker
+  #endif
   packetIdSub = mqttClient.subscribe((MQTT_PUB_DES_PREFIX MQTT_PUB_FANTHROTTLE_SUFFIX).c_str(), 2);
   Serial.print("Subscribing max fan speed at QoS 2, packetId: ");
   Serial.println(packetIdSub);
+  #if MQTT_PUBLISH_SUBSCRIBED
+  publishDesSpeed(PWM_THROTTLE); //must be created by broker (?)
+  #endif
   packetIdSub = mqttClient.subscribe((MQTT_PUB_DEV_PREFIX +"/Preferences/MqttName").c_str(), 2);
   Serial.print("Subscribing desired device name, packetId: ");
   Serial.println(packetIdSub);
@@ -62,7 +70,7 @@ void onMqttConnect(bool sessionPresent) {
   packetIdSub = mqttClient.subscribe((MQTT_PUB_DEV_PREFIX +"/Preferences/OverrideWindowsSensor").c_str(), 2);
   Serial.print("Subscribing OverrideWindowsSensor, packetId: ");
   Serial.println(packetIdSub);
-  publishDesSpeed(PWM_THROTTLE);
+  
   for (int i=0;i<numberOfDevices; i++){
     publishSensorState(i);
     is_old_valid[i]=is_valid[i]; // reporting of state fixed to one time
@@ -95,6 +103,17 @@ void onMqttConnect(bool sessionPresent) {
 #endif  
 }
 
+#if USE_BERTMELIS
+void onMqttDisconnect(espMqttClientTypes::DisconnectReason reason) {
+  Serial.printf("Disconnected from MQTT: %u.\n", static_cast<uint8_t>(reason));
+
+/*  if (WiFi.isConnected()) {
+    reconnectMqtt = true;
+    lastReconnect = millis();
+  }*/
+}
+
+#else
 void onMqttDisconnect(AsyncMqttClientDisconnectReason reason) {
   Serial.println("Disconnected from MQTT.");
   // if (WiFi.isConnected()) {
@@ -102,14 +121,27 @@ void onMqttDisconnect(AsyncMqttClientDisconnectReason reason) {
   // }
   return;
   }
+#endif
 
-void onMqttSubscribe(uint16_t packetId, uint8_t qos) {
-  // Serial.println("Subscribe acknowledged.");
-  // Serial.print("  packetId: ");
-  // Serial.println(packetId);
-  // Serial.print("  qos: ");
-  // Serial.println(qos);
+#if USE_BERTMELIS
+void onMqttSubscribe(uint16_t packetId, const espMqttClientTypes::SubscribeReturncode* codes, size_t len) {
+  Serial.println("Subscribe acknowledged.");
+  Serial.print("  packetId: ");
+  Serial.println(packetId);
+  for (size_t i = 0; i < len; ++i) {
+    Serial.print("  qos: ");
+    Serial.println(static_cast<uint8_t>(codes[i]));
+  }
 }
+#else
+void onMqttSubscribe(const uint16_t& packetId, const uint8_t& qos){
+  Serial.println("Subscribe acknowledged.");
+  Serial.print("  packetId: ");
+  Serial.println(packetId);
+  Serial.print("  qos: ");
+  Serial.println(qos);
+}
+#endif
 
 void onMqttUnsubscribe(uint16_t packetId) {
   // Serial.println("Unsubscribe acknowledged.");
@@ -123,9 +155,11 @@ void onMqttPublish(uint16_t packetId) {
   // Serial.println(packetId);
 }
 
+#if USE_BERTMELIS 
+void onMqttMessage(const espMqttClientTypes::MessageProperties& properties, const char* topic, const uint8_t* payload, size_t len, size_t index, size_t total) {
+#else
 void onMqttMessage(char* topic, char* payload, AsyncMqttClientMessageProperties properties, size_t len, size_t index, size_t total) {
-
-   
+#endif
   char buffer[50];
   if (len>=50)
     len=49;
@@ -133,11 +167,18 @@ void onMqttMessage(char* topic, char* payload, AsyncMqttClientMessageProperties 
     buffer [i] = payload[i];   
   buffer[len]='\0';
   }
+  Serial.print("Message received, index=");
+  Serial.print(index);
+  Serial.print(" value");
+  Serial.print(buffer);
   /// Distinguish pathpayload
   testPreferences(buffer, topic);
   testDesiredTemperature(buffer, topic);  
   testDesiredTempHyst(buffer, topic);
   testDesiredFanspeed(buffer,topic);
+#if USE_MQTT_BINDING_CLASS
+  tempHystNode.TestReceived(topic, buffer);
+#endif
 
 }
 
@@ -178,16 +219,20 @@ void setup() {
   rstReason[1]=rtc_get_reset_reason(1);
   // not working stays on 9600 baud ...Serial.begin(115200);
   Serial.begin();
-  delay(2000);
+  delay(4000);
   yield();
-  Serial.println("*** setup **** ");
+  Serial.print("*** setup due to reset reason(");
+  Serial.print(rstReason[0]);
+  Serial.print("/");
+  Serial.print(rstReason[1]);
+  Serial.println(") ***");
   sensors.begin();
   // doWatchdog();
   // delay(4000); // give some time to startup comms 
-  Serial.println("after sensors.begin()");
+  // Serial.println("after sensors.begin()");
   yield();
   getPreferences();
-  delay(2000);
+  //setMQTTBindings();
 #if defined(ARDUINO_D1_MINI32) || defined(ARDUINO_LOLIN_S2_MINI)
   // ledcSetup(0, 8000, 8); // pwm#, freq, resolution(bits)
   // ledcAttachPin(pwmGpio, 0);
@@ -224,6 +269,7 @@ void setup() {
   // If your broker requires authentication (username and password), set them below
   //mqttClient.setCredentials("REPlACE_WITH_YOUR_USE92:de:dc:42:f3:f8R", "REPLACE_WITH_YOUR_PASSWORD");
   // doWatchdog();
+  Serial.println("issue connectToWifi()");
   connectToWifi();
   initTemperatureSensors();
   previousMillis = millis(); // avoid initial overrun in loop

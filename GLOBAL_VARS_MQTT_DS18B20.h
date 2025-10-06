@@ -42,8 +42,10 @@ based on below Work of Rui Santos
 #endif
 // #include <Ticker.h>
 #define ASYNC_MQTT_DEBUG_PORT               Serial
-#define _ASYNC_MQTT_LOGLEVEL_               1
-#include <AsyncMqttClient.h>
+#define _ASYNC_MQTT_LOGLEVEL_               4
+#define USE_BERTMELIS 1
+#include <espMqttClient.h> // https://github.com/bertmelis/espMqttClient/blob/main/examples/simple-esp32/simple-esp32.ino
+// #include <AsyncMqttClient.h>
 // #include <AsyncMqtt_Generic.h>
 // #include <AsyncMQTT_ESP32.h>
 
@@ -61,8 +63,9 @@ RESET_REASON rstReason[2]={ NO_MEAN, NO_MEAN};
 #include "secret.h"
 
 
-# define MQTT_RECEIVE_ECHO 0
-#define MQTT_IOB 0
+#define MQTT_RECEIVE_ECHO 0
+#define MQTT_IOB 1
+#define MQTT_PUBLISH_SUBSCRIBED 0
 // add postfix ..._PSET ti defines that shall be moved to NV-Preset
 #if MQTT_IOB
 // Raspberri Pi Mosquitto MQTT Broker
@@ -144,7 +147,14 @@ uint8_t uiWifiDisconnects=0;
 uint8_t uiWifiDisconnectsOld=0;
 // global variable for MQTT commsWiFiEventHandler
 
+#if USE_BERTMELIS
+espMqttClient mqttClient;
+#else
 AsyncMqttClient mqttClient;
+#endif
+#if USE_MQTT_BINDING_CLASS
+#include <MQTTLeafNode.h>
+#endif
 // Ticker mqttReconnectTimer;
 #ifdef ARDUINO_ESP8266_WEMOS_D1MINI
 WiFiEventHandler wifiConnectHandler;
@@ -160,3 +170,7 @@ const long interval = 10000;        // Interval at which to publish sensor readi
 
 // module received_temp
 void publishSensorState(int iSensId);
+
+#if USE_MQTT_BINDING_CLASS
+CMQTTLeafNode tempHystNode;
+#endif

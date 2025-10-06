@@ -22,7 +22,7 @@ void publishDesSpeed(uint8_t speed){
 }
 
 
-void testDesiredFanspeed(char* payload, char* topic)
+void testDesiredFanspeed(const char* payload, const char* topic)
 {
   String strComp((MQTT_PUB_DES_PREFIX + MQTT_PUB_FANTHROTTLE_SUFFIX).c_str());
   if (strComp.compareTo(topic)!=0)

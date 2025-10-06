@@ -32,7 +32,7 @@ void publishTempHyst(float partemp){
 }
 
 
-void testDesiredTemperature(char* payload, char* topic)
+void testDesiredTemperature(const char* payload, const char* topic)
 {
   String strComp(MQTT_PUB_DES_PREFIX + MQTT_PUB_TEMP_SUFFIX);
   if (strComp.compareTo(topic)!=0)
@@ -48,18 +48,18 @@ void testDesiredTemperature(char* payload, char* topic)
   desired_temp = atof(payload);
 
 // echo message  ?
+#if MQTT_RECEIVE_ECHO    
 #if SERIAL_TRACE
   Serial.print ("Desired temp echoed: ");  
   Serial.println(payload);
 #endif 
-#if MQTT_RECEIVE_ECHO    
   if (mqttClient.connected())
     mqttClient.publish(topic, 1, true, payload);
   delay(10);
 #endif  
 }
 
-void testDesiredTempHyst(char* payload, char* topic)
+void testDesiredTempHyst(const char* payload, const char* topic)
 {
   String strComp(MQTT_PUB_DES_PREFIX + MQTT_PUB_TEMPHYST_SUFFIX);
   if (strComp.compareTo(topic)!=0)
@@ -74,11 +74,11 @@ void testDesiredTempHyst(char* payload, char* topic)
   temp_hyst = atof(payload);
  
 // echo message  ?
+#if MQTT_RECEIVE_ECHO    
 #if SERIAL_TRACE
   Serial.print ("Desired temphyst echoed: ");  
   Serial.println(payload);
 #endif    
-#if MQTT_RECEIVE_ECHO    
   if (mqttClient.connected())
     mqttClient.publish(topic, 1, true, payload);
   delay(10);
