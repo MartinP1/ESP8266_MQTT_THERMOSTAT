@@ -10,9 +10,8 @@ Das Projekt ist seit mehreren Jahren im operativen Einsatz.
 - Ansteuerung von Lüftern, die den Heizkörper von unten zur Erhöhung der Heizleistung anblasen (PWM)
 - Zeitplan für Änderung der Solltemperatur (realisiert über ein ioBroker Blockly Skript)
 - Preferences library für Gerätekonfiguration über MQTT (kein hartverdrahteter Device Name im Quellcode mehr!)
-- todo  
-  - Fenstersensor undone
- 
+- Fensterkontakt 
+- OTA Library für den OTA-Update der Firmware
 
 ## Hardwareübersicht
 
@@ -37,7 +36,6 @@ Mindestausstattung wäre ein Thermosensor für die Raumtemperatur und ein Schalt
 
 ### Was fehlt noch
 
-- OTA Library für den OTA-Update der Firmware
 - Schaltplanänderung in Kicad nachpflegen, zur Stabilitätsverbesserung werden die DS18B20 jetzt mit 5 V versorgt
 
 ### Verbesserungen - was würde ich in der Serie anders machen
@@ -56,13 +54,11 @@ Mindestausstattung wäre ein Thermosensor für die Raumtemperatur und ein Schalt
   - ASYNC_TCP issues fixed use AsyncTCP by ESP32Async 3.4.7 
   - OTA Update librariy added 
 - OCT-2025             
-    Moved to espMqttClient https://github.com/bertmelis/espMqttClient/blob/main/src/espMqttClient.h
+  - Moved to espMqttClient https://github.com/bertmelis/espMqttClient/blob/main/src/espMqttClient.h
+    - that fixed stability problems on esp32 single core chips
 
 ## Bugs 
 
-Board kommt aus dem Reset nicht hoch... fixed? (wifiStatus invocation is likely not good)
-Schreiben von MQTT-Werten führt zum Restart des Boards (Nur Preferences, Solltemperatur geht)
-Pull-Up-Widerstand an EN hat nicht geholfen
 
 ## Unklarheiten
 
@@ -71,4 +67,4 @@ immer den Wert "Echoed" passieren komische Sachen. Beim MQTT-Adapter des ioBroke
 
 
 Wenn nach der Verbindungsaufnahme mit dem Broker vom Broker eine Null für den Wert kommt, 
-ein Publish mit den "Werkseinstellungen" machen.
+ein Publish mit den "Werkseinstellungen" machen?
