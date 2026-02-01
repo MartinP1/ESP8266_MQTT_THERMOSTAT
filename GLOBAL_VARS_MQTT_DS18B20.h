@@ -60,7 +60,7 @@ based on below Work of Rui Santos
 
 #include "secret.h"
 
-
+#define MIN_VORLAUF_FOR_FAN 28.0
 #define MQTT_RECEIVE_ECHO 0
 #define MQTT_IOB 1
 #define MQTT_PUBLISH_SUBSCRIBED 0

@@ -34,10 +34,13 @@ void testDesiredFanspeed(const char* payload, const char* topic)
 #endif    
     return;
   }
-#if MQTT_RECEIVE_ECHO  
   unsigned long lRes = (unsigned)atol(payload);
+#if MQTT_RECEIVE_ECHO  
   publishDesSpeed(lRes & 0xFF);
   delay(10);
+#else
+  PWM_THROTTLE=lRes&0xFF;
 #endif  
+
 }
 

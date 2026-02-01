@@ -2,7 +2,7 @@ void FanAutomat(float difftemp){
     // regulation of fan speed
   
   if (( ventState == false) 
-  || ((numberOfDevices > 1) && (temp[VORLAUF]< 30.0))) {
+  || ((numberOfDevices > 1) && (temp[VORLAUF]< MIN_VORLAUF_FOR_FAN))) {
 
     if (pwmActual!= PWM_OFF){
 #if 1 // SERIAL_TRACE      
@@ -15,7 +15,8 @@ void FanAutomat(float difftemp){
     }                   //  if heating water temperature is low, or vent is off
     return;
   }
-  if (difftemp < (-temp_hyst * 2.0)){
+  /// unconditionally turn fan to full speed (switch to throttling hysteresis point at diff=0.0)
+  if (difftemp <= -temp_hyst) {
     if (pwmActual != PWM_FULL){
 #if 1 // SERIAL_TRACE      
       // Serial.printf("pwmActual(%02X) to FULL - difftemp %f, th*2.0=%f\n",pwmActual, difftemp, (-temp_hyst * 2.0));
@@ -54,7 +55,7 @@ void VentAutomat(float difftemp){
     ventState = false;
     return;  
   }
-  if (difftemp < -temp_hyst){
+  if (difftemp < 0.0){
     // Serial.print ("temp low - vent on");
     ventState = true;
     return;  
