@@ -34,6 +34,31 @@ Mindestausstattung wäre ein Thermosensor für die Raumtemperatur und ein Schalt
 
 ## Unsortiertes
 
+### Lüfter-Aufrüstung
+
+Inzwischen laufen 8 80 mm Lüfter unter dem Heizkörper - Blasen in die Lücke zwischen den Platten
+Dazu noch 6 50 mm Lüfter, die in die Zwischenraum zwischen der Wand und dem Heizkörper blasen
+
+Stromaufnahme ca 1,2 A, 11,1 V
+PWM-Frequenz 8 kHz
+Die hinzugekommenen 80mm Lüfter sind BLDC Typen. Laufen nicht unter PWM ->Glätten ist angesagt..
+
+Ein simpler 220 uF Elko schafft das. Wird aber heiß....
+
+Rechnung 
+
+1,2A/8000 Hz = 0,00015 As
+Spannungeinbruch um 7 V (Auf 5 V) 
+
+0,00015 As / 7 V = 22 uF
+
+220 passt schon
+
+Induktivität 2 A Max Vs/A -
+
+220 uH????
+
+
 ### Was fehlt noch
 
 - Schaltplanänderung in Kicad nachpflegen, zur Stabilitätsverbesserung werden die DS18B20 jetzt mit 5 V versorgt
