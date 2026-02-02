@@ -1,5 +1,3 @@
-ESP8366_MQTT_THERMOSTAT
-
 # Ein Heizkörperthermostat auf Basis eines ESP8266 und MQTT
 ![English version](README_en.md)
 
@@ -36,27 +34,27 @@ Mindestausstattung wäre ein Thermosensor für die Raumtemperatur und ein Schalt
 
 ### Lüfter-Aufrüstung
 
-Inzwischen laufen 8 80 mm Lüfter unter dem Heizkörper - Blasen in die Lücke zwischen den Platten
+Inzwischen laufen acht 80 mm Lüfter unter dem Heizkörper - Blasen in die Lücke zwischen den Platten
 Dazu noch 6 50 mm Lüfter, die in die Zwischenraum zwischen der Wand und dem Heizkörper blasen
+
+![Volle Luefteraussstattung](volle_luefter.jpg)
 
 Stromaufnahme ca 1,2 A, 11,1 V
 PWM-Frequenz 8 kHz
-Die hinzugekommenen 80mm Lüfter sind BLDC Typen. Laufen nicht unter PWM ->Glätten ist angesagt..
+Die hinzugekommenen 80mm Lüfter sind BLDC Typen. Laufen nicht unter PWM -> Glätten ist angesagt..
 
-Ein simpler 220 uF Elko schafft das. Wird aber heiß....
+Ein simpler 220 uF Elko schafft das. Wird aber heiß da fehlt wohl noch eine Induktivität, um die Stromspitzen vom Eko fernzuhalten...
 
 Rechnung 
 
 1,2A/8000 Hz = 0,00015 As
 Spannungeinbruch um 7 V (Auf 5 V) 
 
-0,00015 As / 7 V = 22 uF
+0,00015 As / 7 V = 22 &mu;F
 
-220 passt schon
+220 &mu;F passt schon
 
-Induktivität 2 A Max Vs/A -
-
-220 uH????
+Induktivität 2 A Max Vs/A - 220 &mu;H????
 
 
 ### Was fehlt noch
@@ -68,7 +66,7 @@ Induktivität 2 A Max Vs/A -
 - 4 Pin Lüfter?
 - 24 V Variante des Danfoss Stellantriebs über DCDC Wandler mit Enable-Eingang?
 - Full Fan speed konfigurierbar (255 scheint zu schnell zu sein ...)
-- Neues Leiterplattenlayout mit 230 V Spannungsversorgung und Schaltrelais für Danfoss-Stellglied
+- Neues Leiterplattenlayout mit 230 V Spannungsversorgung und <del>Schaltrelais</del> Solid State Relay (für PWM) für Danfoss-Stellglied
 - Migration des Projekts von Arduino-IDE auf PlatformIO
 
 ### Worklog
