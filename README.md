@@ -56,6 +56,26 @@ Spannungeinbruch um 7 V (Auf 5 V)
 
 Induktivität 2 A Max Vs/A - 220 &mu;H????
 
+Schaltung aufgebaut, funktioniert.
+Glättet das Signal ziemlich gut, Lüfter  laufen alle, aber die Spannungen sind deutlich geringer, als ohne Induktivität
+
+Elektrolytkondensator 220 &mu;F, (Grabbelkiste) 
+Induktivität 330 &mu;H Von Amazon
+> sourcing map 5 Stück Ringkern Induktivität Kupferspule magnetische Induktivität 330uH 5A für DIY Platine
+
+
+
+| PWM | Spannung | Bemerkung |
+| - | - | - |
+| 255 | 10.9 V | Laut |
+| 250 | 9.6 V | |
+| 240 | 9.2 V | Hörbar |
+| 220 | 8.3 V | |
+| 200 | 7.2 V | Leise |
+| 180 | 6.5 V | |
+| 165 | 5.7 V | Unhörbar |
+| 150 | 5.1 V | |
+| Darunter | x | Lüfter stehen teilweise still |
 
 ### Was fehlt noch
 
@@ -79,7 +99,8 @@ Induktivität 2 A Max Vs/A - 220 &mu;H????
 - OCT-2025             
   - Moved to espMqttClient https://github.com/bertmelis/espMqttClient/blob/main/src/espMqttClient.h
     - that fixed stability problems on esp32 single core chips
-
+- FEB-2026 
+  - changed behaviour on desired throttle speed
 ## Bugs 
 
 
