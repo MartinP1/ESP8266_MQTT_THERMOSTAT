@@ -1,8 +1,10 @@
 void FanAutomat(float difftemp){
-    // regulation of fan speed
+  // regulation of fan speed
   
+  // first step check for off conditions
   if (( ventState == false) 
-  || ((numberOfDevices > 1) && (temp[VORLAUF]< MIN_VORLAUF_FOR_FAN))) {
+  || ((numberOfDevices > 1) && (temp[VORLAUF]< MIN_VORLAUF_FOR_FAN))
+  || (difftemp>=temp_hyst)) {
 
     if (pwmActual!= PWM_OFF){
 #if 1 // SERIAL_TRACE      
@@ -11,13 +13,16 @@ void FanAutomat(float difftemp){
       Serial.print( pwmActual);
       Serial.println(" to off");
 #endif      
-      pwmActual = PWM_OFF; // no heating support possible 
-    }                   //  if heating water temperature is low, or vent is off
-    return;
+      pwmActual = PWM_OFF; // no heating support possible/necessary 
+    }                   //  if heating water temperature is low, 
+                        // or vent is off
+                        // or room temperature is above hysteresis
+    return; // done
   }
-  /// unconditionally turn fan to full speed (switch to throttling hysteresis point at diff=0.0)
+  // at this point definitvely something different to fans off
   if (difftemp <= -temp_hyst) {
     if (pwmActual != PWM_FULL){
+  /// temperature seriously too low -> turn fan to full speed
 #if 1 // SERIAL_TRACE      
       // Serial.printf("pwmActual(%02X) to FULL - difftemp %f, th*2.0=%f\n",pwmActual, difftemp, (-temp_hyst * 2.0));
       Serial.print("pwmActual ");
@@ -26,11 +31,11 @@ void FanAutomat(float difftemp){
 #endif      
       pwmActual = PWM_FULL;
     }
-    return;
+    return; // done 
   }
-  if (((pwmActual == PWM_FULL) && (difftemp > 0.0)) 
-  || ((pwmActual != PWM_FULL) && (difftemp > -temp_hyst))){
-
+  // at this point neither full speed nor off
+  if ((difftemp >= 0.0)){
+    // throttling to absolute minimum on room temp equal or above desired temp
     if (pwmActual!= PWM_THROTTLE) {
 #if 1 // SERIAL_TRACE      
       // Serial.printf("pwmActual(%02X) to throttle\n",pwmActual);
@@ -40,12 +45,30 @@ void FanAutomat(float difftemp){
 #endif
       pwmActual = PWM_THROTTLE;
     }
-    return; 
+    return; // done 
   }
-    // no need to take care about difftemp > temp_hyst, 
-    // since vent_state == false covers that
+  // at this point we are definitively in range between (-temp_hyst and 0) -> adaptive throttling
+  // fan speed shall be PWM_FULL at difftemp =  -temp_hyst, and PWM_THROTTLE at difftemp=0
+  
+  // use a normalized control deviation to help to make it easier to use more sophisticated algorithms 
+  // later on
+  float normdev = difftemp / temp_hyst; // in range -1.0 (at difftemp=-temp_hyst).... 0.0 (difftemp=0.0)
+  
+  // some safety checks not necessary, but to be safe ....
+  if (normdev > 0.0)
+    pwmActual = PWM_THROTTLE;
+  else if ( normdev <= -1.0)
+    pwmActual = PWM_FULL;
+  else {
+    // simple proportional controller
+    // avoid signed/unsigned issues by strange looking arithmetics
+    pwmActual = PWM_THROTTLE + (uint8_t)((-normdev) * (float)(PWM_FULL - PWM_THROTTLE)); 
+  }                                                                                 
+  Serial.print(" pwmActual ");
+  Serial.print(pwmActual);
+  Serial.println(" (regulator range)");
+  
 }
-
 
 void VentAutomat(float difftemp){
  

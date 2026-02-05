@@ -1,5 +1,5 @@
 # Ein Heizkörperthermostat auf Basis eines ESP8266 und MQTT
-![English version](README_en.md)
+![English version](README_en.md) 
 
 ## Projektstand
 Das Projekt ist seit mehreren Jahren im operativen Einsatz.
@@ -75,7 +75,7 @@ Induktivität 330 &mu;H Von Amazon
 | 180 | 6.5 V | |
 | 165 | 5.7 V | Unhörbar |
 | 150 | 5.1 V | |
-| Darunter | x | Lüfter stehen teilweise still |
+| Darunter | x | Verschiedene Lüfter stehen still |
 
 ### Was fehlt noch
 
@@ -100,9 +100,12 @@ Induktivität 330 &mu;H Von Amazon
   - Moved to espMqttClient https://github.com/bertmelis/espMqttClient/blob/main/src/espMqttClient.h
     - that fixed stability problems on esp32 single core chips
 - FEB-2026 
-  - changed behaviour on desired throttle speed
+  - changed behaviour on desired throttle speed (1.2.5)
+  - p-controller on room temp diff between -hyst and 0 (1.2.6)
+  - 
 ## Bugs 
 
+- serial logging does not work reliable any more since 1.2.6 -> fixed by updating ESP32 board lib from 3.3.5 to 3.3.6
 
 ## Unklarheiten
 

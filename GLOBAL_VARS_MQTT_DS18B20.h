@@ -22,6 +22,11 @@ based on below Work of Rui Santos
   The above copyright notice and this permission notice shall be included in all
   copies or substantial portions of the Software.
 */
+
+// helper to use VSCODE - arduino ide shall determine board on the "right way"
+#if !defined(ARDUINO_D1_MINI32) && !defined(ARDUINO_LOLIN_S2_MINI) && !defined(ARDUINO_ESP8266_WEMOS_D1MINI) 
+#define ARDUINO_LOLIN_S2_MINI
+#endif
 #ifdef ARDUINO_LOLIN_S2_MINI
 #define OTA_UPDATES 1
 #else
