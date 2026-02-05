@@ -63,7 +63,7 @@ Elektrolytkondensator 220 &mu;F, (Grabbelkiste)
 Induktivität 330 &mu;H Von Amazon
 > sourcing map 5 Stück Ringkern Induktivität Kupferspule magnetische Induktivität 330uH 5A für DIY Platine
 
-
+Messung: Full-Power Strom 1,16 A
 
 | PWM | Spannung | Bemerkung |
 | - | - | - |
