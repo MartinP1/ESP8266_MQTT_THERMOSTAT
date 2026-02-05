@@ -97,7 +97,7 @@ sshpass -p $var rsync -a $mypath/ESP8266_MQTT_THERMOSTAT.ino.partitions.bin mart
 echo "ESP8266_MQTT_THERMOSTAT.ino.bin"
 sshpass -p $var rsync -a $mypath/ESP8266_MQTT_THERMOSTAT.ino.bin martin@192.168.2.164:/home/martin/thermostat
 echo "boot_app0.bin (from board directory)"
-sshpass -p $var rsync -a /home/martin/.arduino15/packages/esp32/hardware/esp32/3.3.0/tools/partitions/boot_app0.bin martin@192.168.2.164:/home/martin/thermostat
+sshpass -p $var rsync -a /home/martin/.arduino15/packages/esp32/hardware/esp32/3.3.6/tools/partitions/boot_app0.bin martin@192.168.2.164:/home/martin/thermostat
 echo "program_MINI_D1_ESP32.sh (from project dir)"
 sshpass -p $var rsync -a /home/martin/github/ESP8266_MQTT_THERMOSTAT/program_MINI_D1_ESP32.sh martin@192.168.2.164:/home/martin/thermostat
 echo "program_esp32s2.sh (from project dir)"
