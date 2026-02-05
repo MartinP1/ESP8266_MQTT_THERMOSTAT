@@ -77,6 +77,8 @@ Messung: Full-Power Strom 1,16 A
 | 150 | 5.1 V | |
 | Darunter | x | Verschiedene Lüfter stehen still |
 
+![PWMKURVE](pwmkurve.png)
+
 ### Was fehlt noch
 
 - Schaltplanänderung in Kicad nachpflegen, zur Stabilitätsverbesserung werden die DS18B20 jetzt mit 5 V versorgt
