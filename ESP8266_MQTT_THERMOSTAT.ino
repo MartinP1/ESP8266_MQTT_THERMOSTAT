@@ -1,4 +1,4 @@
-#define VERSION_NO "1.2.6 05-FEB-2026"
+#define VERSION_NO "1.2.7 13-MAR-2026"
 #include "./GLOBAL_VARS_MQTT_DS18B20.h"
 #include "unspecialized_mqtt_doings.h"
 #include "MqttLogging.h"

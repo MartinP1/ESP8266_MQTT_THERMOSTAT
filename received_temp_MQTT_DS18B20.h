@@ -76,6 +76,7 @@ void avgRoomtemp() {
 
 void getTemperatures() {
   sensors.requestTemperatures(); 
+  delay(750);
     // Temperature in Celsius degrees
   Serial.print("DS18B20s:");
   for (int i=0; i<MAX_DS18B20_DEVICES; i++) {
